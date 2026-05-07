@@ -23,6 +23,92 @@ function renderRotationTable(){
   document.getElementById('rotTable').innerHTML=html+`</tbody>`;
 }
 function setJVFromTable(wn,yr,key,docId){setJV(wn,yr,key,docId||null);render();}
+
+function renderBJRotationTable(){
+  const mon=getMonday(currentDate),curWn=weekNum(mon),curYr=weekYear(mon);
+  const rows=[];for(let d=-2;d<=10;d++){const dt=addDays(mon,d*7);rows.push({wn:weekNum(dt),yr:weekYear(dt),dt});}
+  const bjfsDocs=doctors.filter(d=>(d.bj||[]).includes('BJFS'));
+  const bjloDocs=doctors.filter(d=>(d.bj||[]).includes('BJLO'));
+  function mkBJSel(wn,yr,type,docs,color){
+    const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);
+    const wkMon=addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);
+    const anchorDs=isoDate(addDays(wkMon,type==='BJFS'?4:5));
+    const cur=getBJ(anchorDs,type);
+    const allDocs=[...docs];
+    if(cur&&!allDocs.find(d=>d.id===cur)){const doc=docById(cur);if(doc)allDocs.push(doc);}
+    const otherType=type==='BJFS'?'BJLO':'BJFS';
+    const otherDs=isoDate(addDays(wkMon,type==='BJFS'?5:4));
+    const otherDoc=getBJ(otherDs,otherType);
+    return`<select onchange="setBJFromTable('${type}',${wn},${yr},this.value)" style="width:100%;font-size:11px;padding:3px 6px;background:${cur?'var(--'+color+'-light)':'var(--bg)'};color:${cur?'var(--'+color+')':'var(--text2)'};border:1px solid ${cur?'var(--'+color+')':'var(--border)'};border-radius:5px"><option value="">— —</option>${allDocs.map(d=>{const conflict=d.id===otherDoc;return`<option value="${d.id}"${cur===d.id?' selected':''}${conflict?' disabled':''}>${conflict?'⚠ ':''}${d.name.split(' ')[0]} ${d.name.split(' ').slice(-1)[0]}${conflict?' ('+otherType+')':''}</option>`;}).join('')}</select>`;
+  }
+  let html=`<thead><tr><th>Vecka</th><th style="color:var(--bjfs)">BJFS</th><th style="color:var(--bjlo)">BJLÖ</th></tr></thead><tbody>`;
+  rows.forEach(({wn,yr,dt})=>{
+    const isCur=wn===curWn&&yr===curYr;
+    html+=`<tr style="${isCur?'background:var(--accent-light)':''}">
+      <td><strong style="font-family:'DM Mono',monospace;font-size:12px">v.${wn}</strong><span style="font-size:10px;color:var(--text3);margin-left:5px">${dt.getDate()} ${svMonth(dt)}</span>${isCur?'<span style="font-size:9px;font-weight:700;color:var(--accent);margin-left:5px">↑</span>':''}</td>
+      <td>${mkBJSel(wn,yr,'BJFS',bjfsDocs,'bjfs')}</td>
+      <td>${mkBJSel(wn,yr,'BJLO',bjloDocs,'bjlo')}</td>
+    </tr>`;
+  });
+  document.getElementById('bjRotTable').innerHTML=html+`</tbody>`;
+}
+function setBJFromTable(type,wn,yr,docId){
+  const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);
+  const wkMon=addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);
+  const anchorDs=isoDate(addDays(wkMon,type==='BJFS'?4:5));
+  setBJ(anchorDs,type,docId||null);renderBJRotationTable();render();
+}
+function autoBJRotate(){
+  const {fromWn:pFrom,toWn:pTo,yr:pYr}=periodForRotation();
+  const yr=pYr;
+  const fromWn=parseInt(document.getElementById('rotFrom').value)||pFrom;
+  const toWn=parseInt(document.getElementById('rotTo').value)||pTo;
+  const MIN_GAP=2;
+  function getMon(wn){const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);return addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);}
+  const last={};const cnt={};
+  doctors.forEach(d=>{last[d.id]={BJFS:-99,BJLO:-99};cnt[d.id]={BJFS:0,BJLO:0};});
+  for(let wn=Math.max(1,fromWn-20);wn<fromWn;wn++){
+    const mon=getMon(wn);
+    const fds=isoDate(addDays(mon,4)),sds=isoDate(addDays(mon,5));
+    const bf=getBJ(fds,'BJFS'),bl=getBJ(sds,'BJLO');
+    if(bf&&last[bf])last[bf].BJFS=wn;
+    if(bl&&last[bl])last[bl].BJLO=wn;
+  }
+  for(let wn=fromWn;wn<=toWn;wn++){
+    const mon=getMon(wn);
+    const friDs=isoDate(addDays(mon,4)),satDs=isoDate(addDays(mon,5));
+    if(!getBJ(friDs,'BJFS')){
+      const bjloDoc=getBJ(satDs,'BJLO');
+      const elig=doctors.filter(d=>(d.bj||[]).includes('BJFS')&&d.id!==bjloDoc);
+      const pool=elig.filter(d=>(wn-last[d.id].BJFS)>=MIN_GAP);
+      const final=pool.length?pool:elig;
+      final.sort((a,b)=>cnt[a.id].BJFS-cnt[b.id].BJFS||last[a.id].BJFS-last[b.id].BJFS);
+      if(final.length){setBJ(friDs,'BJFS',final[0].id);last[final[0].id].BJFS=wn;cnt[final[0].id].BJFS++;}
+    }
+    if(!getBJ(satDs,'BJLO')){
+      const bjfsDoc=getBJ(friDs,'BJFS');
+      const elig=doctors.filter(d=>(d.bj||[]).includes('BJLO')&&d.id!==bjfsDoc);
+      const pool=elig.filter(d=>(wn-last[d.id].BJLO)>=MIN_GAP);
+      const final=pool.length?pool:elig;
+      final.sort((a,b)=>cnt[a.id].BJLO-cnt[b.id].BJLO||last[a.id].BJLO-last[b.id].BJLO);
+      if(final.length){setBJ(satDs,'BJLO',final[0].id);last[final[0].id].BJLO=wn;cnt[final[0].id].BJLO++;}
+    }
+  }
+  renderBJRotationTable();render();showToast(`BJ-rotation satt v.${fromWn}–${toWn}`);
+}
+function clearBJRotation(){
+  const {fromWn:pFrom,toWn:pTo,yr:pYr}=periodForRotation();
+  const yr=pYr;
+  const fromWn=parseInt(document.getElementById('rotFrom').value)||pFrom;
+  const toWn=parseInt(document.getElementById('rotTo').value)||pTo;
+  function getMon(wn){const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);return addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);}
+  for(let wn=fromWn;wn<=toWn;wn++){
+    const mon=getMon(wn);
+    setBJ(isoDate(addDays(mon,4)),'BJFS',null);
+    setBJ(isoDate(addDays(mon,5)),'BJLO',null);
+  }
+  renderBJRotationTable();render();showToast('BJ-rotation rensad');
+}
 function autoRotate(){
   const {fromWn:pFrom,toWn:pTo,yr:pYr}=periodForRotation();
   const curMon=getMonday(currentDate),yr=pYr;

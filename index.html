@@ -196,9 +196,33 @@
         <button class="btn sm" onclick="clearRotation()">Rensa</button>
       </div>
     </div>
-    <div style="max-height:370px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+    <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
       <table class="rot-table" id="rotTable"></table>
     </div>
+
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700">Bakjour helg</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn sm primary" onclick="autoBJRotate()">Auto-rotera BJ</button>
+          <button class="btn sm" onclick="clearBJRotation()">Rensa BJ</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div style="background:var(--bjfs-light);border:1px solid var(--bjfs);border-radius:8px;padding:8px 12px">
+          <div style="font-size:11px;font-weight:700;color:var(--bjfs);margin-bottom:2px">BJFS</div>
+          <div style="font-size:10px;color:var(--text2)">Fre natt · Sön dag+natt · Jourledig fre efter</div>
+        </div>
+        <div style="background:var(--bjlo-light);border:1px solid var(--bjlo);border-radius:8px;padding:8px 12px">
+          <div style="font-size:11px;font-weight:700;color:var(--bjlo);margin-bottom:2px">BJLÖ</div>
+          <div style="font-size:10px;color:var(--text2)">Lör dag+natt · Jourledig måndag</div>
+        </div>
+      </div>
+      <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+        <table class="rot-table" id="bjRotTable"></table>
+      </div>
+    </div>
+
     <div class="modal-actions"><button class="btn primary" onclick="closeModal('rotationModal');render()">Klar</button></div>
   </div>
 </div>
