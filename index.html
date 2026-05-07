@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schemaläggning — Barnkliniken</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo">Barnkliniken <span>Schemaläggning</span></div>
+  <div class="header-nav">
+    <button class="nav-btn active" id="btn5" onclick="setSpan(5)">Mån–Fre</button>
+    <button class="nav-btn" id="btn7" onclick="setSpan(7)">Mån–Sön</button>
+  </div>
+  <div id="periodBadge" class="period-badge" onclick="openPeriodModal()" title="Välj schemaperiod">📆 <span id="periodBadgeText">Ingen period vald</span></div>
+  <div class="header-right">
+    <button class="btn-action" onclick="openPositionsModal()">⚙ Positioner</button>
+    <button class="btn-action" onclick="openLedighetModal()">📅 Ledighet</button>
+    <button class="btn-action" onclick="openUtbildningModal()">📚 Utbildning</button>
+    <button class="btn-action" onclick="openForaldraledModal()">👶 Föräldraledighet</button>
+    <button class="btn-action" onclick="openHandledningModal()">🎓 Handledning</button>
+    <button class="btn-action" onclick="openRotationModal()">🔄 Jourveckor</button>
+    <button class="btn-action" onclick="openModal('autoModal')">⚡ Auto-fördela</button>
+    <button class="btn-action" onclick="saveData()" title="Spara allt som JSON-fil">💾 Spara</button>
+    <button class="btn-action" onclick="document.getElementById('loadFileInput').click()" title="Ladda in sparad JSON-fil">📂 Ladda</button>
+    <input type="file" id="loadFileInput" accept=".json" style="display:none" onchange="loadData(event)">
+    <button class="btn-action primary" onclick="exportSchema()">↓ Exportera</button>
+  </div>
+</header>
+<main>
+<aside>
+  <div class="aside-section">
+    <div class="aside-title">Lägg till läkare</div>
+    <div class="add-form"><input type="text" id="newDoctorInput" placeholder="Namn..." onkeydown="if(event.key==='Enter')openAddDoctorModal()"><button class="btn-add" onclick="openAddDoctorModal()">+</button></div>
+  </div>
+  <div class="aside-section">
+    <div class="aside-title">Läkare (<span id="docCount">0</span>) <button class="aside-btn" onclick="openRolesModal()">Roller &amp; komp.</button></div>
+  </div>
+  <div class="doctors-list" id="doctorsList"></div>
+  <div class="aside-section" style="margin-top:auto">
+    <div class="aside-title">Förklaring</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--jv1-light);border:1.5px solid var(--jv1);color:var(--jv1)">JV1</div>Jourvecka 1</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--jv2-light);border:1.5px solid var(--jv2);color:var(--jv2)">JV2</div>Jourvecka 2</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--nlo-light);border:1.5px solid var(--nlo);color:var(--nlo)">NLÖ</div>Nattlördag</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--bjfs-light);border:1.5px solid var(--bjfs);color:var(--bjfs)">BJFS</div>Bakjour fre–sön</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--bjlo-light);border:1.5px solid var(--bjlo);color:var(--bjlo)">BJLÖ</div>Bakjour lördag</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--bjnv-light);border:1.5px solid var(--bjnv);color:var(--bjnv)">BJNV</div>Nattbakjour vardag</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--bvc-light);border:1.5px solid var(--bvc);color:var(--bvc)">BVC</div>BVC torsdag</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--ledighet-light);border:1.5px solid var(--ledighet);color:var(--ledighet)">LED</div>Önskad ledighet</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--utb-light);border:1.5px solid #c0c060;color:var(--utb)">UTB</div>Utbildning</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--fl-light);border:1.5px solid var(--fl);color:var(--fl)">FL</div>Föräldraledighet</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#f0f0f0;border:1.5px solid #c0c0c0;color:#555">ADM</div>Administration</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#fff0f8;border:1.5px solid #e0a0c0;color:#8a2060">HLD</div>Handledning</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--night-light);border:1.5px solid #a0a4c0">🌙</div>Nattpass</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--day-s-light);border:1.5px solid #a0c8b8">☀</div>Dagpass / dagjour</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--jourledigt-light);border:1.5px solid #f0c080">✦</div>Jourledigt</div>
+    </div>
+  </div>
+</aside>
+
+<div class="content">
+  <div class="week-header">
+    <div class="week-title" id="weekTitle">Vecka —</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div id="warnBadge" style="display:none"></div>
+      <div class="week-nav">
+        <button onclick="navigate(-1)">‹</button>
+        <button class="btn-today" onclick="goToday()">Idag</button>
+        <button onclick="navigate(1)">›</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats-bar" id="statsBar"></div>
+  <div class="schedule-container" id="scheduleContainer"></div>
+</div>
+</main>
+
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-head" id="ctxHead">Välj läkare</div>
+  <div id="ctxHalfRow" style="display:none;padding:4px 8px 6px;display:none;gap:4px;flex-wrap:wrap"></div>
+  <div class="ctx-doc-list" id="ctxDocList"></div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" onclick="ctxClear()"><span style="width:14px;text-align:center">✕</span> Rensa</div>
+</div>
+
+<div class="ctx-menu" id="ctxJV" style="min-width:230px">
+  <div class="ctx-head" id="ctxJVHead"></div>
+  <div id="ctxJVList" style="padding:4px 6px;max-height:250px;overflow-y:auto"></div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" onclick="clearJVCtx()"><span style="width:14px;text-align:center">✕</span> Rensa</div>
+</div>
+
+<div class="ctx-menu" id="ctxBJ" style="min-width:220px">
+  <div class="ctx-head" id="ctxBJHead">Välj läkare</div>
+  <div class="ctx-doc-list" id="ctxBJList"></div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" onclick="clearBJCtx()"><span style="width:14px;text-align:center">✕</span> Rensa</div>
+</div>
+
+<div class="modal-overlay" id="addDoctorModal">
+  <div class="modal" style="min-width:500px">
+    <h3>Lägg till läkare</h3><p class="modal-sub">Namn, befattning, kompetenser och jourinformation.</p>
+    <div class="two-col">
+      <div class="fg"><label class="fl">Namn</label><input type="text" id="addDocName" placeholder="För- och efternamn"></div>
+      <div class="fg"><label class="fl">Befattning</label><div class="tg" id="addRoleGrid"></div></div>
+    </div>
+    <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><div class="tg" id="addAllowedGrid"></div></div>
+    <div class="fg"><label class="fl">Föredragna positioner</label><div class="tg" id="addPrefGrid"></div></div>
+    <div class="fg"><label class="fl">JV-preferens</label>
+      <div class="tg">
+        <input type="radio" name="addPrefJV" id="addPrefJVnone" value="" checked><label class="tl" for="addPrefJVnone">Ingen</label>
+        <input type="radio" name="addPrefJV" id="addPrefJV1" value="JV1"><label class="tl" for="addPrefJV1">Föredrar JV1</label>
+        <input type="radio" name="addPrefJV" id="addPrefJV2" value="JV2"><label class="tl" for="addPrefJV2">Föredrar JV2</label>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Deltar i jourveckor</label>
+      <div class="tg">
+        <input type="checkbox" class="tc" id="addJV1"><label class="tl" for="addJV1">JV1</label>
+        <input type="checkbox" class="tc" id="addJV2"><label class="tl" for="addJV2">JV2</label>
+        <input type="checkbox" class="tc" id="addNLO"><label class="tl" for="addNLO">NLÖ</label>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('addDoctorModal')">Avbryt</button><button class="btn primary" onclick="confirmAddDoctor()">Lägg till</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editDoctorModal">
+  <div class="modal" style="min-width:460px">
+    <h3>Redigera läkare</h3><p class="modal-sub">Klicka på taggar för att toggla.</p>
+    <input type="hidden" id="editDocId">
+    <div class="two-col">
+      <div class="fg"><label class="fl">Namn</label><input type="text" id="editDocName"></div>
+      <div class="fg"><label class="fl">Befattning</label><div class="tg" id="editRoleGrid"></div></div>
+    </div>
+    <div class="fg"><label class="fl">Föredragna positioner</label><div class="tg" id="editPrefGrid"></div></div>
+    <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><div class="tg" id="editAllowedGrid"></div></div>
+    <div class="fg"><label class="fl">JV-preferens</label>
+      <div class="tg">
+        <input type="radio" name="editPrefJV" id="editPrefJVnone" value=""><label class="tl" for="editPrefJVnone">Ingen</label>
+        <input type="radio" name="editPrefJV" id="editPrefJV1" value="JV1"><label class="tl" for="editPrefJV1">Föredrar JV1</label>
+        <input type="radio" name="editPrefJV" id="editPrefJV2" value="JV2"><label class="tl" for="editPrefJV2">Föredrar JV2</label>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Deltar i jourveckor</label>
+      <div class="tg">
+        <input type="checkbox" class="tc" id="editJV1"><label class="tl" for="editJV1">JV1</label>
+        <input type="checkbox" class="tc" id="editJV2"><label class="tl" for="editJV2">JV2</label>
+        <input type="checkbox" class="tc" id="editNLO"><label class="tl" for="editNLO">NLÖ</label>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="btn danger" onclick="promptDeleteFromEdit()">Ta bort</button><div style="flex:1"></div><button class="btn" onclick="closeModal('editDoctorModal')">Avbryt</button><button class="btn primary" onclick="confirmEditDoctor()">Spara</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rotationModal">
+  <div class="modal" style="min-width:580px">
+    <h3>Jourveckor — rotation</h3>
+    <p class="modal-sub">Tilldela JV1, JV2 och NLÖ per vecka. Auto-rotation roterar rättvist bland markerade läkare.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:var(--jv1-light);border:1px solid var(--jv1);border-radius:8px;padding:9px 12px">
+        <div style="font-size:11px;font-weight:700;color:var(--jv1);margin-bottom:3px">JV1</div>
+        <div style="font-size:10px;color:var(--text2)">Fre natt → Sön dag · Mån natt · Ons natt</div>
+      </div>
+      <div style="background:var(--jv2-light);border:1px solid var(--jv2);border-radius:8px;padding:9px 12px">
+        <div style="font-size:11px;font-weight:700;color:var(--jv2);margin-bottom:3px">JV2</div>
+        <div style="font-size:10px;color:var(--text2)">Lör dag → Sön natt · Tis natt · Tor natt</div>
+      </div>
+      <div style="background:var(--nlo-light);border:1px solid var(--nlo);border-radius:8px;padding:9px 12px">
+        <div style="font-size:11px;font-weight:700;color:var(--nlo);margin-bottom:3px">NLÖ</div>
+        <div style="font-size:10px;color:var(--text2)">Lördag natt<br><span style="color:var(--jourledigt)">✦ Lör natt → jourledigt måndag</span></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="fl" style="margin:0">Veckor</div>
+      <div style="display:flex;gap:6px">
+        <input type="number" id="rotFrom" min="1" max="52" style="width:70px;font-size:12px" placeholder="Fr.v.">
+        <input type="number" id="rotTo" min="1" max="52" style="width:70px;font-size:12px" placeholder="T.o.m.">
+        <button class="btn sm primary" onclick="autoRotate()">Auto-rotera</button>
+        <button class="btn sm" onclick="clearRotation()">Rensa</button>
+      </div>
+    </div>
+    <div style="max-height:370px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+      <table class="rot-table" id="rotTable"></table>
+    </div>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('rotationModal');render()">Klar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="positionsModal">
+  <div class="modal" style="min-width:500px">
+    <h3>Positioner &amp; krav</h3><p class="modal-sub">Dagpositioner med befattnings- och kompetenskrav.</p>
+    <div id="posListEl"></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <label class="fl">Ny position</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input type="text" id="newPosName" placeholder="Namn..." style="flex:2">
+        <div style="flex:1"><label class="fl">Slots</label><input type="number" id="newPosSlots" value="1" min="1" max="6"></div>
+      </div>
+      <div class="two-col">
+        <div><label class="fl">Befattningskrav</label><select id="newPosRole"><option value="">Alla</option><option value="ÖL">ÖL</option><option value="UL">UL (ST/AT)</option></select></div>
+        <div>
+          <label class="fl">Aktiva veckodagar</label>
+          <div id="newPosDays" style="display:flex;gap:4px;margin-top:4px">
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="1" checked style="margin:0">Mån</label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="2" checked style="margin:0">Tis</label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="3" checked style="margin:0">Ons</label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="4" checked style="margin:0">Tor</label>
+            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="5" checked style="margin:0">Fre</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('positionsModal')">Stäng</button><button class="btn primary" onclick="addPosition()">+ Lägg till</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rolesModal">
+  <div class="modal"><h3>Roller</h3><p class="modal-sub">Hantera befattningstaggar.</p>
+    <div>
+      <div><div class="fl" style="margin-bottom:7px">Befattningar</div><div id="roleTagsList" style="margin-bottom:8px"></div><div class="add-form"><input type="text" id="newRoleInput" placeholder="Ny..." onkeydown="if(event.key==='Enter')addRoleTag()"><button class="btn-add" onclick="addRoleTag()" style="padding:5px 9px;font-size:14px">+</button></div></div>
+
+    </div>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('rolesModal');render()">Klar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="autoModal">
+  <div class="modal"><h3>Auto-fördela</h3><p class="modal-sub">Fördelar dagpositioner med hänsyn till kompetens, befattning och preferenser. Jourveckor hanteras i rotationstabellen.</p>
+    <div class="fg"><label class="fl">Fördela</label>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="autoChkDag" checked> Dagpositioner (exkl. jourveckans läkare)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="autoChkDJ" checked> Dagjour &amp; Dagbakjour</label>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('autoModal')">Avbryt</button><button class="btn" onclick="undoAutoDistribute();closeModal('autoModal')" title="Återställ senaste autofördelning">↩ Ångra</button><button class="btn primary" onclick="runAutoDistribute()">⚡ Fördela</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal"><h3>Ta bort läkare?</h3><p class="modal-sub" id="deleteModalText"></p>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('deleteModal')">Avbryt</button><button class="btn danger" onclick="confirmDelete()">Ta bort</button></div>
+  </div>
+</div>
+
+<!-- BVC ctx -->
+<div class="ctx-menu" id="ctxBVC" style="min-width:220px">
+  <div class="ctx-head" style="color:var(--bvc)">BVC — välj läkare</div>
+  <div class="ctx-doc-list" id="ctxBVCList"></div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" onclick="clearBVCCtx()"><span style="width:14px;text-align:center">✕</span> Rensa</div>
+</div>
+
+<!-- Special ctx (edit/delete) -->
+<div class="ctx-menu" id="ctxSpecial" style="min-width:180px">
+  <div class="ctx-head" id="ctxSpecialHead">Inslag</div>
+  <div class="ctx-item danger" onclick="deleteSpecialCtx()"><span style="width:14px;text-align:center">✕</span> Ta bort</div>
+</div>
+
+<!-- Ledighet Modal -->
+<div class="modal-overlay" id="ledighetModal">
+  <div class="modal" style="min-width:560px;max-width:700px">
+    <h3>Önskad ledighet</h3>
+    <p class="modal-sub">Klicka på dagar eller markera hela veckor. Röda markeringar visas i schemat och genererar varningar vid schemaläggning.</p>
+    <div class="fg">
+      <label class="fl">Läkare</label>
+      <select id="ledDocSelect" onchange="renderLedighetCal()"></select>
+    </div>
+    <div class="fg">
+      <label class="fl">Månad</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn sm" onclick="ledMonth(-1)">‹</button>
+        <span id="ledMonthLabel" style="font-size:13px;font-weight:600;min-width:120px;text-align:center"></span>
+        <button class="btn sm" onclick="ledMonth(1)">›</button>
+      </div>
+    </div>
+    <div id="ledCalContainer"></div>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('ledighetModal');render()">Klar</button></div>
+  </div>
+</div>
+
+<!-- Utbildning Modal -->
+<div class="modal-overlay" id="utbildningModal">
+  <div class="modal" style="min-width:560px;max-width:700px">
+    <h3>Utbildning &amp; kurser</h3>
+    <p class="modal-sub">Klicka på dagar eller markera hela veckor. Läkaren visas som otillgänglig i schemat dessa dagar.</p>
+    <div class="fg">
+      <label class="fl">Läkare</label>
+      <select id="utbDocSelect" onchange="renderUtbildningCal()"></select>
+    </div>
+    <div class="fg">
+      <label class="fl">Månad</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn sm" onclick="utbMonth(-1)">‹</button>
+        <span id="utbMonthLabel" style="font-size:13px;font-weight:600;min-width:120px;text-align:center"></span>
+        <button class="btn sm" onclick="utbMonth(1)">›</button>
+      </div>
+    </div>
+    <div id="utbCalContainer"></div>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('utbildningModal');render()">Klar</button></div>
+  </div>
+</div>
+
+<!-- Föräldraledighet Modal -->
+<div class="modal-overlay" id="foraldraledModal">
+  <div class="modal" style="min-width:420px">
+    <h3>Föräldraledighet</h3>
+    <p class="modal-sub">Registrera föräldraledighet per dag. Välj hel- eller halvdag.</p>
+    <div class="fg"><label class="fl">Läkare</label><select id="flDocSelect" onchange="renderFLList()"></select></div>
+    <div class="two-col">
+      <div class="fg"><label class="fl">Från</label><input type="date" id="flDateFrom"></div>
+      <div class="fg"><label class="fl">Till</label><input type="date" id="flDateTo"></div>
+    </div>
+    <div id="flRangeInfo" style="font-size:12px;color:var(--text2);margin-bottom:4px"></div>
+    <div class="fg"><label class="fl">Omfattning</label>
+      <div class="tg">
+        <input type="radio" name="flHalf" id="flHalfFm" value="fm"><label class="tl" for="flHalfFm" style="padding:4px 12px">Förmiddag</label>
+        <input type="radio" name="flHalf" id="flHalfEm" value="em"><label class="tl" for="flHalfEm" style="padding:4px 12px">Eftermiddag</label>
+        <input type="radio" name="flHalf" id="flHalfFull" value="" checked><label class="tl" for="flHalfFull" style="padding:4px 12px">Heldag</label>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Anteckning (valfri)</label><input type="text" id="flNote" placeholder="T.ex. mammaledighet v.23–30..."></div>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+      <div class="fl" style="margin-bottom:6px">Registrerade dagar</div>
+      <div id="flList" style="max-height:160px;overflow-y:auto"></div>
+    </div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('foraldraledModal')">Stäng</button><button class="btn primary" onclick="confirmAddFL()">+ Lägg till dag</button></div>
+  </div>
+</div>
+
+<!-- Add Special Modal (Utb/Admin/Handledning) -->
+<div class="modal-overlay" id="addSpecialModal">
+  <div class="modal" style="min-width:420px">
+    <h3 id="addSpecialTitle">Lägg till</h3>
+    <p class="modal-sub" id="addSpecialSub"></p>
+    <input type="hidden" id="addSpecialDs">
+    <input type="hidden" id="addSpecialType">
+    <div class="fg"><label class="fl">Läkare</label><select id="addSpecialDoc"></select></div>
+    <div id="addSpecialSupervisorRow" class="fg" style="display:none"><label class="fl">Handledare</label><select id="addSpecialSupervisor"></select></div>
+    <div class="fg"><label class="fl">Halvdag</label>
+      <div class="tg">
+        <input type="radio" name="addSpecialHalf" id="addHalfFm" value="fm"><label class="tl" for="addHalfFm" style="padding:4px 12px">Förmiddag</label>
+        <input type="radio" name="addSpecialHalf" id="addHalfEm" value="em"><label class="tl" for="addHalfEm" style="padding:4px 12px">Eftermiddag</label>
+        <input type="radio" name="addSpecialHalf" id="addHalfDay" value="" checked><label class="tl" for="addHalfDay" style="padding:4px 12px">Heldag</label>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Anteckning (valfri)</label><input type="text" id="addSpecialNote" placeholder="T.ex. kursnamn..."></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('addSpecialModal')">Avbryt</button><button class="btn primary" onclick="confirmAddSpecial()">Lägg till</button></div>
+  </div>
+</div>
+
+<!-- Handledning overview modal -->
+<div class="modal-overlay" id="handledningModal">
+  <div class="modal" style="min-width:520px">
+    <h3>Handledning</h3>
+    <p class="modal-sub">Koppla ST-läkare till handledare. Systemet påminner om en handledning inte är schemalagd denna månad.</p>
+    <div id="handledningPairsList"></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <label class="fl">Lägg till par</label>
+      <div style="display:flex;gap:8px">
+        <select id="newHandlST" style="flex:1"></select>
+        <select id="newHandlSup" style="flex:1"></select>
+        <button class="btn primary sm" onclick="addHandledningPair()">+ Lägg till</button>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('handledningModal');render()">Klar</button></div>
+  </div>
+</div>
+
+
+<!-- Period Modal -->
+<div class="modal-overlay" id="periodModal">
+  <div class="modal" style="min-width:420px">
+    <h3>Schemaperiod</h3>
+    <p class="modal-sub">Välj start- och slutdatum. Auto-rotation och auto-fördelning arbetar inom denna period. Lämna tomt för att stänga av periodbegränsning.</p>
+    <div class="two-col">
+      <div class="fg"><label class="fl">Från</label><input type="date" id="periodFrom" style="width:100%"></div>
+      <div class="fg"><label class="fl">Till</label><input type="date" id="periodTo" style="width:100%"></div>
+    </div>
+    <div id="periodInfo" style="font-size:12px;color:var(--text2);margin-bottom:8px"></div>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="clearPeriod()">Rensa</button>
+      <div style="flex:1"></div>
+      <button class="btn" onclick="closeModal('periodModal')">Avbryt</button>
+      <button class="btn primary" onclick="confirmPeriod()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Modules loaded in dependency order -->
+<script src="state.js"></script>
+<script src="helpers.js"></script>
+<script src="render.js"></script>
+<script src="context.js"></script>
+<script src="modals.js"></script>
+<script src="features.js"></script>
+<script src="storage.js"></script>
+<script src="period.js"></script>
+</body>
+</html>
