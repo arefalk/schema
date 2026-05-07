@@ -50,6 +50,8 @@ function renderWarnings(){
   days.forEach(d=>{if(d.getDay()===0||d.getDay()===6)return;const ds=isoDate(d);mandatoryPositions.forEach(posId=>{const pos=positions.find(p=>p.id===posId);if(!pos)return;const posDays=pos.days&&pos.days.length?pos.days:[1,2,3,4,5];if(!posDays.includes(d.getDay()))return;const allFilled=pos.slots.every(slot=>getSlot(slot.slotId,ds));if(!allFilled)warns.push(`${svDay(d)} ${d.getDate()}: obligatorisk position "${pos.name}" ej tillsatt`);});});
   // BJNV mandatory mån–tor
   days.forEach(d=>{const dow=d.getDay();if(dow<1||dow>4)return;const ds=isoDate(d);if(!getBJ(ds,'BJNV'))warns.push(`${svDay(d)} ${d.getDate()}: nattbakjour (BJNV) ej tillsatt`);});
+  // BJNV: max 1 per vecka och inte i anslutning till helgbakjour
+  days.forEach(d=>{const dow=d.getDay();if(dow<1||dow>4)return;const ds=isoDate(d);const docId=getBJ(ds,'BJNV');if(!docId)return;const doc=docById(docId);const c=bjnvConflict(docId,ds);if(c)warns.push(`${doc?.name.split(' ')[0]||docId}: BJNV ${svDay(d)} ${d.getDate()} — ${c}`);});
   // Night shift > 4/month warning
   const yr2=mon.getFullYear(),mo=mon.getMonth();
   doctors.forEach(doc=>{const cnt=countNightShiftsInMonth(doc.id,yr2,mo);if(cnt>4)warns.push(`${doc.name.split(' ')[0]}: ${cnt} journätter denna månad (max 4)`);});

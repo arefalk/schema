@@ -99,6 +99,33 @@ function getSlotHalf(sid,ds){return(scheduleHalfDay[ds]&&scheduleHalfDay[ds][sid
 function setSlotHalf(sid,ds,half){if(!scheduleHalfDay[ds])scheduleHalfDay[ds]={};scheduleHalfDay[ds][sid]=half;}
 function docById(id){return doctors.find(d=>d.id===id);}
 function allSlots(){return positions.flatMap(p=>p.slots);}
+
+// Returns how many BJNV nights the doctor has Mon–Thu of the week containing ds
+function docBJNVCountThisWeek(docId,ds){
+  const mon=getMonday(new Date(ds));
+  let n=0;for(let i=0;i<4;i++){if(getBJ(isoDate(addDays(mon,i)),'BJNV')===docId)n++;}
+  return n;
+}
+// Returns true if the doctor has BJFS or BJLO for the weekend bracketing this weekday
+// Checks both the immediately preceding weekend and the upcoming weekend of the same week
+function docHasWeekendBJNear(docId,ds){
+  const mon=getMonday(new Date(ds));
+  const prevFri=isoDate(addDays(mon,-3)),prevSat=isoDate(addDays(mon,-2));
+  const thisFri=isoDate(addDays(mon,4)),thisSat=isoDate(addDays(mon,5));
+  return getBJ(thisFri,'BJFS')===docId||getBJ(thisSat,'BJLO')===docId||
+         getBJ(prevFri,'BJFS')===docId||getBJ(prevSat,'BJLO')===docId;
+}
+// Returns a conflict string for BJNV, or null if ok
+function bjnvConflict(docId,ds){
+  if(docBJNVCountThisWeek(docId,ds)>=1){
+    // Check if the existing one is today (editing same slot) — count excluding current day
+    const mon=getMonday(new Date(ds));
+    let others=0;for(let i=0;i<4;i++){const d2=isoDate(addDays(mon,i));if(d2!==ds&&getBJ(d2,'BJNV')===docId)others++;}
+    if(others>=1)return 'Redan BJNV denna vecka';
+  }
+  if(docHasWeekendBJNear(docId,ds))return 'Helgbakjour i anslutning';
+  return null;
+}
 function slotById(sid){return allSlots().find(s=>s.slotId===sid);}
 function posOfSlot(sid){return positions.find(p=>p.slots.some(s=>s.slotId===sid));}
 function docIsAssignedOnDate(docId,ds){return!!(schedule[ds]&&Object.values(schedule[ds]).includes(docId));}
