@@ -116,6 +116,19 @@ function docHasWeekendBJNear(docId,ds){
   return getBJ(thisFri,'BJFS')===docId||getBJ(thisSat,'BJLO')===docId||
          getBJ(prevFri,'BJFS')===docId||getBJ(prevSat,'BJLO')===docId;
 }
+// Returns a conflict string if doctor has any weekend BJ within 2 weeks of anchorDs, or null
+function weekendBJConflict(docId,anchorDs){
+  const mon=getMonday(new Date(anchorDs));
+  for(let offset=-2;offset<=2;offset++){
+    if(offset===0)continue;
+    const cm=addDays(mon,offset*7);
+    const friDs=isoDate(addDays(cm,4)),satDs=isoDate(addDays(cm,5));
+    if(getBJ(friDs,'BJFS')===docId||getBJ(satDs,'BJLO')===docId)
+      return`Bakjourhelg v.${weekNum(cm)} — kräver 2 jourfria helger`;
+  }
+  return null;
+}
+
 // Returns a conflict string for BJNV, or null if ok
 function bjnvConflict(docId,ds){
   if(docBJNVCountThisWeek(docId,ds)>=1){

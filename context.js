@@ -100,7 +100,7 @@ function openBJCtx(e,bjType,anchorDs){
   [...eligible,...(others.length?[{_sep:true}]:[]),...others].forEach(doc=>{
     if(doc._sep){list.insertAdjacentHTML('beforeend','<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:3px 7px 1px;opacity:.5">Övriga</div>');return;}
     const isOther=others.includes(doc);
-    const conflict=bjType==='BJNV'?bjnvConflict(doc.id,anchorDs):null;
+    const conflict=bjType==='BJNV'?bjnvConflict(doc.id,anchorDs):weekendBJConflict(doc.id,anchorDs);
     const btn=document.createElement('button');
     btn.className='ctx-doc-btn'+(cur===doc.id?' selected':'')+(isOther||conflict?' incompatible':'');
     btn.title=conflict||'';

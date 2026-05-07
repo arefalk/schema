@@ -63,16 +63,16 @@ function autoBJRotate(){
   const yr=pYr;
   const fromWn=parseInt(document.getElementById('rotFrom').value)||pFrom;
   const toWn=parseInt(document.getElementById('rotTo').value)||pTo;
-  const MIN_GAP=2;
+  const MIN_GAP=3; // 2 jourfria helger = 3 veckors mellanrum
   function getMon(wn){const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);return addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);}
   const last={};const cnt={};
-  doctors.forEach(d=>{last[d.id]={BJFS:-99,BJLO:-99};cnt[d.id]={BJFS:0,BJLO:0};});
+  doctors.forEach(d=>{last[d.id]=-99;cnt[d.id]={BJFS:0,BJLO:0};});
   for(let wn=Math.max(1,fromWn-20);wn<fromWn;wn++){
     const mon=getMon(wn);
     const fds=isoDate(addDays(mon,4)),sds=isoDate(addDays(mon,5));
     const bf=getBJ(fds,'BJFS'),bl=getBJ(sds,'BJLO');
-    if(bf&&last[bf])last[bf].BJFS=wn;
-    if(bl&&last[bl])last[bl].BJLO=wn;
+    if(bf&&last[bf]!==undefined)last[bf]=Math.max(last[bf],wn);
+    if(bl&&last[bl]!==undefined)last[bl]=Math.max(last[bl],wn);
   }
   for(let wn=fromWn;wn<=toWn;wn++){
     const mon=getMon(wn);
@@ -80,18 +80,18 @@ function autoBJRotate(){
     if(!getBJ(friDs,'BJFS')){
       const bjloDoc=getBJ(satDs,'BJLO');
       const elig=doctors.filter(d=>(d.bj||[]).includes('BJFS')&&d.id!==bjloDoc);
-      const pool=elig.filter(d=>(wn-last[d.id].BJFS)>=MIN_GAP);
+      const pool=elig.filter(d=>(wn-last[d.id])>=MIN_GAP);
       const final=pool.length?pool:elig;
-      final.sort((a,b)=>cnt[a.id].BJFS-cnt[b.id].BJFS||last[a.id].BJFS-last[b.id].BJFS);
-      if(final.length){setBJ(friDs,'BJFS',final[0].id);last[final[0].id].BJFS=wn;cnt[final[0].id].BJFS++;}
+      final.sort((a,b)=>cnt[a.id].BJFS-cnt[b.id].BJFS||last[a.id]-last[b.id]);
+      if(final.length){setBJ(friDs,'BJFS',final[0].id);last[final[0].id]=wn;cnt[final[0].id].BJFS++;}
     }
     if(!getBJ(satDs,'BJLO')){
       const bjfsDoc=getBJ(friDs,'BJFS');
       const elig=doctors.filter(d=>(d.bj||[]).includes('BJLO')&&d.id!==bjfsDoc);
-      const pool=elig.filter(d=>(wn-last[d.id].BJLO)>=MIN_GAP);
+      const pool=elig.filter(d=>(wn-last[d.id])>=MIN_GAP);
       const final=pool.length?pool:elig;
-      final.sort((a,b)=>cnt[a.id].BJLO-cnt[b.id].BJLO||last[a.id].BJLO-last[b.id].BJLO);
-      if(final.length){setBJ(satDs,'BJLO',final[0].id);last[final[0].id].BJLO=wn;cnt[final[0].id].BJLO++;}
+      final.sort((a,b)=>cnt[a.id].BJLO-cnt[b.id].BJLO||last[a.id]-last[b.id]);
+      if(final.length){setBJ(satDs,'BJLO',final[0].id);last[final[0].id]=wn;cnt[final[0].id].BJLO++;}
     }
   }
   renderBJRotationTable();render();showToast(`BJ-rotation satt v.${fromWn}–${toWn}`);

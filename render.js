@@ -52,6 +52,9 @@ function renderWarnings(){
   days.forEach(d=>{const dow=d.getDay();if(dow<1||dow>4)return;const ds=isoDate(d);if(!getBJ(ds,'BJNV'))warns.push(`${svDay(d)} ${d.getDate()}: nattbakjour (BJNV) ej tillsatt`);});
   // BJNV: max 1 per vecka och inte i anslutning till helgbakjour
   days.forEach(d=>{const dow=d.getDay();if(dow<1||dow>4)return;const ds=isoDate(d);const docId=getBJ(ds,'BJNV');if(!docId)return;const doc=docById(docId);const c=bjnvConflict(docId,ds);if(c)warns.push(`${doc?.name.split(' ')[0]||docId}: BJNV ${svDay(d)} ${d.getDate()} — ${c}`);});
+  // BJFS/BJLO: minst 2 jourfria helger mellan helgbakjourer
+  {const mon=getMonday(currentDate);const friDs=isoDate(addDays(mon,4)),satDs=isoDate(addDays(mon,5));
+  [['BJFS',friDs],['BJLO',satDs]].forEach(([type,ds])=>{const docId=getBJ(ds,type);if(!docId)return;const c=weekendBJConflict(docId,ds);if(c){const doc=docById(docId);warns.push(`${doc?.name.split(' ')[0]||docId}: ${type} — ${c}`);}});}
   // Night shift > 4/month warning
   const yr2=mon.getFullYear(),mo=mon.getMonth();
   doctors.forEach(doc=>{const cnt=countNightShiftsInMonth(doc.id,yr2,mo);if(cnt>4)warns.push(`${doc.name.split(' ')[0]}: ${cnt} journätter denna månad (max 4)`);});
