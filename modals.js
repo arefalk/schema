@@ -339,10 +339,11 @@ function addPosition(){
   const slotsN=parseInt(document.getElementById('newPosSlots').value)||1;
   const roleReq=document.getElementById('newPosRole').value;
   const days=[...document.querySelectorAll('#newPosDays input:checked')].map(cb=>parseInt(cb.value));
+  const section=document.getElementById('newPosSection').value||undefined;
   const reqs=[];
   const posId='pos_'+Date.now(),colorIdx=positions.length%POS_COLORS.length;
-  positions.push({id:posId,name,colorIdx,days,slots:Array.from({length:slotsN},(_,i)=>({slotId:`s_${posId}_${i}`,roleReq,requiredComps:reqs}))});
-  document.getElementById('newPosName').value='';document.getElementById('newPosSlots').value='1';document.getElementById('newPosRole').value='';
+  positions.push({id:posId,name,colorIdx,days,section,slots:Array.from({length:slotsN},(_,i)=>({slotId:`s_${posId}_${i}`,roleReq,requiredComps:reqs}))});
+  document.getElementById('newPosName').value='';document.getElementById('newPosSlots').value='1';document.getElementById('newPosRole').value='';document.getElementById('newPosSection').value='';
   document.querySelectorAll('#newPosDays input').forEach(cb=>cb.checked=true);
   renderPositionsList();render();showToast(`"${name}" tillagd`);
 }

@@ -81,7 +81,12 @@ function renderWeek(){
   html+=`</tr></thead><tbody>`;
 
   const isDJPos=p=>/dagjour|bakjour/i.test(p.name)||p.id==='pos_dj'||p.id==='pos_dbj';
-  positions.filter(p=>!isDJPos(p)).forEach(pos=>{
+  const isMottPos=p=>p.section==='mott'||p.id==='pos_mott'||/mottagning/i.test(p.name);
+  const posSortPriority=p=>/neonatal/i.test(p.name)?0:/avdelning/i.test(p.name)?1:5;
+  const normalPos=positions.filter(p=>!isDJPos(p)&&!isMottPos(p)).sort((a,b)=>posSortPriority(a)-posSortPriority(b));
+  const mottPos=positions.filter(p=>!isDJPos(p)&&isMottPos(p));
+
+  function renderPosRow(pos){
     const[bg,fg]=posColor(pos.colorIdx);
     const s0=pos.slots[0];
     const roleLabel=s0.roleReq?`<span class="req-tag" style="background:${s0.roleReq==='ÖL'?'var(--ol-bg)':'var(--ul-bg)'};color:${s0.roleReq==='ÖL'?'var(--ol)':'var(--ul)'}">${s0.roleReq}</span>`:'';
@@ -107,7 +112,9 @@ function renderWeek(){
       html+=`</div></td>`;
     });
     html+=`</tr>`;
-  });
+  }
+
+  normalPos.forEach(renderPosRow);
 
   const djPos=positions.filter(isDJPos);
   if(djPos.length){
@@ -125,6 +132,11 @@ function renderWeek(){
       });
       html+=`</tr>`;
     });
+  }
+
+  if(mottPos.length){
+    html+=`<tr class="section-hdr"><td colspan="${cols}">Mottagning</td></tr>`;
+    mottPos.forEach(renderPosRow);
   }
 
   html+=`<tr class="section-hdr"><td colspan="${cols}">Primärjour</td></tr>`;
