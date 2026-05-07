@@ -125,5 +125,5 @@ function openRotationModal(){
   const tEl=document.getElementById('rotTo');
   if(!fEl.value) fEl.value=fromWn;
   if(!tEl.value) tEl.value=toWn;
-  renderRotationTable();renderBJRotationTable();openModal('rotationModal');
+  renderRotationTable();renderBJRotationTable();renderBJNVRotationTable();openModal('rotationModal');
 }

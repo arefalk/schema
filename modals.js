@@ -58,6 +58,65 @@ function setBJFromTable(type,wn,yr,docId){
   const anchorDs=isoDate(addDays(wkMon,type==='BJFS'?4:5));
   setBJ(anchorDs,type,docId||null);renderBJRotationTable();render();
 }
+function renderBJNVRotationTable(){
+  const mon=getMonday(currentDate),curWn=weekNum(mon),curYr=weekYear(mon);
+  const rows=[];for(let d=-2;d<=10;d++){const dt=addDays(mon,d*7);rows.push({wn:weekNum(dt),yr:weekYear(dt),dt});}
+  const bjnvDocs=doctors.filter(d=>(d.bj||[]).includes('BJNV'));
+  function mkBJNVSel(ds,docs){
+    const cur=getBJ(ds,'BJNV');
+    const allDocs=[...docs];
+    if(cur&&!allDocs.find(d=>d.id===cur)){const doc=docById(cur);if(doc)allDocs.push(doc);}
+    return`<select onchange="setBJNVFromTable('${ds}',this.value)" style="width:100%;font-size:11px;padding:2px 4px;background:${cur?'var(--bjnv-light)':'var(--bg)'};color:${cur?'var(--bjnv)':'var(--text2)'};border:1px solid ${cur?'var(--bjnv)':'var(--border)'};border-radius:5px"><option value="">—</option>${allDocs.map(d=>{const c=bjnvConflict(d.id,ds)&&cur!==d.id;return`<option value="${d.id}"${cur===d.id?' selected':''}${c?' disabled':''}>${c?'⚠ ':''}${d.name.split(' ')[0]} ${d.name.split(' ').slice(-1)[0]}</option>`;}).join('')}</select>`;
+  }
+  let html=`<thead><tr><th>Vecka</th><th>Mån</th><th>Tis</th><th>Ons</th><th>Tor</th></tr></thead><tbody>`;
+  rows.forEach(({wn,yr,dt})=>{
+    const isCur=wn===curWn&&yr===curYr;
+    const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);
+    const wkMon=addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);
+    html+=`<tr style="${isCur?'background:var(--accent-light)':''}">
+      <td><strong style="font-family:'DM Mono',monospace;font-size:12px">v.${wn}</strong><span style="font-size:10px;color:var(--text3);margin-left:5px">${dt.getDate()} ${svMonth(dt)}</span>${isCur?'<span style="font-size:9px;font-weight:700;color:var(--accent);margin-left:5px">↑</span>':''}</td>
+      ${[0,1,2,3].map(i=>`<td>${mkBJNVSel(isoDate(addDays(wkMon,i)),bjnvDocs)}</td>`).join('')}
+    </tr>`;
+  });
+  document.getElementById('bjNVRotTable').innerHTML=html+`</tbody>`;
+}
+function setBJNVFromTable(ds,docId){setBJ(ds,'BJNV',docId||null);renderBJNVRotationTable();render();}
+function autoBJNVRotate(){
+  const {fromWn:pFrom,toWn:pTo,yr:pYr}=periodForRotation();
+  const yr=pYr;
+  const fromWn=parseInt(document.getElementById('rotFrom').value)||pFrom;
+  const toWn=parseInt(document.getElementById('rotTo').value)||pTo;
+  function getMon(wn){const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);return addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);}
+  const elig=doctors.filter(d=>(d.bj||[]).includes('BJNV'));
+  const cnt={};const lastWk={};
+  elig.forEach(d=>{cnt[d.id]=0;lastWk[d.id]=-99;});
+  for(let wn=fromWn;wn<=toWn;wn++){
+    const mon=getMon(wn);
+    for(let i=0;i<4;i++){
+      const ds=isoDate(addDays(mon,i));
+      if(getBJ(ds,'BJNV'))continue;
+      // bjnvConflict checks both max-1/week and adjacent weekend BJ
+      const pool=elig.filter(d=>!bjnvConflict(d.id,ds));
+      if(!pool.length)continue;
+      pool.sort((a,b)=>cnt[a.id]-cnt[b.id]||lastWk[a.id]-lastWk[b.id]);
+      const chosen=pool[0];
+      setBJ(ds,'BJNV',chosen.id);cnt[chosen.id]++;lastWk[chosen.id]=wn;
+    }
+  }
+  renderBJNVRotationTable();render();showToast(`BJNV-rotation satt v.${fromWn}–${toWn}`);
+}
+function clearBJNVRotation(){
+  const {fromWn:pFrom,toWn:pTo,yr:pYr}=periodForRotation();
+  const yr=pYr;
+  const fromWn=parseInt(document.getElementById('rotFrom').value)||pFrom;
+  const toWn=parseInt(document.getElementById('rotTo').value)||pTo;
+  function getMon(wn){const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);return addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);}
+  for(let wn=fromWn;wn<=toWn;wn++){
+    const mon=getMon(wn);
+    for(let i=0;i<4;i++)setBJ(isoDate(addDays(mon,i)),'BJNV',null);
+  }
+  renderBJNVRotationTable();render();showToast('BJNV-rotation rensad');
+}
 function autoBJRotate(){
   const {fromWn:pFrom,toWn:pTo,yr:pYr}=periodForRotation();
   const yr=pYr;
