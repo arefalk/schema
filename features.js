@@ -53,7 +53,7 @@ function openAddSpecialModal(ds,type){
     // Populate ST doctors
     docSel.innerHTML=doctors.filter(d=>docIsUL(d)).map(d=>`<option value="${d.id}">${d.name} (ST)</option>`).join('');
     const supSel=document.getElementById('addSpecialSupervisor');
-    supSel.innerHTML=doctors.filter(d=>docIsOL(d)).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+    supSel.innerHTML=doctors.filter(d=>docIsHandledare(d)).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
     // Pre-fill from handledning pairs
     docSel.onchange=()=>{
       const pair=handledningPairs.find(p=>p.stId===docSel.value);
@@ -298,7 +298,7 @@ function openHandledningModal(){
   const stSel=document.getElementById('newHandlST');
   const supSel=document.getElementById('newHandlSup');
   stSel.innerHTML=doctors.filter(d=>docIsUL(d)).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
-  supSel.innerHTML=doctors.filter(d=>docIsOL(d)).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+  supSel.innerHTML=doctors.filter(d=>docIsHandledare(d)).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
   openModal('handledningModal');
 }
 function renderHandledningPairs(){
