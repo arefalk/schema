@@ -12,7 +12,9 @@ function renderSidebar(){
   const mon=getMonday(currentDate),wn=weekNum(mon),yr=weekYear(mon),jv=getJV(wn,yr);
   const days=weekDays(mon,5),list=document.getElementById('doctorsList');
   list.innerHTML='';
-  doctors.forEach(doc=>{
+  const ROLE_SORT={'ÖL':0,'BÖL':0,'Spec':1,'Konsult':2,'ST':3,'AT':3,'Rand':4};
+  const sortedDocs=[...doctors].sort((a,b)=>(ROLE_SORT[a.roles[0]]??5)-(ROLE_SORT[b.roles[0]]??5));
+  sortedDocs.forEach(doc=>{
     const passes=days.filter(d=>docIsAssignedOnDate(doc.id,isoDate(d))).length;
     const jvBadge=jv.JV1===doc.id?`<span class="tag" style="background:var(--jv1-light);color:var(--jv1)">JV1</span>`:jv.JV2===doc.id?`<span class="tag" style="background:var(--jv2-light);color:var(--jv2)">JV2</span>`:jv.NLO===doc.id?`<span class="tag" style="background:var(--nlo-light);color:var(--nlo)">NLÖ</span>`:'';
     const roleCls=docIsOL(doc)?'tag-ol':docIsUL(doc)?'tag-ul':'';

@@ -1,5 +1,5 @@
 function docIsOL(d){return['ÖL','BÖL','Konsult'].some(r=>d.roles.includes(r));}
-function docIsUL(d){return['ST','AT'].some(r=>d.roles.includes(r));}
+function docIsUL(d){return['ST','AT','Rand'].some(r=>d.roles.includes(r));}
 function docMatchRole(doc,req){if(!req)return true;if(req==='ÖL')return docIsOL(doc);if(req==='UL')return docIsUL(doc);return true;}
 function docAllowedOnPos(doc,pos){const a=doc.allowedPositions||[];return a.length===0||a.includes(pos.id);}
 

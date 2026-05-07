@@ -22,7 +22,7 @@ const JV_DEFS = {
   ],
 };
 
-let roleTags=['ÖL','BÖL','Spec','ST','AT','Konsult'];
+let roleTags=['ÖL','BÖL','Spec','ST','AT','Konsult','Rand'];
 // compTags removed — replaced by allowedPositions per doctor
 let positions=[
   {id:'pos_mott',   name:'Mottagning',   colorIdx:0, slots:[
