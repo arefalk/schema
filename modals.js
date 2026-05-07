@@ -63,7 +63,8 @@ function autoBJRotate(){
   const yr=pYr;
   const fromWn=parseInt(document.getElementById('rotFrom').value)||pFrom;
   const toWn=parseInt(document.getElementById('rotTo').value)||pTo;
-  const MIN_GAP=3; // 2 jourfria helger = 3 veckors mellanrum
+  const MIN_GAP=3; // minst 3 veckors mellanrum (2 jourfria helger) — hård regel
+  const PREF_GAP=4; // helst 4 veckors mellanrum (3 jourfria helger) — mjuk preferens
   function getMon(wn){const jan4=new Date(Date.UTC(yr,0,4));const jan4Mon=getMonday(jan4);return addDays(jan4Mon,(wn-weekNum(jan4Mon))*7);}
   const last={};const cnt={};
   doctors.forEach(d=>{last[d.id]=-99;cnt[d.id]={BJFS:0,BJLO:0};});
@@ -80,16 +81,18 @@ function autoBJRotate(){
     if(!getBJ(friDs,'BJFS')){
       const bjloDoc=getBJ(satDs,'BJLO');
       const elig=doctors.filter(d=>(d.bj||[]).includes('BJFS')&&d.id!==bjloDoc);
-      const pool=elig.filter(d=>(wn-last[d.id])>=MIN_GAP);
-      const final=pool.length?pool:elig;
+      const prefPool=elig.filter(d=>(wn-last[d.id])>=PREF_GAP);
+      const minPool=elig.filter(d=>(wn-last[d.id])>=MIN_GAP);
+      const final=prefPool.length?prefPool:minPool.length?minPool:elig;
       final.sort((a,b)=>cnt[a.id].BJFS-cnt[b.id].BJFS||last[a.id]-last[b.id]);
       if(final.length){setBJ(friDs,'BJFS',final[0].id);last[final[0].id]=wn;cnt[final[0].id].BJFS++;}
     }
     if(!getBJ(satDs,'BJLO')){
       const bjfsDoc=getBJ(friDs,'BJFS');
       const elig=doctors.filter(d=>(d.bj||[]).includes('BJLO')&&d.id!==bjfsDoc);
-      const pool=elig.filter(d=>(wn-last[d.id])>=MIN_GAP);
-      const final=pool.length?pool:elig;
+      const prefPool=elig.filter(d=>(wn-last[d.id])>=PREF_GAP);
+      const minPool=elig.filter(d=>(wn-last[d.id])>=MIN_GAP);
+      const final=prefPool.length?prefPool:minPool.length?minPool:elig;
       final.sort((a,b)=>cnt[a.id].BJLO-cnt[b.id].BJLO||last[a.id]-last[b.id]);
       if(final.length){setBJ(satDs,'BJLO',final[0].id);last[final[0].id]=wn;cnt[final[0].id].BJLO++;}
     }

@@ -116,17 +116,32 @@ function docHasWeekendBJNear(docId,ds){
   return getBJ(thisFri,'BJFS')===docId||getBJ(thisSat,'BJLO')===docId||
          getBJ(prevFri,'BJFS')===docId||getBJ(prevSat,'BJLO')===docId;
 }
-// Returns a conflict string if doctor has any weekend BJ within 2 weeks of anchorDs, or null
+// Returns a conflict string if doctor has any weekend BJ within MIN_GAP-1 weeks of anchorDs, or null
+// Hard minimum: 3 veckor (2 jourfria helger). Preferred: 4 veckor (3 jourfria helger).
 function weekendBJConflict(docId,anchorDs){
+  const mon=getMonday(new Date(anchorDs));
+  for(let offset=-3;offset<=3;offset++){
+    if(offset===0)continue;
+    const cm=addDays(mon,offset*7);
+    const friDs=isoDate(addDays(cm,4)),satDs=isoDate(addDays(cm,5));
+    if(getBJ(friDs,'BJFS')===docId||getBJ(satDs,'BJLO')===docId){
+      const gap=Math.abs(offset);
+      const label=gap<=2?'kräver minst 3 jourfria helger':'nära gränsen (helst 4 jourfria helger)';
+      return`Bakjourhelg v.${weekNum(cm)} — ${label}`;
+    }
+  }
+  return null;
+}
+// Hard check only — returns true if gap is strictly too short (< 3 weeks)
+function weekendBJTooClose(docId,anchorDs){
   const mon=getMonday(new Date(anchorDs));
   for(let offset=-2;offset<=2;offset++){
     if(offset===0)continue;
     const cm=addDays(mon,offset*7);
     const friDs=isoDate(addDays(cm,4)),satDs=isoDate(addDays(cm,5));
-    if(getBJ(friDs,'BJFS')===docId||getBJ(satDs,'BJLO')===docId)
-      return`Bakjourhelg v.${weekNum(cm)} — kräver 2 jourfria helger`;
+    if(getBJ(friDs,'BJFS')===docId||getBJ(satDs,'BJLO')===docId)return true;
   }
-  return null;
+  return false;
 }
 
 // Returns a conflict string for BJNV, or null if ok

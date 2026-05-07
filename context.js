@@ -101,12 +101,13 @@ function openBJCtx(e,bjType,anchorDs){
     if(doc._sep){list.insertAdjacentHTML('beforeend','<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:3px 7px 1px;opacity:.5">Övriga</div>');return;}
     const isOther=others.includes(doc);
     const conflict=bjType==='BJNV'?bjnvConflict(doc.id,anchorDs):weekendBJConflict(doc.id,anchorDs);
+    const hardBlock=bjType==='BJNV'?!!conflict:weekendBJTooClose(doc.id,anchorDs);
     const btn=document.createElement('button');
-    btn.className='ctx-doc-btn'+(cur===doc.id?' selected':'')+(isOther||conflict?' incompatible':'');
+    btn.className='ctx-doc-btn'+(cur===doc.id?' selected':'')+(isOther||hardBlock?' incompatible':conflict?' incompatible':'');
     btn.title=conflict||'';
     const rc=docIsOL(doc)?'ol':docIsUL(doc)?'ul':'';
-    btn.innerHTML=`<div class="ctx-dav" style="background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div><span style="flex:1">${doc.name.split(' ')[0]} ${doc.name.split(' ').slice(-1)[0]}</span><span class="sbadge ${rc}">${doc.roles[0]||''}</span>${conflict?`<span style="font-size:9px;color:var(--red)">${conflict}</span>`:''}`;
-    btn.onclick=()=>{if(conflict){showToast(`⚠ ${doc.name.split(' ')[0]}: ${conflict}`);return;}setBJ(anchorDs,bjType,doc.id);closeAllCtx();render();};
+    btn.innerHTML=`<div class="ctx-dav" style="background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div><span style="flex:1">${doc.name.split(' ')[0]} ${doc.name.split(' ').slice(-1)[0]}</span><span class="sbadge ${rc}">${doc.roles[0]||''}</span>${conflict?`<span style="font-size:9px;color:${hardBlock?'var(--red)':'var(--text2)'}">${conflict}</span>`:''}`;
+    btn.onclick=()=>{if(hardBlock){showToast(`⚠ ${doc.name.split(' ')[0]}: ${conflict}`);return;}setBJ(anchorDs,bjType,doc.id);closeAllCtx();render();};
     list.appendChild(btn);
   });
   positionCtx('ctxBJ',e);
