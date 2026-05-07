@@ -93,8 +93,15 @@ function openBJCtx(e,bjType,anchorDs){
   document.getElementById('ctxBJHead').innerHTML=`<span style="color:${colors[bjType]}">${labels[bjType]}</span>`;
   const list=document.getElementById('ctxBJList');list.innerHTML='';
   const cur=getBJ(anchorDs,bjType);
-  doctors.forEach(doc=>{
-    const btn=document.createElement('button');btn.className='ctx-doc-btn'+(cur===doc.id?' selected':'');
+  const anyHasBJ=doctors.some(d=>(d.bj||[]).includes(bjType));
+  const eligible=anyHasBJ?doctors.filter(d=>(d.bj||[]).includes(bjType)):doctors;
+  const others=anyHasBJ?doctors.filter(d=>!(d.bj||[]).includes(bjType)):[];
+  if(anyHasBJ)list.insertAdjacentHTML('beforeend',`<div style="font-size:9px;font-weight:700;color:${colors[bjType]};text-transform:uppercase;letter-spacing:.06em;padding:3px 7px 1px">Bakjourläkare</div>`);
+  [...eligible,...(others.length?[{_sep:true}]:[]),...others].forEach(doc=>{
+    if(doc._sep){list.insertAdjacentHTML('beforeend','<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:3px 7px 1px;opacity:.5">Övriga</div>');return;}
+    const isOther=others.includes(doc);
+    const btn=document.createElement('button');
+    btn.className='ctx-doc-btn'+(cur===doc.id?' selected':'')+(isOther?' incompatible':'');
     const rc=docIsOL(doc)?'ol':docIsUL(doc)?'ul':'';
     btn.innerHTML=`<div class="ctx-dav" style="background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div><span style="flex:1">${doc.name.split(' ')[0]} ${doc.name.split(' ').slice(-1)[0]}</span><span class="sbadge ${rc}">${doc.roles[0]||''}</span>`;
     btn.onclick=()=>{setBJ(anchorDs,bjType,doc.id);closeAllCtx();render();};

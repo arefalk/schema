@@ -179,7 +179,8 @@ function openAddDoctorModal(){
 function confirmAddDoctor(){
   const name=document.getElementById('addDocName').value.trim();if(!name)return;
   const jv=[];if(document.getElementById('addJV1').checked)jv.push('JV1');if(document.getElementById('addJV2').checked)jv.push('JV2');if(document.getElementById('addNLO').checked)jv.push('NLO');
-  const allowed=getPrefChecked('addAllowedGrid');const pref=getPrefChecked('addPrefGrid');const prefJV=[...document.querySelectorAll('input[name="addPrefJV"]')].find(r=>r.checked)?.value||'';doctors.push({id:'doc_'+Date.now(),name,roles:getChecked('addRoleGrid',roleTags),allowedPositions:allowed,prefPositions:pref,prefJV,jv,color:AVATAR_COLORS[doctors.length%AVATAR_COLORS.length]});
+  const bj=[];if(document.getElementById('addBJFS').checked)bj.push('BJFS');if(document.getElementById('addBJLO').checked)bj.push('BJLO');if(document.getElementById('addBJNV').checked)bj.push('BJNV');
+  const allowed=getPrefChecked('addAllowedGrid');const pref=getPrefChecked('addPrefGrid');const prefJV=[...document.querySelectorAll('input[name="addPrefJV"]')].find(r=>r.checked)?.value||'';doctors.push({id:'doc_'+Date.now(),name,roles:getChecked('addRoleGrid',roleTags),allowedPositions:allowed,prefPositions:pref,prefJV,jv,bj,color:AVATAR_COLORS[doctors.length%AVATAR_COLORS.length]});
   closeModal('addDoctorModal');render();showToast(`${name} tillagd`);
 }
 function openEditDoctorModal(docId){
@@ -189,6 +190,9 @@ function openEditDoctorModal(docId){
   document.getElementById('editJV1').checked=(doc.jv||[]).includes('JV1');
   document.getElementById('editJV2').checked=(doc.jv||[]).includes('JV2');
   document.getElementById('editNLO').checked=(doc.jv||[]).includes('NLO');
+  document.getElementById('editBJFS').checked=(doc.bj||[]).includes('BJFS');
+  document.getElementById('editBJLO').checked=(doc.bj||[]).includes('BJLO');
+  document.getElementById('editBJNV').checked=(doc.bj||[]).includes('BJNV');
   openModal('editDoctorModal');
 }
 function confirmEditDoctor(){
@@ -196,6 +200,7 @@ function confirmEditDoctor(){
   doc.name=document.getElementById('editDocName').value.trim()||doc.name;
   const allowed=getPrefChecked('editAllowedGrid');const pref=getPrefChecked('editPrefGrid');doc.roles=getChecked('editRoleGrid',roleTags);doc.allowedPositions=allowed;doc.prefPositions=pref;doc.prefJV=[...document.querySelectorAll('input[name="editPrefJV"]')].find(r=>r.checked)?.value||'';
   const jv=[];if(document.getElementById('editJV1').checked)jv.push('JV1');if(document.getElementById('editJV2').checked)jv.push('JV2');if(document.getElementById('editNLO').checked)jv.push('NLO');doc.jv=jv;
+  const bj=[];if(document.getElementById('editBJFS').checked)bj.push('BJFS');if(document.getElementById('editBJLO').checked)bj.push('BJLO');if(document.getElementById('editBJNV').checked)bj.push('BJNV');doc.bj=bj;
   closeModal('editDoctorModal');render();showToast('Läkare uppdaterad');
 }
 function promptDeleteFromEdit(){const id=document.getElementById('editDocId').value;closeModal('editDoctorModal');promptDelete(id);}
