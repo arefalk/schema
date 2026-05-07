@@ -106,7 +106,7 @@ function openBJCtx(e,bjType,anchorDs){
     btn.title=conflict||'';
     const rc=docIsOL(doc)?'ol':docIsUL(doc)?'ul':'';
     btn.innerHTML=`<div class="ctx-dav" style="background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div><span style="flex:1">${doc.name.split(' ')[0]} ${doc.name.split(' ').slice(-1)[0]}</span><span class="sbadge ${rc}">${doc.roles[0]||''}</span>${conflict?`<span style="font-size:9px;color:var(--red)">${conflict}</span>`:''}`;
-    btn.onclick=()=>{setBJ(anchorDs,bjType,doc.id);closeAllCtx();render();};
+    btn.onclick=()=>{if(conflict){showToast(`⚠ ${doc.name.split(' ')[0]}: ${conflict}`);return;}setBJ(anchorDs,bjType,doc.id);closeAllCtx();render();};
     list.appendChild(btn);
   });
   positionCtx('ctxBJ',e);
