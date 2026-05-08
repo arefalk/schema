@@ -431,7 +431,7 @@ function runAutoDistribute(){
   _scheduleSnapshot=JSON.stringify(schedule);
   // Collect all weeks to fill — period or just current week
   const allWeeks=periodWeeks()||[{mon:getMonday(currentDate),wn:weekNum(getMonday(currentDate)),yr:weekYear(getMonday(currentDate))}];
-  const pc={};doctors.forEach(d=>{pc[d.id]=0;});
+  const pc={};const posCnt={};doctors.forEach(d=>{pc[d.id]=0;});
 
   if(document.getElementById('autoChkDag').checked){
     const dagPositions=positions.filter(p=>p.id!=='pos_dj'&&p.id!=='pos_dbj');
@@ -439,11 +439,19 @@ function runAutoDistribute(){
     // then fill multi-slot positions (Mottagning) with whoever remains
     const sorted=[...dagPositions.filter(p=>p.slots.length===1),...dagPositions.filter(p=>p.slots.length>1)];
     sorted.forEach(pos=>{
+      if(!posCnt[pos.id]){posCnt[pos.id]={};doctors.forEach(d=>{posCnt[pos.id][d.id]=0;});}
       const weekConsistent=pos.slots.length===1;
       const posDays=pos.days&&pos.days.length?pos.days:[1,2,3,4,5];
+      // Sort: preferred doctors first; among preferred balance by per-position count; then by total count
+      const prefSort=(a,b)=>{
+        const aP=(a.prefPositions||[]).includes(pos.id),bP=(b.prefPositions||[]).includes(pos.id);
+        if(aP&&!bP)return -1;if(bP&&!aP)return 1;
+        if(aP&&bP)return posCnt[pos.id][a.id]-posCnt[pos.id][b.id]||pc[a.id]-pc[b.id];
+        return pc[a.id]-pc[b.id];
+      };
+      const assign=(slotId,ds,docId)=>{setSlot(slotId,ds,docId);pc[docId]++;posCnt[pos.id][docId]++;};
       pos.slots.forEach(slot=>{
         allWeeks.forEach(({mon,wn,yr})=>{
-          const prefSort=(a,b)=>{const aP=(a.prefPositions||[]).includes(pos.id),bP=(b.prefPositions||[]).includes(pos.id);return(aP&&!bP)?-1:(bP&&!aP)?1:pc[a.id]-pc[b.id];};
           if(weekConsistent){
             const unfilledDays=weekDays(mon,5).filter(d=>posDays.includes(d.getDay())&&!getSlot(slot.slotId,isoDate(d)));
             if(!unfilledDays.length)return;
@@ -453,13 +461,13 @@ function runAutoDistribute(){
                 unfilledDays.every(d=>{const ds=isoDate(d);return docCanFillSlot(doc,slot,ds)&&!docIsAssignedOnDate(doc.id,ds);}))
               .sort(prefSort);
             if(fullWeekCands.length){
-              unfilledDays.forEach(d=>{setSlot(slot.slotId,isoDate(d),fullWeekCands[0].id);pc[fullWeekCands[0].id]++;});
+              unfilledDays.forEach(d=>{assign(slot.slotId,isoDate(d),fullWeekCands[0].id);});
             } else {
               // Fallback: fill day by day if no one is free all active days
               unfilledDays.forEach(d=>{
                 const ds=isoDate(d);
                 const cands=doctors.filter(doc=>docCanFillSlot(doc,slot,ds)&&!docIsAssignedOnDate(doc.id,ds)&&!docHasJVThisWeek(doc.id,wn,yr)).sort(prefSort);
-                if(cands.length){setSlot(slot.slotId,ds,cands[0].id);pc[cands[0].id]++;}
+                if(cands.length)assign(slot.slotId,ds,cands[0].id);
               });
             }
           } else {
@@ -467,7 +475,7 @@ function runAutoDistribute(){
               if(!posDays.includes(d.getDay()))return;
               const ds=isoDate(d);if(getSlot(slot.slotId,ds))return;
               const cands=doctors.filter(doc=>docCanFillSlot(doc,slot,ds)&&!docIsAssignedOnDate(doc.id,ds)&&!docHasJVThisWeek(doc.id,wn,yr)).sort(prefSort);
-              if(cands.length){setSlot(slot.slotId,ds,cands[0].id);pc[cands[0].id]++;}
+              if(cands.length)assign(slot.slotId,ds,cands[0].id);
             });
           }
         });
