@@ -37,7 +37,11 @@ function initDragNav(){
     if(Math.abs(dx)>80)navigate(dx<0?1:-1);
   });
 }
-function render(){renderSidebar();renderStats();renderWarnings();renderWeek();autoSave();}
+function updateStickyOffsets(){
+  const wh=document.querySelector('.week-header');
+  if(wh)document.documentElement.style.setProperty('--sched-th-top',wh.getBoundingClientRect().height+'px');
+}
+function render(){renderSidebar();renderStats();renderWarnings();renderWeek();autoSave();requestAnimationFrame(updateStickyOffsets);}
 
 function renderSidebar(){
   document.getElementById('docCount').textContent=doctors.length;
