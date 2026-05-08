@@ -67,11 +67,19 @@ function docIsJourledigt(docId,ds){
   return false;
 }
 
+function docAssignedElsewhere(docId,ds,excludeSlotId){
+  if(!schedule[ds])return null;
+  for(const[sid,did]of Object.entries(schedule[ds])){
+    if(did===docId&&sid!==excludeSlotId){const p=posOfSlot(sid);return p?p.name:'Annan position';}
+  }
+  return null;
+}
 function docCanFillSlot(doc,slot,ds){
   const pos=posOfSlot(slot.slotId);
   if(pos&&!docAllowedOnPos(doc,pos))return false;
   if(!docMatchRole(doc,slot.roleReq))return false;
   if(ds&&docRestrictedOnDate(doc.id,ds))return false;
+  if(ds&&docAssignedElsewhere(doc.id,ds,slot.slotId))return false;
   return true;
 }
 function missingReqs(doc,slot,ds){
@@ -81,6 +89,7 @@ function missingReqs(doc,slot,ds){
   if(slot.roleReq==='ÖL'&&!docIsOL(doc))m.push('ÖL');
   if(slot.roleReq==='UL'&&!docIsUL(doc))m.push('UL');
   if(ds){const r=docRestrictedOnDate(doc.id,ds);if(r)m.push(r);}
+  if(ds){const r=docAssignedElsewhere(doc.id,ds,slot.slotId);if(r)m.push(`Redan på ${r}`);}
   return m;
 }
 function getMonday(d){const dt=new Date(d),day=dt.getDay(),diff=day===0?-6:1-day;dt.setDate(dt.getDate()+diff);dt.setHours(0,0,0,0);return dt;}
