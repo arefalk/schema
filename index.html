@@ -21,6 +21,8 @@
     <button class="btn-action" onclick="openUtbildningModal()">📚 Utbildning</button>
     <button class="btn-action" onclick="openForaldraledModal()">👶 Föräldraledighet</button>
     <button class="btn-action" onclick="openHandledningModal()">🎓 Handledning</button>
+    <button class="btn-action" onclick="openImportOnskadeModal()">📥 Importera önskemål</button>
+    <button class="btn-action" onclick="openReviewModal()">📋 Granska önskemål</button>
     <button class="btn-action" onclick="openRotationModal()">🔄 Jourveckor</button>
     <button class="btn-action" onclick="openModal('autoModal')">⚡ Auto-fördela</button>
     <button class="btn-action" onclick="saveData()" title="Spara allt som JSON-fil">💾 Spara</button>
@@ -445,6 +447,35 @@
   </div>
 </div>
 
+<!-- Import önskemål -->
+<div class="modal-overlay" id="importOnskadeModal">
+  <div class="modal" style="min-width:580px">
+    <h3>Importera önskemål</h3>
+    <p class="modal-sub">Excel-filen ska ha kolumnerna: <strong>Läkare</strong>, <strong>Startdatum</strong>, Slutdatum (valfritt), <strong>Typ</strong> (Ledighet / Utbildning), Notering (valfritt).</p>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <input type="file" id="importExcelInput" accept=".xlsx,.xls" style="flex:1;font-size:12px">
+      <button class="btn sm primary" onclick="parseImportFile()">Läs fil</button>
+    </div>
+    <div id="importPreview"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('importOnskadeModal')">Avbryt</button>
+      <button class="btn primary" id="importConfirmBtn" onclick="confirmImport()" disabled>Importera som önskemål</button>
+    </div>
+  </div>
+</div>
+
+<!-- Granska önskemål -->
+<div class="modal-overlay" id="reviewOnskadeModal">
+  <div class="modal" style="min-width:560px">
+    <h3>Granska önskemål</h3>
+    <p class="modal-sub">Bevilja eller avslå importerade önskemål. Beviljade läggs in som vanlig ledighet/utbildning.</p>
+    <div id="reviewOnskadeBody" style="max-height:480px;overflow-y:auto"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('reviewOnskadeModal');render()">Stäng</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Modules loaded in dependency order -->
@@ -455,6 +486,7 @@
 <script src="modals.js"></script>
 <script src="features.js"></script>
 <script src="storage.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <script src="period.js"></script>
 <script>loadFromLocalStorage();render();initDragNav();</script>
 </body>

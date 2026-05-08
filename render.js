@@ -322,6 +322,30 @@ function renderWeek(){
     html+=`</tr>`;
   }
 
+  // ── ÖNSKEMÅL (importerade, ej beviljade) ──
+  {
+    const hasAny=days.some(d=>doctors.some(doc=>docHasOnskad(doc.id,isoDate(d))));
+    if(hasAny){
+      html+=`<tr class="pos-row"><td class="label-cell" style="cursor:pointer" onclick="openReviewModal()">
+        <div class="pos-name-el" style="color:#b45309">Önskemål</div>
+        <div class="pos-reqs"><span style="font-size:9px;color:var(--text2)">Ej beviljade · klicka för att granska</span></div>
+      </td>`;
+      days.forEach(d=>{
+        const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
+        html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
+        doctors.filter(doc=>docHasOnskad(doc.id,ds)).forEach(doc=>{
+          const isLed=docHasOnskadLedighet(doc.id,ds),isUtb=docHasOnskadUtbildning(doc.id,ds);
+          const note=(ledighetOnskad[doc.id]&&ledighetOnskad[doc.id][ds]&&ledighetOnskad[doc.id][ds].note)||(utbildningOnskad[doc.id]&&utbildningOnskad[doc.id][ds]&&utbildningOnskad[doc.id][ds].note)||'';
+          html+=`<div title="${isUtb?'Utbildning':'Ledighet'}${note?' — '+note:''}" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:#fef3c7;border:1px dashed #d97706;font-size:9px;font-weight:700;color:#b45309;cursor:pointer" onclick="openReviewModal()">
+            <span>${isUtb?'📚':'📅'}</span><span>${doc.name.split(' ')[0]}</span>
+          </div>`;
+        });
+        html+=`</td>`;
+      });
+      html+=`</tr>`;
+    }
+  }
+
   // ── UTBILDNING ──
   {
     html+=`<tr class="pos-row"><td class="label-cell" style="cursor:pointer" onclick="openUtbildningModal()">

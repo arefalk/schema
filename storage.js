@@ -8,7 +8,7 @@ function autoSave() {
       roleTags, positions, doctors, schedule, scheduleHalfDay, jourveckor, bjSchedule,
       ledighetRequests, ledighetVeckor, specialSlots, bvcSchedule,
       handledningPairs, mandatoryPositions: [...mandatoryPositions], schedulePeriod,
-      utbildningDagar, utbildningVeckor
+      utbildningDagar, utbildningVeckor, ledighetOnskad, utbildningOnskad
     };
     localStorage.setItem(LS_KEY, JSON.stringify(data));
   } catch(e) { /* localStorage full eller ej tillgänglig */ }
@@ -36,6 +36,8 @@ function loadFromLocalStorage() {
     if (data.schedulePeriod) schedulePeriod = data.schedulePeriod;
     if (data.utbildningDagar) utbildningDagar = data.utbildningDagar;
     if (data.utbildningVeckor) utbildningVeckor = data.utbildningVeckor;
+    if (data.ledighetOnskad) ledighetOnskad = data.ledighetOnskad;
+    if (data.utbildningOnskad) utbildningOnskad = data.utbildningOnskad;
     return true;
   } catch(e) { return false; }
 }

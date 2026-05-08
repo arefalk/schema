@@ -325,3 +325,177 @@ function addHandledningPair(){
   renderHandledningPairs();showToast('Par tillagt');
 }
 function removeHandledningPair(i){handledningPairs.splice(i,1);renderHandledningPairs();}
+
+// ═══════════════════════════════════════════════
+// EXCEL IMPORT — ÖNSKAD LEDIGHET / UTBILDNING
+// ═══════════════════════════════════════════════
+let _pendingImport=[];
+
+function openImportOnskadeModal(){
+  _pendingImport=[];
+  document.getElementById('importPreview').innerHTML='';
+  document.getElementById('importConfirmBtn').disabled=true;
+  document.getElementById('importExcelInput').value='';
+  openModal('importOnskadeModal');
+}
+
+function parseImportDate(val){
+  if(!val&&val!==0)return null;
+  if(val instanceof Date&&!isNaN(val))return isoDate(val);
+  const s=String(val).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+  const m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+  if(m)return`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  return null;
+}
+
+function matchDoctorName(name){
+  if(!name)return null;
+  const n=String(name).trim().toLowerCase();
+  let doc=doctors.find(d=>d.name.toLowerCase()===n);
+  if(doc)return doc;
+  // first + last word match
+  const parts=n.split(/\s+/);
+  doc=doctors.find(d=>{const dp=d.name.toLowerCase().split(/\s+/);return parts[0]===dp[0]&&parts[parts.length-1]===dp[dp.length-1];});
+  if(doc)return doc;
+  // last name only
+  const last=parts[parts.length-1];
+  const byLast=doctors.filter(d=>d.name.toLowerCase().split(/\s+/).pop()===last);
+  if(byLast.length===1)return byLast[0];
+  return null;
+}
+
+function parseImportFile(){
+  const input=document.getElementById('importExcelInput');
+  if(!input.files.length)return;
+  if(typeof XLSX==='undefined'){showToast('SheetJS kunde inte laddas — kontrollera internetanslutning');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      processImportRows(rows);
+    }catch(err){showToast('Kunde inte läsa filen: '+err.message);}
+  };
+  reader.readAsArrayBuffer(input.files[0]);
+}
+
+function processImportRows(rows){
+  const col=(row,...names)=>{
+    const keys=Object.keys(row);
+    for(const n of names){const k=keys.find(k=>k.trim().toLowerCase()===n.toLowerCase());if(k!==undefined)return row[k];}
+    return'';
+  };
+  _pendingImport=[];
+  const preview=[];
+  rows.forEach((row,i)=>{
+    const docName=String(col(row,'Läkare','Lakare','Namn','Name')||'').trim();
+    const startRaw=col(row,'Startdatum','Datum','Start','Date','Från','Fran');
+    const endRaw=col(row,'Slutdatum','Slut','End','Till');
+    const typRaw=String(col(row,'Typ','Type','Art')||'').trim().toLowerCase();
+    const note=String(col(row,'Notering','Anteckning','Kommentar','Note','Comment')||'').trim();
+    if(!docName&&!startRaw)return;
+    const doc=matchDoctorName(docName);
+    const startDs=parseImportDate(startRaw);
+    const endDs=parseImportDate(endRaw)||startDs;
+    const type=/utb|kurs|kongress|fortb|conf/.test(typRaw)?'utb':'led';
+    const status=!doc?'Läkare ej hittad':!startDs?'Ogiltigt datum':'ok';
+    if(status==='ok'){
+      let d=new Date(startDs);const end=new Date(endDs);
+      while(d<=end){
+        if(d.getDay()>=1&&d.getDay()<=5)_pendingImport.push({docId:doc.id,docName:doc.name,ds:isoDate(d),type,note});
+        d=addDays(d,1);
+      }
+    }
+    preview.push({rowNum:i+2,docName,docMatched:doc?doc.name:null,startDs,endDs,type,note,status});
+  });
+  const el=document.getElementById('importPreview');
+  if(!preview.length){el.innerHTML='<p style="color:var(--text3);padding:8px 0">Inga rader hittades.</p>';return;}
+  const dateStr=p=>p.startDs?(p.endDs&&p.endDs!==p.startDs?`${p.startDs} – ${p.endDs}`:p.startDs):'—';
+  let html=`<div style="margin:10px 0 6px;font-size:12px;color:var(--text2)"><strong>${_pendingImport.length} vardagar</strong> att importera från ${preview.length} rader</div>`;
+  html+=`<div style="max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:8px"><table style="width:100%;border-collapse:collapse;font-size:11px">`;
+  html+=`<thead><tr style="background:var(--surface2);position:sticky;top:0"><th style="padding:6px 8px;text-align:left">Rad</th><th style="padding:6px 8px;text-align:left">Läkare (fil)</th><th style="padding:6px 8px;text-align:left">Matchad</th><th style="padding:6px 8px;text-align:left">Datum</th><th style="padding:6px 8px;text-align:left">Typ</th></tr></thead><tbody>`;
+  preview.forEach(p=>{
+    const ok=p.status==='ok';
+    html+=`<tr style="border-top:1px solid var(--border);${ok?'':'background:#fff0f0'}">
+      <td style="padding:5px 8px;color:var(--text3)">${p.rowNum}</td>
+      <td style="padding:5px 8px">${p.docName||'—'}</td>
+      <td style="padding:5px 8px;color:${ok?'#16a34a':'var(--red)'}">${ok?'✓ '+p.docMatched:'✗ '+p.status}</td>
+      <td style="padding:5px 8px;font-family:monospace;font-size:10px">${dateStr(p)}</td>
+      <td style="padding:5px 8px">${p.type==='utb'?'Utbildning':'Ledighet'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  el.innerHTML=html;
+  document.getElementById('importConfirmBtn').disabled=_pendingImport.length===0;
+}
+
+function confirmImport(){
+  let cnt=0;
+  _pendingImport.forEach(({docId,ds,type,note})=>{
+    if(type==='utb'){if(!utbildningOnskad[docId])utbildningOnskad[docId]={};utbildningOnskad[docId][ds]={note};}
+    else{if(!ledighetOnskad[docId])ledighetOnskad[docId]={};ledighetOnskad[docId][ds]={note};}
+    cnt++;
+  });
+  _pendingImport=[];
+  closeModal('importOnskadeModal');
+  autoSave();render();
+  showToast(`${cnt} önskemålsdagar importerade`);
+}
+
+// ─── GRANSKA ÖNSKEMÅL ───
+function openReviewModal(){
+  renderReviewModal();
+  openModal('reviewOnskadeModal');
+}
+
+function renderReviewModal(){
+  const allDocs=doctors.filter(d=>countOnskadForDoc(d.id)>0);
+  const el=document.getElementById('reviewOnskadeBody');
+  if(!allDocs.length){el.innerHTML='<p style="color:var(--text3);text-align:center;padding:24px">Inga önskemål att granska.</p>';return;}
+  let html='';
+  allDocs.forEach(doc=>{
+    const entries=[];
+    Object.entries(ledighetOnskad[doc.id]||{}).forEach(([ds,v])=>entries.push({ds,type:'led',note:v.note||''}));
+    Object.entries(utbildningOnskad[doc.id]||{}).forEach(([ds,v])=>entries.push({ds,type:'utb',note:v.note||''}));
+    entries.sort((a,b)=>a.ds.localeCompare(b.ds));
+    html+=`<div style="margin-bottom:12px;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+      <div style="padding:8px 12px;background:var(--surface2);display:flex;align-items:center;gap:8px">
+        <div class="savatar" style="background:${doc.color[0]};color:${doc.color[1]};width:22px;height:22px;font-size:9px">${docInitials(doc.name)}</div>
+        <span style="font-weight:600;font-size:12px;flex:1">${doc.name}</span>
+        <span style="font-size:10px;color:var(--text3)">${entries.length} dag${entries.length>1?'ar':''}</span>
+        <button class="btn sm primary" onclick="approveAllForDoc('${doc.id}')">Bevilja alla</button>
+        <button class="btn sm" style="color:var(--red);border-color:var(--red)" onclick="rejectAllForDoc('${doc.id}')">Avslå alla</button>
+      </div>
+      <div style="padding:4px 10px">
+        ${entries.map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)22">
+          <span style="font-family:monospace;font-size:11px;min-width:90px">${e.ds}</span>
+          <span style="font-size:10px;padding:1px 6px;border-radius:3px;background:${e.type==='utb'?'#dbeafe':'#fef9c3'};color:${e.type==='utb'?'#1d4ed8':'#854d0e'}">${e.type==='utb'?'Utbildning':'Ledighet'}</span>
+          <span style="font-size:10px;color:var(--text3);flex:1">${e.note}</span>
+          <button class="btn sm primary" title="Bevilja" onclick="approveSingle('${doc.id}','${e.ds}','${e.type}')">✓</button>
+          <button class="btn sm" style="color:var(--red);border-color:var(--red)" title="Avslå" onclick="rejectSingle('${doc.id}','${e.ds}','${e.type}')">✗</button>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+
+function approveAllForDoc(docId){
+  Object.keys({...(ledighetOnskad[docId]||{})}).forEach(ds=>approveOnskadLedighet(docId,ds));
+  Object.keys({...(utbildningOnskad[docId]||{})}).forEach(ds=>approveOnskadUtbildning(docId,ds));
+  renderReviewModal();autoSave();render();
+}
+function rejectAllForDoc(docId){
+  ledighetOnskad[docId]={};utbildningOnskad[docId]={};
+  renderReviewModal();autoSave();render();
+}
+function approveSingle(docId,ds,type){
+  if(type==='utb')approveOnskadUtbildning(docId,ds);else approveOnskadLedighet(docId,ds);
+  renderReviewModal();autoSave();render();
+}
+function rejectSingle(docId,ds,type){
+  if(type==='utb')rejectOnskadUtbildning(docId,ds);else rejectOnskadLedighet(docId,ds);
+  renderReviewModal();autoSave();render();
+}

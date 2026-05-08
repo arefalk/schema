@@ -210,6 +210,14 @@ function setBJ(ds,t,docId){if(!bjSchedule[ds])bjSchedule[ds]={};bjSchedule[ds][t
 function docHasLedighet(docId,ds){return !!(ledighetRequests[docId]&&ledighetRequests[docId][ds]);}
 function docHasLedighetVecka(docId,wn,yr){return !!(ledighetVeckor[docId]&&ledighetVeckor[docId][wkey(wn,yr)]);}
 function docHasAnyLedighet(docId,ds){const mon=getMonday(new Date(ds)),wn=weekNum(mon),yr=weekYear(mon);return docHasLedighet(docId,ds)||docHasLedighetVecka(docId,wn,yr);}
+function docHasOnskadLedighet(docId,ds){return !!(ledighetOnskad[docId]&&ledighetOnskad[docId][ds]);}
+function docHasOnskadUtbildning(docId,ds){return !!(utbildningOnskad[docId]&&utbildningOnskad[docId][ds]);}
+function docHasOnskad(docId,ds){return docHasOnskadLedighet(docId,ds)||docHasOnskadUtbildning(docId,ds);}
+function countOnskadForDoc(docId){return Object.keys(ledighetOnskad[docId]||{}).length+Object.keys(utbildningOnskad[docId]||{}).length;}
+function approveOnskadLedighet(docId,ds){if(!(ledighetOnskad[docId]&&ledighetOnskad[docId][ds]))return;if(!ledighetRequests[docId])ledighetRequests[docId]={};ledighetRequests[docId][ds]=true;delete ledighetOnskad[docId][ds];}
+function rejectOnskadLedighet(docId,ds){if(ledighetOnskad[docId])delete ledighetOnskad[docId][ds];}
+function approveOnskadUtbildning(docId,ds){if(!(utbildningOnskad[docId]&&utbildningOnskad[docId][ds]))return;if(!utbildningDagar[docId])utbildningDagar[docId]={};utbildningDagar[docId][ds]=true;delete utbildningOnskad[docId][ds];}
+function rejectOnskadUtbildning(docId,ds){if(utbildningOnskad[docId])delete utbildningOnskad[docId][ds];}
 function docHasUtbildning(docId,ds){
   if(utbildningDagar[docId]&&utbildningDagar[docId][ds])return true;
   const mon=getMonday(new Date(ds)),wn=weekNum(mon),yr=weekYear(mon);
