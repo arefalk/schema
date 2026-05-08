@@ -5,6 +5,38 @@ function closeModal(id){document.getElementById(id).classList.remove('visible');
 function setSpan(n){daySpan=n;document.getElementById('btn5').classList.toggle('active',n===5);document.getElementById('btn7').classList.toggle('active',n===7);render();}
 function navigate(dir){currentDate.setDate(currentDate.getDate()+dir*7);render();}
 function goToday(){currentDate=new Date();render();}
+
+function initDragNav(){
+  const el=document.getElementById('scheduleContainer');
+  if(!el)return;
+
+  // Trackpad horizontal swipe (wheel event)
+  let lastNav=0;
+  el.addEventListener('wheel',e=>{
+    if(Math.abs(e.deltaX)<=Math.abs(e.deltaY))return; // ignore vertical-dominant scroll
+    if(Math.abs(e.deltaX)<40)return;
+    const now=Date.now();if(now-lastNav<800)return; // cooldown prevents momentum runaway
+    lastNav=now;
+    navigate(e.deltaX>0?1:-1);
+  },{passive:true});
+
+  // Touch swipe
+  let tx=0,ty=0;
+  el.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+  el.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)navigate(dx<0?1:-1);
+  },{passive:true});
+
+  // Mouse drag (desktop)
+  let mx=0,dragging=false;
+  el.addEventListener('pointerdown',e=>{if(e.button!==0)return;mx=e.clientX;dragging=true;});
+  window.addEventListener('pointerup',e=>{
+    if(!dragging)return;dragging=false;
+    const dx=e.clientX-mx;
+    if(Math.abs(dx)>80)navigate(dx<0?1:-1);
+  });
+}
 function render(){renderSidebar();renderStats();renderWarnings();renderWeek();autoSave();}
 
 function renderSidebar(){
