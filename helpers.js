@@ -58,12 +58,12 @@ function docRestrictedOnDate(docId,ds){
 function docIsJourledigt(docId,ds){
   const dt=new Date(ds),dow=dt.getDay();
   if(dow<1||dow>5)return false;
-  // BJNV (mån–tor natt) → nästa vardag jourledig
-  if(dow>=2&&dow<=5){const prev=isoDate(addDays(dt,-1));if(getBJ(prev,'BJNV')===docId)return true;}
-  // BJFS (fre natt + sön dag+natt) → jourledig fredagen efter; ankar = förra fredagen = addDays(fre,-7)
+  // BJFS (fre natt + sön dag+natt) → jourledig efterföljande fredag
   if(dow===5){if(getBJ(isoDate(addDays(dt,-7)),'BJFS')===docId)return true;}
-  // BJLO (lör natt) → mån ledigdag; ankar = lördagen = addDays(mån,-2)
+  // BJLO (lör dag+natt) → jourledig måndag
   if(dow===1){if(getBJ(isoDate(addDays(dt,-2)),'BJLO')===docId)return true;}
+  // NLÖ (lör natt) → jourledig måndag; ankar = NLO i föregående vecka
+  if(dow===1){const prevMon=addDays(dt,-7);if(getJV(weekNum(prevMon),weekYear(prevMon)).NLO===docId)return true;}
   return false;
 }
 
