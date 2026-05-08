@@ -2,7 +2,7 @@ function docIsOL(d){return['ÖL','BÖL','Konsult'].some(r=>d.roles.includes(r));
 function docIsUL(d){return['ST','AT','Rand'].some(r=>d.roles.includes(r));}
 function docIsHandledare(d){return['ÖL','BÖL','Konsult','Spec'].some(r=>d.roles.includes(r));}
 function docMatchRole(doc,req){if(!req)return true;if(req==='ÖL')return docIsOL(doc);if(req==='UL')return docIsUL(doc);return true;}
-function docAllowedOnPos(doc,pos){const a=doc.allowedPositions||[];return a.length===0||a.includes(pos.id);}
+function docAllowedOnPos(doc,pos){return(doc.allowedPositions||[]).includes(pos.id);}
 
 // Returns a reason string if doc cannot work a DAY SHIFT on given dateStr, else null.
 function docRestrictedOnDate(docId,ds){
@@ -70,7 +70,11 @@ function docIsJourledigt(docId,ds){
 function docAssignedElsewhere(docId,ds,excludeSlotId){
   if(!schedule[ds])return null;
   for(const[sid,did]of Object.entries(schedule[ds])){
-    if(did===docId&&sid!==excludeSlotId){const p=posOfSlot(sid);return p?p.name:'Annan position';}
+    if(did===docId&&sid!==excludeSlotId){
+      // A half-day slot (FM or EM) doesn't occupy the full day — allow a second half
+      if(getSlotHalf(sid,ds))continue;
+      const p=posOfSlot(sid);return p?p.name:'Annan position';
+    }
   }
   return null;
 }
