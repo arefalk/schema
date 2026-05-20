@@ -161,7 +161,8 @@ function loadFromLocalStorage() {
         if(docId&&!getSlot('s_bvc_1',ds))setSlot('s_bvc_1',ds,docId);
       });
       bvcSchedule={};
-      setTimeout(()=>autoSave(),0);
+      // Patcha localStorage direkt och synkront så att migrationskoden inte kör igen vid nästa laddning
+      try{const _raw=localStorage.getItem(LS_KEY);if(_raw){const _d=JSON.parse(_raw);_d.bvcSchedule={};localStorage.setItem(LS_KEY,JSON.stringify(_d));}}catch(e){}
     }
     // Migration: ta bort utbildningsönskemål på helger, omvandla ledighetönskemål på helger till jourfri
     let _migChanged=false;
