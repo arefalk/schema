@@ -1,1 +1,4248 @@
-{}
+{
+  "version": 2,
+  "savedAt": "2026-05-20T20:44:21.484Z",
+  "roleTags": [
+    "ÖL",
+    "Spec",
+    "ST",
+    "AT",
+    "Randande ST",
+    "Vik UL"
+  ],
+  "positions": [
+    {
+      "id": "pos_mott",
+      "name": "Mottagning",
+      "colorIdx": 0,
+      "slots": [
+        {
+          "slotId": "s_mott_1",
+          "roleReq": "",
+          "requiredComps": []
+        },
+        {
+          "slotId": "s_mott_2",
+          "roleReq": "",
+          "requiredComps": []
+        },
+        {
+          "slotId": "s_mott_3",
+          "roleReq": "",
+          "requiredComps": []
+        },
+        {
+          "slotId": "s_mott_4",
+          "roleReq": "",
+          "requiredComps": []
+        },
+        {
+          "slotId": "s_mott_5",
+          "roleReq": "",
+          "requiredComps": []
+        },
+        {
+          "slotId": "s_mott_6",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "fmOnlyDow": [
+        5
+      ],
+      "section": "mott",
+      "activities": [],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 6,
+        "2": 6,
+        "3": 6,
+        "4": 6,
+        "5": 6
+      },
+      "days": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "khDays": [
+        2,
+        3,
+        4
+      ],
+      "slotParity": {
+        "2": {
+          "kh": "",
+          "ksk": ""
+        },
+        "3": {
+          "kh": "",
+          "ksk": ""
+        },
+        "4": {
+          "kh": "",
+          "ksk": ""
+        }
+      }
+    },
+    {
+      "id": "pos_avd_ol",
+      "name": "Avdelning ÖL",
+      "colorIdx": 2,
+      "slots": [
+        {
+          "slotId": "s_avdol",
+          "roleReq": "ÖL",
+          "requiredComps": []
+        }
+      ],
+      "fmOnlyDow": [
+        5
+      ]
+    },
+    {
+      "id": "pos_avd_ul",
+      "name": "Avdelning UL",
+      "colorIdx": 2,
+      "slots": [
+        {
+          "slotId": "s_avdul",
+          "roleReq": "UL",
+          "requiredComps": []
+        }
+      ],
+      "fmOnlyDow": [
+        5
+      ]
+    },
+    {
+      "id": "pos_neo_ol",
+      "name": "Neonatal ÖL",
+      "colorIdx": 3,
+      "slots": [
+        {
+          "slotId": "s_neool",
+          "roleReq": "ÖL",
+          "requiredComps": []
+        }
+      ],
+      "fmOnlyDow": [
+        5
+      ]
+    },
+    {
+      "id": "pos_neo_ul",
+      "name": "Neonatal UL",
+      "colorIdx": 3,
+      "slots": [
+        {
+          "slotId": "s_neoul",
+          "roleReq": "UL",
+          "requiredComps": []
+        }
+      ],
+      "fmOnlyDow": [
+        5
+      ]
+    },
+    {
+      "id": "pos_dj",
+      "name": "Dagjour",
+      "colorIdx": 4,
+      "slots": [
+        {
+          "slotId": "s_dj",
+          "roleReq": "",
+          "requiredComps": [],
+          "slotName": "Dagjour 1"
+        },
+        {
+          "slotId": "s_dj_2",
+          "slotName": "Dagjour 2",
+          "roleReq": "",
+          "requiredComps": [],
+          "fmOnlyDow": [
+            5
+          ]
+        }
+      ],
+      "minFill": 1,
+      "activities": [],
+      "fmOnlyDow": []
+    },
+    {
+      "id": "pos_dbj",
+      "name": "Dagbakjour",
+      "colorIdx": 5,
+      "slots": [
+        {
+          "slotId": "s_dbj",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ]
+    },
+    {
+      "id": "pos_kj",
+      "name": "Kvällsjour",
+      "colorIdx": 4,
+      "slots": [
+        {
+          "slotId": "s_kj",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ]
+    },
+    {
+      "id": "pos_1778235349865",
+      "name": "Diabetesmottagning",
+      "colorIdx": 0,
+      "days": [
+        1,
+        4
+      ],
+      "section": "specmott",
+      "slots": [
+        {
+          "slotId": "s_pos_1778235349865_0",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "locationDays": {
+        "1": "Neomott",
+        "4": "Karlshamn"
+      },
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 1,
+        "2": 0,
+        "3": 0,
+        "4": 1,
+        "5": 0
+      }
+    },
+    {
+      "id": "pos_1778235377231",
+      "name": "Kardiomottagning",
+      "colorIdx": 1,
+      "days": [
+        2,
+        3
+      ],
+      "section": "specmott",
+      "slots": [
+        {
+          "slotId": "s_pos_1778235377231_0",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 1,
+        "4": 0,
+        "5": 0
+      },
+      "locationDays": {
+        "3": "Neomott"
+      }
+    },
+    {
+      "id": "pos_1778235410748",
+      "name": "Obesitasmottagning",
+      "colorIdx": 2,
+      "days": [
+        2
+      ],
+      "section": "specmott",
+      "slots": [
+        {
+          "slotId": "s_pos_1778235410748_0",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      }
+    },
+    {
+      "id": "pos_1778235464847",
+      "name": "Gastromottagning",
+      "colorIdx": 3,
+      "days": [
+        4
+      ],
+      "slots": [
+        {
+          "slotId": "s_pos_1778235464847_0",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "section": "specmott",
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 1,
+        "5": 0
+      }
+    },
+    {
+      "id": "pos_1778235491081",
+      "name": "Neuromottagning",
+      "colorIdx": 4,
+      "days": [
+        2,
+        4
+      ],
+      "section": "specmott",
+      "slots": [
+        {
+          "slotId": "s_pos_1778235491081_0",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 0,
+        "4": 1,
+        "5": 0
+      },
+      "khDays": [
+        2
+      ],
+      "locationDays": {
+        "2": "Karlshamn"
+      }
+    },
+    {
+      "id": "pos_1778235632280",
+      "name": "Astmamottagning",
+      "colorIdx": 5,
+      "days": [
+        2,
+        3,
+        4
+      ],
+      "section": "specmott",
+      "slots": [
+        {
+          "slotId": "s_pos_1778235632280_0",
+          "roleReq": "",
+          "requiredComps": []
+        },
+        {
+          "slotId": "s_pos_1778235632280_1_1779282529508",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 1,
+        "5": 0
+      },
+      "khDays": [
+        2,
+        3
+      ],
+      "parityPerDay": {
+        "2": "odd"
+      },
+      "slotParity": {
+        "3": {
+          "kh": "odd",
+          "ksk": ""
+        }
+      },
+      "locationDays": {}
+    },
+    {
+      "id": "pos_rond",
+      "name": "Rond 08:30–09:00",
+      "colorIdx": 6,
+      "section": "dagvard",
+      "days": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "fmOnlyDow": [
+        5
+      ],
+      "slots": [
+        {
+          "slotId": "s_dagvard_1",
+          "noBlock": true,
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ]
+    },
+    {
+      "id": "pos_dagvard",
+      "name": "Dagvård",
+      "colorIdx": 6,
+      "slots": [
+        {
+          "slotId": "s_dagvard_2",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "activities": [
+        "Provokationer",
+        "Botox",
+        "Skopier",
+        "Narkos"
+      ],
+      "fmOnlyDow": [
+        5,
+        2
+      ],
+      "emOnlyDow": [],
+      "days": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "khDays": [],
+      "parityPerDay": {
+        "3": "odd",
+        "4": "even"
+      },
+      "section": "dagvard"
+    },
+    {
+      "id": "pos_1778530034357",
+      "name": "Reumamottagning",
+      "colorIdx": 7,
+      "days": [
+        5
+      ],
+      "section": "specmott",
+      "weekParity": "odd",
+      "slots": [
+        {
+          "slotId": "s_pos_1778530034357_0",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 1
+      }
+    },
+    {
+      "id": "pos_bvc",
+      "name": "BVC",
+      "colorIdx": 7,
+      "days": [
+        4
+      ],
+      "slots": [
+        {
+          "slotId": "s_bvc_1",
+          "roleReq": "",
+          "requiredComps": []
+        }
+      ],
+      "section": "mott",
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 1,
+        "5": 0
+      }
+    },
+    {
+      "id": "pos_1779200329074",
+      "name": "Neomottagning",
+      "colorIdx": 1,
+      "days": [
+        2,
+        4,
+        5
+      ],
+      "slots": [
+        {
+          "slotId": "s_pos_1779200329074_0",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [
+        2,
+        4
+      ],
+      "section": "specmott",
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 0,
+        "4": 1,
+        "5": 1
+      },
+      "locationDays": {
+        "2": "Neomott",
+        "4": "Neomott",
+        "5": "Neomott"
+      }
+    },
+    {
+      "id": "pos_1779232642355",
+      "name": "Onk-/hemamottagning",
+      "colorIdx": 2,
+      "days": [
+        2
+      ],
+      "slots": [
+        {
+          "slotId": "s_pos_1779232642355_0",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [
+        2
+      ],
+      "section": "specmott",
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      }
+    },
+    {
+      "id": "pos_1779232732138",
+      "name": "SIT",
+      "colorIdx": 3,
+      "days": [
+        2,
+        3
+      ],
+      "slots": [
+        {
+          "slotId": "s_pos_1779232732138_0",
+          "requiredComps": []
+        }
+      ],
+      "locationDays": {
+        "3": "Karlshamn"
+      },
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [
+        2,
+        3
+      ],
+      "section": "mott",
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 1,
+        "4": 0,
+        "5": 0
+      },
+      "khDays": [
+        3
+      ]
+    },
+    {
+      "id": "pos_1779232848772",
+      "name": "Nefromottagning",
+      "colorIdx": 4,
+      "days": [
+        3
+      ],
+      "slots": [
+        {
+          "slotId": "s_pos_1779232848772_0",
+          "requiredComps": []
+        },
+        {
+          "slotId": "s_pos_1779232848772_1_1779286789333",
+          "requiredComps": []
+        }
+      ],
+      "section": "specmott",
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 0,
+        "3": 2,
+        "4": 0,
+        "5": 0
+      },
+      "khDays": [
+        3
+      ],
+      "slotParity": {
+        "3": {
+          "kh": "even",
+          "ksk": "odd"
+        }
+      }
+    },
+    {
+      "id": "pos_1779232921938",
+      "name": "Endokrinmottagning",
+      "colorIdx": 5,
+      "days": [
+        2
+      ],
+      "weekParity": "odd",
+      "slots": [
+        {
+          "slotId": "s_pos_1779232921938_0",
+          "requiredComps": []
+        }
+      ],
+      "activities": [],
+      "fmOnlyDow": [
+        5,
+        2
+      ],
+      "emOnlyDow": [],
+      "section": "specmott",
+      "slotsPerDay": {
+        "1": 0,
+        "2": 1,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      }
+    },
+    {
+      "id": "pos_1779233003522",
+      "name": "Barnahus",
+      "colorIdx": 6,
+      "days": [
+        3,
+        5
+      ],
+      "slots": [
+        {
+          "slotId": "s_pos_1779233003522_0",
+          "requiredComps": []
+        }
+      ],
+      "section": "mott",
+      "activities": [],
+      "fmOnlyDow": [
+        5
+      ],
+      "emOnlyDow": [],
+      "slotsPerDay": {
+        "1": 0,
+        "2": 0,
+        "3": 1,
+        "4": 0,
+        "5": 1
+      },
+      "khDays": [],
+      "parityPerDay": {
+        "3": "even"
+      }
+    }
+  ],
+  "doctors": [
+    {
+      "id": "doc_1778095996168",
+      "name": "Frida H",
+      "roles": [
+        "Spec"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_dbj",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_dbj"
+      ],
+      "prefJV": "JV1",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#d8ede4",
+        "#2d6a4f"
+      ],
+      "bj": [],
+      "fte": 0.75
+    },
+    {
+      "id": "doc_1778098219322",
+      "name": "Hedda M",
+      "roles": [
+        "Spec"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_dbj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_dbj",
+        "pos_dagvard"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#e0f5f5",
+        "#1a8a8a"
+      ],
+      "fte": 1,
+      "bj": []
+    },
+    {
+      "id": "doc_1778096099101",
+      "name": "Linnea A",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#e0ecf8",
+        "#3a7bc8"
+      ],
+      "bj": [],
+      "fte": 0.8
+    },
+    {
+      "id": "doc_1778096154634",
+      "name": "Pontus N",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_bvc"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#faebd6",
+        "#c77b3a"
+      ],
+      "bj": [],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778096188034",
+      "name": "Felicia M",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_bvc"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#fce8e6",
+        "#c0392b"
+      ],
+      "bj": [],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778096275085",
+      "name": "Anni M",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_bvc"
+      ],
+      "prefPositions": [],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#e8f4e4",
+        "#3a8a3a"
+      ],
+      "fte": 1,
+      "bj": []
+    },
+    {
+      "id": "doc_1778096315868",
+      "name": "Matilda I",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#f5e8f4",
+        "#8a3a89"
+      ],
+      "bj": []
+    },
+    {
+      "id": "doc_1778096346052",
+      "name": "Jakob O",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#e8f0fa",
+        "#3a4e8a"
+      ],
+      "bj": []
+    },
+    {
+      "id": "doc_1778096407185",
+      "name": "Emilia H",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "color": [
+        "#fdf5e0",
+        "#a07800"
+      ],
+      "bj": [],
+      "fte": 1,
+      "employmentStart": "2026-07-13",
+      "employmentEnd": "",
+      "flFrom": "",
+      "flTo": ""
+    },
+    {
+      "id": "doc_1778129680148",
+      "name": "Magnus L",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235349865",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_neo_ol",
+        "pos_1778235349865"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#f5e8e0",
+        "#8a4a1a"
+      ],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778185205063",
+      "name": "Mia O-E",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_dbj",
+        "pos_1778235491081"
+      ],
+      "prefPositions": [
+        "pos_1778235491081"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#eaf5e8",
+        "#2d6a2d"
+      ],
+      "bj": [],
+      "fte": 1,
+      "employmentStart": "",
+      "employmentEnd": "",
+      "flFrom": "",
+      "flTo": ""
+    },
+    {
+      "id": "doc_1778185235229",
+      "name": "Pernilla T",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_neo_ol",
+        "pos_dbj"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#d8ede4",
+        "#2d6a4f"
+      ],
+      "bj": [],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778185271329",
+      "name": "Martin L",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235464847",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_dbj",
+        "pos_1778235464847"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#ede8f5",
+        "#7b3ac7"
+      ],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778185352445",
+      "name": "Anna W",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_dagvard",
+        "pos_1778530034357"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_dbj",
+        "pos_1778530034357"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#e0ecf8",
+        "#3a7bc8"
+      ],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778185404829",
+      "name": "Gabriella E",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235377231",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_dbj",
+        "pos_1778235377231"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#faebd6",
+        "#c77b3a"
+      ],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778185481812",
+      "name": "Emma W",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_avd_ul",
+        "pos_neo_ol",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_dbj",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_dbj",
+        "pos_dagvard"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#fce8e6",
+        "#c0392b"
+      ],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778185526778",
+      "name": "Sofia H",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235632280",
+        "pos_dagvard",
+        "pos_1778530034357"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_dbj",
+        "pos_1778235632280",
+        "pos_1778530034357"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#e8f4e4",
+        "#3a8a3a"
+      ],
+      "bj": [
+        "BJLO"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778185604961",
+      "name": "Hanna S",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235349865",
+        "pos_1778235377231",
+        "pos_1778235410748",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_dbj",
+        "pos_1778235349865",
+        "pos_1778235377231",
+        "pos_1778235410748"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#f5e8f4",
+        "#8a3a89"
+      ],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "fte": 1,
+      "flFrom": "2026-08-17",
+      "flTo": "2026-10-30"
+    },
+    {
+      "id": "doc_1778185687751",
+      "name": "Anna G",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_neo_ol",
+        "pos_dbj"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "color": [
+        "#fdf5e0",
+        "#a07800"
+      ],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778186441693",
+      "name": "Caroline S",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_avd_ul",
+        "pos_neo_ol",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235632280",
+        "pos_dagvard"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_dbj",
+        "pos_1778235632280"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "bj": [
+        "BJFS",
+        "BJLO",
+        "BJNV"
+      ],
+      "color": [
+        "#e0f5f5",
+        "#1a8a8a"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778186481926",
+      "name": "Anna A",
+      "roles": [
+        "Spec"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235410748"
+      ],
+      "prefPositions": [
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_neo_ul",
+        "pos_dbj",
+        "pos_1778235410748"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "bj": [],
+      "color": [
+        "#f5e8e0",
+        "#8a4a1a"
+      ]
+    },
+    {
+      "id": "doc_1778271856853",
+      "name": "Jan-Erik S",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_1778235491081"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_1778235491081"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "bj": [],
+      "color": [
+        "#eaf5e8",
+        "#2d6a2d"
+      ],
+      "fte": 1
+    },
+    {
+      "id": "doc_1778271881686",
+      "name": "Katrin Ö",
+      "roles": [
+        "ÖL"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_1778235464847"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_1778235464847"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "bj": [],
+      "color": [
+        "#d8ede4",
+        "#2d6a4f"
+      ]
+    },
+    {
+      "id": "doc_1778567502527",
+      "name": "Maria W-J",
+      "roles": [
+        "Spec"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj",
+        "pos_dbj",
+        "pos_1778235349865"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_dbj",
+        "pos_1778235349865"
+      ],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "bj": [],
+      "fte": 1,
+      "color": [
+        "#eaf5e8",
+        "#2d6a2d"
+      ],
+      "employmentStart": "",
+      "employmentEnd": "",
+      "flFrom": "2026-08-17",
+      "flTo": "2027-01-01"
+    },
+    {
+      "id": "doc_1778957902474",
+      "name": "Zakaria I",
+      "roles": [
+        "Vik UL"
+      ],
+      "allowedPositions": [
+        "pos_avd_ul",
+        "pos_dj"
+      ],
+      "prefPositions": [],
+      "prefJV": "",
+      "jv": [],
+      "bj": [],
+      "fte": 1,
+      "color": [
+        "#d8ede4",
+        "#2d6a4f"
+      ],
+      "employmentStart": "2026-05-18",
+      "employmentEnd": "2026-08-30"
+    },
+    {
+      "id": "doc_1779195976719",
+      "name": "Malin H",
+      "roles": [
+        "Spec"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ol",
+        "pos_neo_ol",
+        "pos_dj",
+        "pos_dbj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_neo_ol"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "bj": [],
+      "fte": 1,
+      "color": [
+        "#ede8f5",
+        "#7b3ac7"
+      ],
+      "flFrom": "2026-04-27",
+      "flTo": "2027-01-29"
+    },
+    {
+      "id": "doc_1779196053767",
+      "name": "Margrete A",
+      "roles": [
+        "ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_neo_ul",
+        "pos_dj"
+      ],
+      "prefPositions": [],
+      "prefJV": "",
+      "jv": [
+        "JV1",
+        "JV2",
+        "NLO"
+      ],
+      "bj": [],
+      "fte": 1,
+      "color": [
+        "#e0ecf8",
+        "#3a7bc8"
+      ],
+      "flFrom": "2026-04-27",
+      "flTo": "2027-01-29"
+    },
+    {
+      "id": "doc_1779207890252",
+      "name": "Karl.-Johan H",
+      "roles": [
+        "Randande ST"
+      ],
+      "allowedPositions": [],
+      "prefPositions": [],
+      "prefJV": "",
+      "jv": [],
+      "bj": [],
+      "fte": 1,
+      "employmentStart": "2026-08-10",
+      "employmentEnd": "2026-10-31",
+      "color": [
+        "#faebd6",
+        "#c77b3a"
+      ]
+    },
+    {
+      "id": "doc_1779208187935",
+      "name": "Pawel S",
+      "roles": [
+        "Randande ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_dj",
+        "pos_kj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_dj",
+        "pos_kj"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "bj": [],
+      "fte": 1,
+      "employmentStart": "2026-08-31",
+      "employmentEnd": "2026-11-29",
+      "color": [
+        "#fce8e6",
+        "#c0392b"
+      ]
+    },
+    {
+      "id": "doc_1779208260818",
+      "name": "Hanna L",
+      "roles": [
+        "Randande ST"
+      ],
+      "allowedPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_dj",
+        "pos_kj"
+      ],
+      "prefPositions": [
+        "pos_mott",
+        "pos_avd_ul",
+        "pos_dj",
+        "pos_kj"
+      ],
+      "prefJV": "",
+      "jv": [],
+      "bj": [],
+      "fte": 1,
+      "employmentStart": "2026-08-31",
+      "employmentEnd": "2026-12-31",
+      "color": [
+        "#e8f4e4",
+        "#3a8a3a"
+      ]
+    }
+  ],
+  "schedule": {
+    "2026-05-07": {
+      "s_bvc_1": "doc_1778096099101"
+    },
+    "2026-05-14": {
+      "s_bvc_1": "doc_1778098219322"
+    },
+    "2026-05-21": {
+      "s_bvc_1": "doc_1778095996168"
+    },
+    "2026-05-28": {
+      "s_bvc_1": "doc_1778096154634"
+    },
+    "2026-06-04": {
+      "s_bvc_1": "doc_1778096045467"
+    },
+    "2026-06-11": {
+      "s_bvc_1": "doc_1778096188034"
+    },
+    "2026-06-18": {
+      "s_bvc_1": "doc_1778096275085"
+    },
+    "2026-06-25": {
+      "s_bvc_1": "doc_1778096315868"
+    },
+    "2026-07-02": {
+      "s_bvc_1": "doc_1778096346052"
+    },
+    "2026-07-09": {
+      "s_bvc_1": "doc_1778098219322"
+    },
+    "2026-07-16": {
+      "s_bvc_1": "doc_1778095996168"
+    },
+    "2026-07-23": {
+      "s_bvc_1": "doc_1778096099101"
+    },
+    "2026-07-30": {
+      "s_bvc_1": "doc_1778096188034"
+    },
+    "2026-08-06": {
+      "s_bvc_1": "doc_1778098219322"
+    },
+    "2026-08-13": {
+      "s_bvc_1": "doc_1778095996168"
+    },
+    "2026-08-20": {
+      "s_bvc_1": "doc_1778096099101"
+    },
+    "2026-05-19": {
+      "s_pos_1778235491081_0": "",
+      "s_pos_1778235632280_0": ""
+    },
+    "2026-05-26": {
+      "s_pos_1778235491081_0": "",
+      "s_dagvard_2": "",
+      "s_pos_1779232642355_0": ""
+    },
+    "2026-06-08": {
+      "s_neool": ""
+    },
+    "2026-06-15": {
+      "s_mott_1": ""
+    }
+  },
+  "scheduleHalfDay": {
+    "2026-05-19": {}
+  },
+  "scheduleNotes": {
+    "2026-07-17": {
+      "s_dj_2": "-13"
+    },
+    "2026-06-15": {
+      "s_mott_1": "akut"
+    }
+  },
+  "slotLocations": {
+    "2026-05-14": {
+      "s_mott_1": "Karlshamn"
+    },
+    "2026-05-25": {
+      "s_mott_1": "Karlshamn"
+    },
+    "2026-05-13": {
+      "s_mott_6": "Karlshamn"
+    },
+    "2026-05-12": {
+      "s_mott_6": "Karlshamn"
+    },
+    "2026-05-20": {
+      "s_mott_6": "Karlshamn"
+    },
+    "2026-05-19": {
+      "s_pos_1778235632280_1_1779234766723": "Karlshamn"
+    }
+  },
+  "jourveckor": {
+    "2026-W34": {
+      "JV1": "doc_1778098219322",
+      "JV2": "doc_1778096154634",
+      "NLO": "doc_1778095996168"
+    },
+    "2026-W33": {
+      "JV1": "doc_1778096315868",
+      "JV2": "doc_1778186481926",
+      "NLO": "doc_1778096275085"
+    },
+    "2026-W35": {
+      "JV1": "doc_1778096099101",
+      "JV2": "doc_1778096188034",
+      "NLO": "doc_1778096315868"
+    },
+    "2026-W36": {
+      "JV1": "doc_1778096275085",
+      "JV2": "doc_1778098219322",
+      "NLO": "doc_1778186481926"
+    },
+    "2026-W37": {
+      "JV1": "doc_1778095996168",
+      "JV2": "doc_1778186481926",
+      "NLO": "doc_1778186441693"
+    },
+    "2026-W38": {
+      "JV1": "doc_1778096154634",
+      "JV2": "doc_1778096099101",
+      "NLO": "doc_1778096188034"
+    },
+    "2026-W39": {
+      "JV1": "doc_1778096315868",
+      "JV2": "doc_1778096346052",
+      "NLO": "doc_1778096407185"
+    },
+    "2026-W40": {
+      "JV1": "doc_1778096407185",
+      "JV2": "doc_1778096188034",
+      "NLO": "doc_1778095996168"
+    },
+    "2026-W41": {
+      "JV1": "doc_1778096275085",
+      "JV2": "doc_1778096154634",
+      "NLO": null
+    },
+    "2026-W42": {
+      "JV1": "doc_1778186481926",
+      "JV2": "doc_1778096346052",
+      "NLO": "doc_1778096099101"
+    },
+    "2026-W43": {
+      "JV1": null,
+      "JV2": "doc_1778096099101",
+      "NLO": "doc_1778096275085"
+    },
+    "2026-W44": {
+      "JV1": "doc_1778096407185",
+      "JV2": "doc_1778096154634",
+      "NLO": "doc_1778186481926"
+    },
+    "2026-W45": {
+      "JV1": "doc_1778095996168",
+      "JV2": "doc_1778096275085",
+      "NLO": null
+    },
+    "2026-W46": {
+      "JV1": null,
+      "JV2": "doc_1778186481926",
+      "NLO": "doc_1778096154634"
+    },
+    "2026-W47": {
+      "JV1": "doc_1778096346052",
+      "JV2": "doc_1778096099101",
+      "NLO": "doc_1778095996168"
+    },
+    "2026-W48": {
+      "JV1": null,
+      "JV2": "doc_1778096407185",
+      "NLO": "doc_1778096275085"
+    },
+    "2026-W49": {
+      "JV1": null,
+      "JV2": null,
+      "NLO": null
+    },
+    "2026-W31": {
+      "JV1": "doc_1778096099101",
+      "JV2": "doc_1778096275085",
+      "NLO": "doc_1778185481812"
+    },
+    "2026-W32": {
+      "JV1": "doc_1778095996168",
+      "JV2": "doc_1778096188034",
+      "NLO": "doc_1778096099101"
+    },
+    "2026-W19": {
+      "JV1": "doc_1778096154634",
+      "JV2": "doc_1778098219322",
+      "NLO": "doc_1778567502527"
+    },
+    "2026-W20": {
+      "JV1": "doc_1778096188034",
+      "JV2": "doc_1778186481926",
+      "NLO": "doc_1778096099101"
+    },
+    "2026-W21": {
+      "JV1": "doc_1778095996168",
+      "JV2": "doc_1778096315868",
+      "NLO": "doc_1778096154634"
+    },
+    "2026-W22": {
+      "JV1": "doc_1778096275085",
+      "JV2": "doc_1778096188034",
+      "NLO": "doc_1778098219322"
+    },
+    "2026-W23": {
+      "JV1": "doc_1778185687751",
+      "JV2": "doc_1778186481926",
+      "NLO": "doc_1778095996168"
+    },
+    "2026-W24": {
+      "JV1": "doc_1778098219322",
+      "JV2": "doc_1778096154634",
+      "NLO": "doc_1778096315868"
+    },
+    "2026-W25": {
+      "JV1": "doc_1778096315868",
+      "JV2": "doc_1778186481926",
+      "NLO": "doc_1778098219322"
+    },
+    "2026-W26": {
+      "JV1": "doc_1778098219322",
+      "JV2": "doc_1778096154634",
+      "NLO": "doc_1778185352445"
+    },
+    "2026-W27": {
+      "JV1": "doc_1778096315868",
+      "JV2": "doc_1778186481926",
+      "NLO": "doc_1778096154634"
+    },
+    "2026-W28": {
+      "JV1": null,
+      "JV2": "doc_1778096188034",
+      "NLO": "doc_1778098219322"
+    },
+    "2026-W29": {
+      "JV1": "doc_1778096275085",
+      "JV2": "doc_1778096099101",
+      "NLO": "doc_1778095996168"
+    },
+    "2026-W30": {
+      "JV1": "doc_1778095996168",
+      "JV2": "doc_1778096188034",
+      "NLO": "doc_1778185404829"
+    },
+    "2026-W17": {
+      "JV1": "doc_1778098219322",
+      "JV2": "doc_1778567502527",
+      "NLO": "doc_1778096099101"
+    },
+    "2026-W18": {
+      "JV1": "doc_1778186481926",
+      "JV2": "doc_1778096275085",
+      "NLO": "doc_1778185404829"
+    }
+  },
+  "nightOverrides": {
+    "2026-06-09": {
+      "JV2_night": "doc_1778096315868"
+    },
+    "2026-05-04": {
+      "JV1_night": "doc_1778096099101"
+    },
+    "2026-05-06": {
+      "JV1_night": "doc_1778096099101"
+    }
+  },
+  "bjSchedule": {
+    "2026-08-20": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-08-21": {
+      "BJLO": null,
+      "BJFS": "doc_1778185687751"
+    },
+    "2026-08-27": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-08-28": {
+      "BJLO": null,
+      "BJFS": "doc_1778185352445"
+    },
+    "2026-09-03": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-09-04": {
+      "BJLO": null,
+      "BJFS": "doc_1778185481812"
+    },
+    "2026-09-10": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-09-11": {
+      "BJLO": null,
+      "BJFS": "doc_1778185604961"
+    },
+    "2026-09-17": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-09-18": {
+      "BJLO": null,
+      "BJFS": "doc_1778185404829"
+    },
+    "2026-09-24": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-09-25": {
+      "BJLO": null,
+      "BJFS": "doc_1778129680148"
+    },
+    "2026-10-01": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-10-02": {
+      "BJLO": null,
+      "BJFS": "doc_1778185271329"
+    },
+    "2026-10-08": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-10-09": {
+      "BJLO": null,
+      "BJFS": "doc_1778186441693"
+    },
+    "2026-10-15": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-10-16": {
+      "BJLO": null,
+      "BJFS": "doc_1778185687751"
+    },
+    "2026-10-22": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-10-23": {
+      "BJLO": null,
+      "BJFS": "doc_1778185481812"
+    },
+    "2026-10-29": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-10-30": {
+      "BJLO": null,
+      "BJFS": "doc_1778185352445"
+    },
+    "2026-11-05": {
+      "BJFS": null
+    },
+    "2026-11-06": {
+      "BJLO": null,
+      "BJFS": "doc_1778185404829"
+    },
+    "2026-11-12": {
+      "BJFS": null
+    },
+    "2026-11-13": {
+      "BJLO": null,
+      "BJFS": "doc_1778185604961"
+    },
+    "2026-11-19": {
+      "BJFS": null
+    },
+    "2026-11-20": {
+      "BJLO": null,
+      "BJFS": "doc_1778129680148"
+    },
+    "2026-11-26": {
+      "BJFS": null
+    },
+    "2026-11-27": {
+      "BJLO": null,
+      "BJFS": "doc_1778185271329"
+    },
+    "2026-12-03": {
+      "BJFS": null
+    },
+    "2026-12-04": {
+      "BJLO": null
+    },
+    "2026-07-30": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-07-31": {
+      "BJLO": null,
+      "BJFS": "doc_1778185481812"
+    },
+    "2026-08-06": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-08-07": {
+      "BJLO": null,
+      "BJFS": "doc_1778186441693"
+    },
+    "2026-08-13": {
+      "BJFS": null,
+      "BJNV": null
+    },
+    "2026-08-14": {
+      "BJLO": null,
+      "BJFS": "doc_1778129680148"
+    },
+    "2026-05-07": {
+      "BJFS": "doc_1778129680148",
+      "BJNV": null
+    },
+    "2026-05-08": {
+      "BJLO": "doc_1778185271329",
+      "BJFS": "doc_1778185687751"
+    },
+    "2026-05-14": {
+      "BJFS": "doc_1778185352445",
+      "BJNV": null,
+      "HJ": "doc_1778186481926",
+      "HBJ": "doc_1778185352445"
+    },
+    "2026-05-15": {
+      "BJLO": "doc_1778185404829",
+      "BJFS": "doc_1778186441693"
+    },
+    "2026-05-21": {
+      "BJFS": "doc_1778185481812",
+      "BJNV": null
+    },
+    "2026-05-22": {
+      "BJLO": "doc_1778185526778",
+      "BJFS": "doc_1778185481812"
+    },
+    "2026-05-28": {
+      "BJFS": "doc_1778185604961",
+      "BJNV": null
+    },
+    "2026-05-29": {
+      "BJLO": "doc_1778185687751",
+      "BJFS": "doc_1778185604961"
+    },
+    "2026-06-04": {
+      "BJFS": "doc_1778186441693",
+      "BJNV": null
+    },
+    "2026-06-05": {
+      "BJLO": "doc_1778129680148",
+      "BJFS": null
+    },
+    "2026-06-11": {
+      "BJFS": "doc_1778185271329",
+      "BJNV": null
+    },
+    "2026-06-12": {
+      "BJLO": "doc_1778185352445",
+      "BJFS": "doc_1778185352445"
+    },
+    "2026-06-18": {
+      "BJFS": "doc_1778185404829",
+      "BJNV": null
+    },
+    "2026-06-19": {
+      "BJLO": "doc_1778185481812",
+      "BJFS": "doc_1778185271329"
+    },
+    "2026-06-25": {
+      "BJFS": "doc_1778185687751",
+      "BJNV": null
+    },
+    "2026-06-26": {
+      "BJLO": "doc_1778185604961",
+      "BJFS": "doc_1778185604961"
+    },
+    "2026-07-02": {
+      "BJFS": "doc_1778129680148",
+      "BJNV": null
+    },
+    "2026-07-03": {
+      "BJLO": "doc_1778186441693",
+      "BJFS": "doc_1778185687751"
+    },
+    "2026-05-03": {
+      "BJNV": "doc_1778129680148"
+    },
+    "2026-05-04": {
+      "BJNV": null
+    },
+    "2026-05-05": {
+      "BJNV": null
+    },
+    "2026-05-06": {
+      "BJNV": null
+    },
+    "2026-05-10": {
+      "BJNV": "doc_1778185604961"
+    },
+    "2026-05-11": {
+      "BJNV": null
+    },
+    "2026-05-12": {
+      "BJNV": null
+    },
+    "2026-05-13": {
+      "BJNV": null
+    },
+    "2026-05-18": {
+      "BJNV": null
+    },
+    "2026-05-19": {
+      "BJNV": null
+    },
+    "2026-05-20": {
+      "BJNV": null
+    },
+    "2026-05-24": {
+      "BJNV": "doc_1778185687751"
+    },
+    "2026-05-25": {
+      "BJNV": null
+    },
+    "2026-05-26": {
+      "BJNV": null
+    },
+    "2026-05-27": {
+      "BJNV": null
+    },
+    "2026-05-31": {
+      "BJNV": "doc_1778185271329"
+    },
+    "2026-06-01": {
+      "BJNV": null
+    },
+    "2026-06-02": {
+      "BJNV": null
+    },
+    "2026-06-03": {
+      "BJNV": null
+    },
+    "2026-06-08": {
+      "BJNV": null
+    },
+    "2026-06-09": {
+      "BJNV": null
+    },
+    "2026-06-10": {
+      "BJNV": null
+    },
+    "2026-06-14": {
+      "BJNV": "doc_1778185481812"
+    },
+    "2026-06-15": {
+      "BJNV": null
+    },
+    "2026-06-16": {
+      "BJNV": null
+    },
+    "2026-06-17": {
+      "BJNV": null
+    },
+    "2026-06-21": {
+      "BJNV": "doc_1778185687751"
+    },
+    "2026-06-22": {
+      "BJNV": null
+    },
+    "2026-06-23": {
+      "BJNV": null
+    },
+    "2026-06-24": {
+      "BJNV": null
+    },
+    "2026-06-28": {
+      "BJNV": "doc_1778186441693"
+    },
+    "2026-06-29": {
+      "BJNV": null
+    },
+    "2026-06-30": {
+      "BJNV": null
+    },
+    "2026-07-01": {
+      "BJNV": null
+    },
+    "2026-05-17": {
+      "BJNV": null
+    },
+    "2026-06-07": {
+      "BJNV": null
+    },
+    "2026-05-09": {
+      "BJLO": "doc_1778185604961"
+    },
+    "2026-05-16": {
+      "BJLO": "doc_1778185352445"
+    },
+    "2026-05-23": {
+      "BJLO": "doc_1778185526778"
+    },
+    "2026-05-30": {
+      "BJLO": "doc_1778185404829"
+    },
+    "2026-06-06": {
+      "BJLO": "doc_1778186441693"
+    },
+    "2026-06-13": {
+      "BJLO": "doc_1778185604961"
+    },
+    "2026-06-20": {
+      "BJLO": "doc_1778185526778"
+    },
+    "2026-06-27": {
+      "BJLO": "doc_1778185526778"
+    },
+    "2026-07-04": {
+      "BJLO": "doc_1778185352445"
+    },
+    "2026-07-10": {
+      "BJFS": "doc_1778185271329"
+    },
+    "2026-07-11": {
+      "BJLO": "doc_1778185604961"
+    },
+    "2026-07-17": {
+      "BJFS": "doc_1778185404829"
+    },
+    "2026-07-18": {
+      "BJLO": "doc_1778186441693"
+    },
+    "2026-07-24": {
+      "BJFS": "doc_1778185481812"
+    },
+    "2026-07-25": {
+      "BJLO": null
+    },
+    "2026-08-01": {
+      "BJLO": null
+    },
+    "2026-07-06": {
+      "BJNV": null
+    },
+    "2026-07-07": {
+      "BJNV": null
+    },
+    "2026-07-08": {
+      "BJNV": null
+    },
+    "2026-07-09": {
+      "BJNV": null
+    },
+    "2026-07-13": {
+      "BJNV": null
+    },
+    "2026-07-14": {
+      "BJNV": null
+    },
+    "2026-07-15": {
+      "BJNV": null
+    },
+    "2026-07-16": {
+      "BJNV": null
+    },
+    "2026-07-20": {
+      "BJNV": null
+    },
+    "2026-07-21": {
+      "BJNV": null
+    },
+    "2026-07-22": {
+      "BJNV": null
+    },
+    "2026-07-23": {
+      "BJNV": null
+    },
+    "2026-07-27": {
+      "BJNV": null
+    },
+    "2026-07-28": {
+      "BJNV": null
+    },
+    "2026-07-29": {
+      "BJNV": null
+    },
+    "2026-08-08": {
+      "BJLO": "doc_1778129680148"
+    },
+    "2026-08-15": {
+      "BJLO": "doc_1778185404829"
+    },
+    "2026-08-22": {
+      "BJLO": "doc_1778186441693"
+    },
+    "2026-08-03": {
+      "BJNV": null
+    },
+    "2026-08-17": {
+      "BJNV": null
+    },
+    "2026-08-18": {
+      "BJNV": null
+    },
+    "2026-08-19": {
+      "BJNV": null
+    },
+    "2026-08-04": {
+      "BJNV": null
+    },
+    "2026-08-05": {
+      "BJNV": null
+    },
+    "2026-08-10": {
+      "BJNV": null
+    },
+    "2026-08-11": {
+      "BJNV": null
+    },
+    "2026-08-12": {
+      "BJNV": null
+    },
+    "2026-08-29": {
+      "BJLO": "doc_1778185404829"
+    },
+    "2026-09-05": {
+      "BJLO": "doc_1778185271329"
+    },
+    "2026-09-12": {
+      "BJLO": "doc_1778185526778"
+    },
+    "2026-09-19": {
+      "BJLO": "doc_1778185687751"
+    },
+    "2026-09-26": {
+      "BJLO": "doc_1778185481812"
+    },
+    "2026-10-03": {
+      "BJLO": "doc_1778185352445"
+    },
+    "2026-10-10": {
+      "BJLO": "doc_1778185404829"
+    },
+    "2026-10-17": {
+      "BJLO": "doc_1778185604961"
+    },
+    "2026-10-24": {
+      "BJLO": "doc_1778185526778"
+    },
+    "2026-10-31": {
+      "BJLO": "doc_1778185271329"
+    },
+    "2026-08-24": {
+      "BJNV": null
+    },
+    "2026-08-25": {
+      "BJNV": null
+    },
+    "2026-08-26": {
+      "BJNV": null
+    },
+    "2026-08-31": {
+      "BJNV": null
+    },
+    "2026-09-01": {
+      "BJNV": null
+    },
+    "2026-09-02": {
+      "BJNV": null
+    },
+    "2026-09-07": {
+      "BJNV": null
+    },
+    "2026-09-08": {
+      "BJNV": null
+    },
+    "2026-09-09": {
+      "BJNV": null
+    },
+    "2026-09-14": {
+      "BJNV": null
+    },
+    "2026-09-15": {
+      "BJNV": null
+    },
+    "2026-09-16": {
+      "BJNV": null
+    },
+    "2026-09-21": {
+      "BJNV": null
+    },
+    "2026-09-22": {
+      "BJNV": null
+    },
+    "2026-09-23": {
+      "BJNV": null
+    },
+    "2026-09-28": {
+      "BJNV": null
+    },
+    "2026-09-29": {
+      "BJNV": null
+    },
+    "2026-09-30": {
+      "BJNV": null
+    },
+    "2026-10-05": {
+      "BJNV": null
+    },
+    "2026-10-06": {
+      "BJNV": null
+    },
+    "2026-10-07": {
+      "BJNV": null
+    },
+    "2026-10-12": {
+      "BJNV": null
+    },
+    "2026-10-13": {
+      "BJNV": null
+    },
+    "2026-10-14": {
+      "BJNV": null
+    },
+    "2026-10-19": {
+      "BJNV": null
+    },
+    "2026-10-20": {
+      "BJNV": null
+    },
+    "2026-10-21": {
+      "BJNV": null
+    },
+    "2026-10-26": {
+      "BJNV": null
+    },
+    "2026-10-27": {
+      "BJNV": null
+    },
+    "2026-10-28": {
+      "BJNV": null
+    },
+    "2026-04-24": {
+      "BJFS": "doc_1778185352445"
+    },
+    "2026-04-25": {
+      "BJLO": "doc_1778185526778"
+    },
+    "2026-05-01": {
+      "BJFS": "doc_1778129680148"
+    },
+    "2026-05-02": {
+      "BJLO": "doc_1778185271329"
+    },
+    "2026-11-07": {
+      "BJLO": "doc_1778186441693"
+    },
+    "2026-11-14": {
+      "BJLO": "doc_1778185481812"
+    },
+    "2026-11-21": {
+      "BJLO": "doc_1778185404829"
+    },
+    "2026-11-28": {
+      "BJLO": "doc_1778185526778"
+    }
+  },
+  "ledighetRequests": {
+    "doc_1778095996168": {
+      "2026-08-16": true,
+      "2026-08-26": true,
+      "2026-08-27": true,
+      "2026-08-28": true,
+      "2026-08-29": true,
+      "2026-11-01": true,
+      "2026-10-16": true,
+      "2026-10-17": true,
+      "2026-10-23": true,
+      "2026-10-24": true,
+      "2026-10-09": true,
+      "2026-10-10": true,
+      "2026-05-30": true,
+      "2026-05-31": true,
+      "2026-05-29": true,
+      "2026-05-28": true,
+      "2026-04-27": true
+    },
+    "doc_1778096045467": {
+      "2026-10-25": true,
+      "2026-10-26": true
+    },
+    "doc_1778096099101": {
+      "2026-09-08": true,
+      "2026-09-09": true,
+      "2026-09-10": true,
+      "2026-10-08": true,
+      "2026-10-09": true,
+      "2026-10-10": true
+    },
+    "doc_1778096154634": {
+      "2026-09-04": true,
+      "2026-09-05": true,
+      "2026-11-25": true,
+      "2026-11-26": true,
+      "2026-11-27": true
+    },
+    "doc_1778096188034": {
+      "2026-10-01": true,
+      "2026-09-30": true,
+      "2026-09-29": true,
+      "2026-09-28": true,
+      "2026-09-27": true,
+      "2026-09-25": true,
+      "2026-09-26": true,
+      "2026-09-10": true,
+      "2026-09-11": true,
+      "2026-09-12": true,
+      "2026-10-22": true,
+      "2026-10-23": true,
+      "2026-10-24": true,
+      "2026-10-02": true
+    },
+    "doc_1778096275085": {
+      "2026-09-28": true,
+      "2026-09-29": true,
+      "2026-09-30": true,
+      "2026-10-01": true,
+      "2026-10-02": true
+    },
+    "doc_1778185481812": {},
+    "doc_1778186481926": {
+      "2026-04-27": true,
+      "2026-04-28": true,
+      "2026-04-29": true,
+      "2026-04-30": true,
+      "2026-10-26": true
+    },
+    "doc_1778096407185": {
+      "2026-09-14": true
+    },
+    "doc_1778129680148": {
+      "2026-08-25": true,
+      "2026-08-26": true,
+      "2026-08-27": true,
+      "2026-08-28": true
+    },
+    "doc_1778096315868": {
+      "2026-08-10": true,
+      "2026-08-11": true,
+      "2026-08-12": true,
+      "2026-08-13": true
+    },
+    "doc_1778185687751": {
+      "2026-11-27": true
+    },
+    "doc_1778185604961": {
+      "2026-09-04": true,
+      "2026-10-12": true,
+      "2026-10-13": true
+    },
+    "doc_1778185352445": {
+      "2026-10-09": true,
+      "2026-10-12": true,
+      "2026-10-13": true
+    },
+    "doc_1778185235229": {
+      "2026-10-12": true
+    },
+    "doc_1778271856853": {
+      "2026-10-15": true,
+      "2026-10-16": true
+    },
+    "doc_1778185271329": {
+      "2026-10-15": true,
+      "2026-10-16": true
+    },
+    "doc_1778185404829": {
+      "2026-10-16": true
+    }
+  },
+  "ledighetVeckor": {
+    "doc_1778095996168": {
+      "2026-W44": true,
+      "2026-W28": true,
+      "2026-W27": true,
+      "2026-W26": true,
+      "2026-W25": true,
+      "2026-W24": true
+    },
+    "doc_1778096045467": {
+      "2026-W39": true,
+      "2026-W22": true
+    },
+    "doc_1778096099101": {
+      "2026-W24": true,
+      "2026-W25": true,
+      "2026-W26": true,
+      "2026-W27": true,
+      "2026-W28": true,
+      "2026-W41": true
+    },
+    "doc_1778096154634": {
+      "2026-W37": true,
+      "2026-W29": true,
+      "2026-W33": true,
+      "2026-W32": true,
+      "2026-W31": true,
+      "2026-W30": true,
+      "2026-W43": true
+    },
+    "doc_1778096188034": {
+      "2026-W28": true,
+      "2026-W27": true,
+      "2026-W26": true,
+      "2026-W25": true,
+      "2026-W24": true
+    },
+    "doc_1778096275085": {
+      "2026-W28": true,
+      "2026-W24": true,
+      "2026-W25": true,
+      "2026-W26": true,
+      "2026-W27": true,
+      "2026-W31": true
+    },
+    "doc_1778096315868": {
+      "2026-W29": true,
+      "2026-W30": true,
+      "2026-W31": true,
+      "2026-W32": true
+    },
+    "doc_1778096346052": {
+      "2026-W24": true,
+      "2026-W36": true,
+      "2026-W37": true,
+      "2026-W38": true
+    },
+    "doc_1778096407185": {
+      "2026-W26": true,
+      "2026-W23": true,
+      "2026-W37": true
+    },
+    "doc_1778186441693": {
+      "2026-W24": true,
+      "2026-W25": true,
+      "2026-W26": true,
+      "2026-W27": true,
+      "2026-W28": true
+    },
+    "doc_1778129680148": {
+      "2026-W28": true,
+      "2026-W27": true,
+      "2026-W26": true,
+      "2026-W25": true,
+      "2026-W24": true
+    },
+    "doc_1778185235229": {
+      "2026-W24": true,
+      "2026-W25": true,
+      "2026-W26": true,
+      "2026-W27": true,
+      "2026-W28": true,
+      "2026-W41": true
+    },
+    "doc_1778185404829": {
+      "2026-W28": true,
+      "2026-W27": true,
+      "2026-W26": true,
+      "2026-W25": true,
+      "2026-W24": true
+    },
+    "doc_1778185481812": {
+      "2026-W24": true,
+      "2026-W25": true,
+      "2026-W26": true,
+      "2026-W27": true,
+      "2026-W28": true,
+      "2026-W21": true
+    },
+    "doc_1778271856853": {
+      "2026-W28": true,
+      "2026-W27": true,
+      "2026-W24": true,
+      "2026-W25": true,
+      "2026-W26": true
+    },
+    "doc_1778185205063": {
+      "2026-W29": true,
+      "2026-W30": true,
+      "2026-W31": true,
+      "2026-W32": true,
+      "2026-W33": true,
+      "2026-W40": true,
+      "2026-W47": true
+    },
+    "doc_1778185271329": {
+      "2026-W33": true,
+      "2026-W32": true,
+      "2026-W31": true,
+      "2026-W30": true,
+      "2026-W29": true
+    },
+    "doc_1778185352445": {
+      "2026-W29": true,
+      "2026-W30": true,
+      "2026-W31": true,
+      "2026-W32": true,
+      "2026-W33": true
+    },
+    "doc_1778185526778": {
+      "2026-W33": true,
+      "2026-W32": true,
+      "2026-W31": true,
+      "2026-W30": true,
+      "2026-W29": true
+    },
+    "doc_1778185604961": {
+      "2026-W29": true,
+      "2026-W30": true,
+      "2026-W31": true,
+      "2026-W32": true,
+      "2026-W33": true
+    },
+    "doc_1778185687751": {
+      "2026-W33": true,
+      "2026-W32": true,
+      "2026-W31": true,
+      "2026-W30": true,
+      "2026-W29": true
+    },
+    "doc_1778186481926": {
+      "2026-W29": true,
+      "2026-W30": true,
+      "2026-W31": true,
+      "2026-W32": true,
+      "2026-W33": true,
+      "2026-W39": true
+    },
+    "doc_1778098219322": {
+      "2026-W29": true,
+      "2026-W30": true,
+      "2026-W31": true,
+      "2026-W32": true,
+      "2026-W33": true
+    },
+    "doc_1778567502527": {
+      "2026-W29": true,
+      "2026-W30": true,
+      "2026-W31": true,
+      "2026-W32": true,
+      "2026-W33": true,
+      "2026-W21": true,
+      "2026-W22": true
+    }
+  },
+  "specialSlots": {
+    "2026-08-16": {},
+    "2026-09-07": {
+      "fl_doc_1778095996168_2026-09-07": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-08": {
+      "fl_doc_1778095996168_2026-09-08": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-09": {
+      "fl_doc_1778095996168_2026-09-09": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-10": {
+      "fl_doc_1778095996168_2026-09-10": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-11": {
+      "fl_doc_1778095996168_2026-09-11": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-21": {
+      "fl_doc_1778095996168_2026-09-21": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-22": {
+      "fl_doc_1778095996168_2026-09-22": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-23": {
+      "fl_doc_1778095996168_2026-09-23": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-24": {
+      "fl_doc_1778095996168_2026-09-24": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-09-25": {
+      "fl_doc_1778095996168_2026-09-25": {
+        "type": "fl",
+        "docId": "doc_1778095996168",
+        "halfDay": "em",
+        "note": ""
+      }
+    },
+    "2026-05-14": {},
+    "2026-06-04": {},
+    "2026-05-05": {
+      "handledning_doc_1778096315868_2026-05-05": {
+        "type": "handledning",
+        "docId": "doc_1778096315868",
+        "supervisorId": "doc_1778185352445",
+        "halfDay": "fm",
+        "note": ""
+      }
+    },
+    "2026-06-05": {},
+    "2026-05-07": {
+      "handledning_doc_1778096188034_2026-05-07": {
+        "type": "handledning",
+        "docId": "doc_1778096188034",
+        "supervisorId": "doc_1778185687751",
+        "halfDay": "fm",
+        "note": ""
+      }
+    },
+    "2026-05-06": {
+      "handledning_doc_1778096346052_2026-05-06": {
+        "type": "handledning",
+        "docId": "doc_1778096346052",
+        "supervisorId": "doc_1778185604961",
+        "halfDay": "fm",
+        "note": ""
+      }
+    },
+    "2026-06-17": {},
+    "2026-07-02": {},
+    "2026-05-08": {
+      "handledning_doc_1778096407185_2026-05-08": {
+        "type": "handledning",
+        "docId": "doc_1778096407185",
+        "supervisorId": "doc_1778185481812",
+        "halfDay": "fm",
+        "note": ""
+      }
+    },
+    "2026-06-09": {},
+    "2026-07-01": {},
+    "2026-07-03": {},
+    "2026-07-21": {},
+    "2026-08-21": {},
+    "2026-08-03": {},
+    "2026-08-19": {},
+    "2026-05-13": {
+      "adm_doc_1778186481926_1778875486039": {
+        "type": "adm",
+        "docId": "doc_1778186481926",
+        "halfDay": "",
+        "note": "Obesitas"
+      }
+    },
+    "2026-05-12": {},
+    "2026-10-02": {},
+    "2026-10-19": {},
+    "2026-10-09": {},
+    "2026-09-18": {},
+    "2026-10-05": {
+      "handledning_doc_1778096154634_2026-10-05": {
+        "type": "handledning",
+        "docId": "doc_1778096154634",
+        "supervisorId": "doc_1778185404829",
+        "halfDay": "fm",
+        "note": ""
+      }
+    },
+    "2026-10-12": {}
+  },
+  "bvcSchedule": {},
+  "handledningPairs": [
+    {
+      "stId": "doc_1778096154634",
+      "supervisorId": "doc_1778185404829"
+    },
+    {
+      "stId": "doc_1778096315868",
+      "supervisorId": "doc_1778185352445"
+    },
+    {
+      "stId": "doc_1778096188034",
+      "supervisorId": "doc_1778185687751"
+    },
+    {
+      "stId": "doc_1778096346052",
+      "supervisorId": "doc_1778185604961"
+    },
+    {
+      "stId": "doc_1778096407185",
+      "supervisorId": "doc_1778185481812"
+    }
+  ],
+  "mandatoryPositions": [
+    "pos_avd_ol",
+    "pos_dj",
+    "pos_avd_ul",
+    "pos_neo_ol",
+    "pos_neo_ul",
+    "pos_dbj",
+    "pos_1778235491081",
+    "pos_1778235464847",
+    "pos_1778235410748",
+    "pos_1778235377231",
+    "pos_1778235349865",
+    "pos_1778235632280",
+    "pos_1778530034357",
+    "pos_bvc",
+    "pos_1779232642355",
+    "pos_1779200329074",
+    "pos_1779232921938",
+    "pos_1779233003522",
+    "pos_1779232848772",
+    "pos_rond",
+    "pos_dagvard"
+  ],
+  "schedulePeriod": {
+    "from": "2026-08-31",
+    "to": "2026-11-29"
+  },
+  "utbildningDagar": {
+    "doc_1778096188034": {
+      "2026-05-11": {
+        "note": "Neuro"
+      },
+      "2026-05-12": true,
+      "2026-05-13": true,
+      "2026-10-26": true,
+      "2026-10-27": true,
+      "2026-10-28": true,
+      "2026-10-29": true,
+      "2026-10-30": true,
+      "2026-11-02": true,
+      "2026-11-03": true,
+      "2026-11-04": true,
+      "2026-11-05": true,
+      "2026-11-06": true,
+      "2026-11-09": true,
+      "2026-11-10": true,
+      "2026-11-11": true,
+      "2026-11-12": true,
+      "2026-11-13": true,
+      "2026-11-16": true,
+      "2026-11-17": true,
+      "2026-11-18": true,
+      "2026-11-19": true,
+      "2026-11-20": true,
+      "2026-11-23": true,
+      "2026-11-24": true,
+      "2026-11-25": true,
+      "2026-11-26": true,
+      "2026-11-27": true,
+      "2026-09-22": true,
+      "2026-09-23": true,
+      "2026-09-24": true,
+      "2026-09-25": true
+    },
+    "doc_1778095996168": {
+      "2026-05-13": true,
+      "2026-10-12": true,
+      "2026-10-13": true,
+      "2026-10-14": true,
+      "2026-10-15": true,
+      "2026-10-16": true,
+      "2026-10-23": true,
+      "2026-10-19": true,
+      "2026-10-20": true,
+      "2026-10-21": true,
+      "2026-10-22": true
+    },
+    "doc_1778186481926": {
+      "2026-05-18": true
+    },
+    "doc_1778098219322": {
+      "2026-10-05": true,
+      "2026-10-06": true,
+      "2026-10-07": true,
+      "2026-10-08": true,
+      "2026-10-09": true,
+      "2026-10-12": true,
+      "2026-10-13": true,
+      "2026-10-14": true,
+      "2026-10-15": true,
+      "2026-10-16": true,
+      "2026-10-19": true,
+      "2026-10-20": true,
+      "2026-10-21": true,
+      "2026-10-22": true,
+      "2026-10-23": true,
+      "2026-10-26": true,
+      "2026-10-27": true,
+      "2026-10-28": true,
+      "2026-10-29": true,
+      "2026-10-30": true,
+      "2026-11-02": true,
+      "2026-11-03": true,
+      "2026-11-04": true,
+      "2026-11-05": true,
+      "2026-11-06": true,
+      "2026-11-09": true,
+      "2026-11-10": true,
+      "2026-11-11": true,
+      "2026-11-12": true,
+      "2026-11-13": true,
+      "2026-11-16": true,
+      "2026-11-17": true,
+      "2026-11-18": true,
+      "2026-11-19": true,
+      "2026-11-20": true,
+      "2026-11-23": true,
+      "2026-11-24": true,
+      "2026-11-25": true,
+      "2026-11-26": true,
+      "2026-11-27": true,
+      "2026-11-30": true,
+      "2026-12-01": true,
+      "2026-12-02": true,
+      "2026-12-03": true,
+      "2026-12-04": true
+    },
+    "doc_1778096275085": {
+      "2026-09-22": true,
+      "2026-09-23": true,
+      "2026-09-24": true,
+      "2026-09-25": true,
+      "2026-09-14": true,
+      "2026-09-15": true,
+      "2026-09-16": true,
+      "2026-09-17": true,
+      "2026-09-18": true
+    },
+    "doc_1778185687751": {
+      "2026-11-12": true,
+      "2026-11-13": true
+    },
+    "doc_1778096407185": {
+      "2026-09-15": true
+    },
+    "doc_1778096099101": {
+      "2026-09-28": true,
+      "2026-09-29": true,
+      "2026-09-30": true,
+      "2026-10-01": true,
+      "2026-10-02": true,
+      "2026-10-19": true,
+      "2026-10-20": true,
+      "2026-10-21": true,
+      "2026-10-22": true,
+      "2026-10-23": true,
+      "2026-11-02": true,
+      "2026-11-03": true,
+      "2026-11-04": true,
+      "2026-11-05": true,
+      "2026-11-06": true,
+      "2026-11-12": true,
+      "2026-11-13": true,
+      "2026-11-16": true,
+      "2026-11-17": true,
+      "2026-11-18": true,
+      "2026-11-19": true,
+      "2026-11-20": true
+    },
+    "doc_1778096315868": {
+      "2026-09-14": true,
+      "2026-09-15": true,
+      "2026-09-16": true,
+      "2026-09-17": true,
+      "2026-09-18": true
+    },
+    "doc_1778096154634": {
+      "2026-11-09": true,
+      "2026-11-10": true,
+      "2026-11-11": true
+    },
+    "doc_1778185352445": {
+      "2026-09-15": true,
+      "2026-10-15": true,
+      "2026-10-16": true
+    },
+    "doc_1778129680148": {
+      "2026-09-17": true
+    }
+  },
+  "utbildningVeckor": {},
+  "jourfriOnskad": {
+    "doc_1778095996168": {
+      "2026-W18": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W20": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W22": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W24": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W26": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W28": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W30": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W41": {
+        "scope": "weekend",
+        "note": ""
+      }
+    },
+    "doc_1778096188034": {
+      "2026-W25": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W44": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W45": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W46": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W47": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W48": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W49": {
+        "scope": "week",
+        "note": ""
+      }
+    },
+    "doc_1778096045467": {
+      "2026-W21": {
+        "scope": "weekend",
+        "note": ""
+      }
+    },
+    "doc_1778096154634": {
+      "2026-W28": {
+        "scope": "weekend",
+        "note": ""
+      }
+    },
+    "doc_1778096275085": {
+      "2026-W30": {
+        "scope": "weekend",
+        "note": ""
+      }
+    },
+    "doc_1778096315868": {
+      "2026-W30": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W41": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W42": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W43": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W44": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W45": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W46": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W47": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W48": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W49": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W50": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W51": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W52": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W53": {
+        "scope": "week",
+        "note": ""
+      }
+    },
+    "doc_1778096346052": {
+      "2026-W26": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W32": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W33": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W31": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W30": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W29": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W28": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W27": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W25": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W23": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W18": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W19": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W20": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W21": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W22": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W34": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W35": {
+        "scope": "week",
+        "note": ""
+      }
+    },
+    "doc_1778096407185": {
+      "2026-W18": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W19": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W20": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W21": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W22": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W24": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W25": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W27": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W28": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W29": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W30": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W31": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W32": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W33": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W34": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W35": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W36": {
+        "scope": "week",
+        "note": ""
+      }
+    },
+    "doc_1778096099101": {},
+    "doc_1778185481812": {
+      "2026-W20": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W38": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W41": {
+        "scope": "weekend",
+        "note": ""
+      }
+    },
+    "doc_1778098219322": {
+      "2026-W49": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W48": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W40": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W41": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W42": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W43": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W44": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W45": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W46": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W47": {
+        "scope": "week",
+        "note": ""
+      }
+    },
+    "doc_1778186481926": {},
+    "doc_1778185404829": {
+      "2026-W48": {
+        "scope": "weekend",
+        "note": ""
+      }
+    },
+    "doc_1778186441693": {
+      "2026-W38": {
+        "scope": "week",
+        "note": ""
+      },
+      "2026-W39": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W42": {
+        "scope": "week",
+        "note": ""
+      }
+    },
+    "doc_1778185604961": {
+      "2026-W38": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W41": {
+        "scope": "weekend",
+        "note": ""
+      }
+    },
+    "doc_1778185687751": {
+      "2026-W39": {
+        "scope": "weekend",
+        "note": ""
+      },
+      "2026-W40": {
+        "scope": "weekend",
+        "note": ""
+      }
+    }
+  },
+  "deltidDagar": {
+    "doc_1778095996168": {
+      "2026-05-04": "em",
+      "2026-05-05": "em",
+      "2026-05-06": "em",
+      "2026-05-07": "em",
+      "2026-05-08": "em"
+    },
+    "doc_1778185205063": {
+      "2026-05-14": "hel",
+      "2026-04-09": "hel",
+      "2026-04-10": "hel",
+      "2026-04-16": "hel",
+      "2026-04-17": "hel",
+      "2026-04-23": "hel",
+      "2026-04-24": "hel",
+      "2026-04-30": "hel",
+      "2026-05-01": "hel",
+      "2026-05-07": "hel",
+      "2026-05-08": "hel",
+      "2026-05-15": "hel",
+      "2026-05-21": "hel",
+      "2026-05-22": "hel",
+      "2026-05-28": "hel",
+      "2026-05-29": "hel",
+      "2026-06-04": "hel",
+      "2026-06-05": "hel",
+      "2026-06-11": "hel",
+      "2026-06-12": "hel",
+      "2026-06-18": "hel",
+      "2026-06-19": "hel",
+      "2026-06-25": "hel",
+      "2026-06-26": "hel",
+      "2026-07-02": "hel",
+      "2026-07-03": "hel",
+      "2026-07-09": "hel",
+      "2026-07-10": "hel",
+      "2026-07-16": "hel",
+      "2026-07-17": "hel",
+      "2026-07-23": "hel",
+      "2026-07-24": "hel",
+      "2026-07-30": "hel",
+      "2026-07-31": "hel",
+      "2026-08-06": "hel",
+      "2026-08-07": "hel",
+      "2026-08-13": "hel",
+      "2026-08-14": "hel",
+      "2026-08-20": "hel",
+      "2026-08-21": "hel"
+    },
+    "doc_1778271856853": {
+      "2026-05-06": "hel",
+      "2026-05-11": "em",
+      "2026-05-12": "em",
+      "2026-05-13": "hel",
+      "2026-05-14": "em",
+      "2026-05-15": "em",
+      "2026-05-18": "em",
+      "2026-05-19": "em",
+      "2026-05-20": "hel",
+      "2026-05-21": "em",
+      "2026-05-22": "em",
+      "2026-05-25": "em",
+      "2026-05-26": "em",
+      "2026-05-27": "hel",
+      "2026-05-28": "em",
+      "2026-05-29": "em",
+      "2026-06-01": "em",
+      "2026-06-02": "em",
+      "2026-06-03": "hel",
+      "2026-06-04": "em",
+      "2026-06-05": "em",
+      "2026-06-08": "em",
+      "2026-06-09": "em",
+      "2026-06-10": "hel",
+      "2026-06-11": "em",
+      "2026-06-12": "em",
+      "2026-06-15": "em",
+      "2026-06-16": "em",
+      "2026-06-17": "hel",
+      "2026-06-18": "em",
+      "2026-06-19": "em",
+      "2026-06-22": "em",
+      "2026-06-23": "em",
+      "2026-06-24": "hel",
+      "2026-06-25": "em",
+      "2026-06-26": "em",
+      "2026-06-29": "em",
+      "2026-06-30": "em",
+      "2026-07-01": "hel",
+      "2026-07-02": "em",
+      "2026-07-03": "em",
+      "2026-05-04": "em",
+      "2026-05-05": "em",
+      "2026-05-07": "em",
+      "2026-05-08": "em",
+      "2026-07-06": "em",
+      "2026-07-07": "em",
+      "2026-07-08": "hel",
+      "2026-07-09": "em",
+      "2026-07-10": "em",
+      "2026-07-13": "em",
+      "2026-07-14": "em",
+      "2026-07-15": "hel",
+      "2026-07-16": "em",
+      "2026-07-17": "em",
+      "2026-07-20": "em",
+      "2026-07-21": "em",
+      "2026-07-22": "hel",
+      "2026-07-23": "em",
+      "2026-07-24": "em",
+      "2026-07-27": "em",
+      "2026-07-28": "em",
+      "2026-07-29": "hel",
+      "2026-07-30": "em",
+      "2026-07-31": "em",
+      "2026-08-03": "em",
+      "2026-08-04": "em",
+      "2026-08-05": "hel",
+      "2026-08-06": "em",
+      "2026-08-07": "em",
+      "2026-08-10": "em",
+      "2026-08-11": "em",
+      "2026-08-12": "hel",
+      "2026-08-13": "em",
+      "2026-08-14": "em",
+      "2026-08-17": "em",
+      "2026-08-18": "em",
+      "2026-08-19": "hel",
+      "2026-08-20": "em",
+      "2026-08-21": "em"
+    },
+    "doc_1778185526778": {
+      "2026-05-11": "hel",
+      "2026-04-27": "hel",
+      "2026-05-25": "hel",
+      "2026-05-04": "hel",
+      "2026-05-18": "hel",
+      "2026-06-01": "hel",
+      "2026-06-15": "hel",
+      "2026-06-29": "hel",
+      "2026-07-13": "hel",
+      "2026-07-27": "hel",
+      "2026-08-10": "hel",
+      "2026-08-24": "hel"
+    }
+  },
+  "deltidVeckor": {
+    "doc_1778095996168": {
+      "2026-W21": "em",
+      "2026-W23": "em",
+      "2026-W25": "em",
+      "2026-W29": "em",
+      "2026-W31": "em",
+      "2026-W27": "em",
+      "2026-W19": "em",
+      "2026-W33": "em"
+    },
+    "doc_1778185205063": {
+      "2026-W15": "hel",
+      "2026-W17": "hel",
+      "2026-W19": "hel",
+      "2026-W21": "hel",
+      "2026-W23": "hel",
+      "2026-W25": "hel",
+      "2026-W27": "hel",
+      "2026-W29": "hel",
+      "2026-W31": "hel",
+      "2026-W33": "hel",
+      "2026-W35": "hel"
+    },
+    "doc_1778271856853": {},
+    "doc_1778185526778": {
+      "2026-W18": "hel",
+      "2026-W20": "hel",
+      "2026-W22": "hel",
+      "2026-W24": "hel",
+      "2026-W26": "hel",
+      "2026-W28": "hel",
+      "2026-W30": "hel",
+      "2026-W32": "hel",
+      "2026-W34": "hel",
+      "2026-W36": "hel"
+    },
+    "doc_1778271881686": {
+      "2026-W34": "hel",
+      "2026-W35": "hel",
+      "2026-W36": "hel",
+      "2026-W37": "hel",
+      "2026-W38": "hel",
+      "2026-W41": "hel",
+      "2026-W42": "hel",
+      "2026-W43": "hel",
+      "2026-W44": "hel",
+      "2026-W45": "hel",
+      "2026-W46": "hel",
+      "2026-W47": "hel"
+    }
+  },
+  "dagvardEntries": {
+    "2026-05-22": {
+      "docs": [
+        "doc_1778185481812"
+      ],
+      "note": ""
+    }
+  },
+  "auskultationEntries": {
+    "2026-06-01": [],
+    "2026-05-18": [],
+    "2026-05-19": [],
+    "2026-06-08": [
+      {
+        "id": "ausk_1779238548096_06-08",
+        "docId": "doc_1778096407185",
+        "place": "",
+        "note": ""
+      }
+    ],
+    "2026-06-09": [
+      {
+        "id": "ausk_1779238548096_06-09",
+        "docId": "doc_1778096407185",
+        "place": "",
+        "note": ""
+      }
+    ],
+    "2026-06-10": [
+      {
+        "id": "ausk_1779238548096_06-10",
+        "docId": "doc_1778096407185",
+        "place": "",
+        "note": ""
+      }
+    ],
+    "2026-06-11": [
+      {
+        "id": "ausk_1779238548096_06-11",
+        "docId": "doc_1778096407185",
+        "place": "",
+        "note": ""
+      }
+    ],
+    "2026-06-12": [
+      {
+        "id": "ausk_1779238548096_06-12",
+        "docId": "doc_1778096407185",
+        "place": "",
+        "note": ""
+      }
+    ]
+  },
+  "ovrigtNotes": {
+    "2026-05-11": [
+      {
+        "id": "ovr_1778851806252",
+        "text": "Noeteam kl 15",
+        "blocks": false,
+        "docId": "doc_1778185687751"
+      },
+      {
+        "id": "ovr_1778852324119",
+        "text": "Anna A möte kl 10",
+        "blocks": "fm",
+        "docId": "doc_1778186481926"
+      }
+    ],
+    "2026-05-12": [
+      {
+        "id": "ovr_1778852725370",
+        "text": "Klinikdag",
+        "blocks": "hel",
+        "docIds": [
+          "doc_1778186481926",
+          "doc_1778185352445",
+          "doc_1778186441693",
+          "doc_1778096407185",
+          "doc_1778096275085",
+          "doc_1778185687751",
+          "doc_1778096188034",
+          "doc_1778185404829",
+          "doc_1778185604961"
+        ]
+      }
+    ],
+    "2026-09-14": [
+      {
+        "id": "ovr_1779233956789",
+        "text": "CEPS",
+        "blocks": null,
+        "docIds": [
+          "doc_1778186481926",
+          "doc_1778185687751"
+        ]
+      }
+    ],
+    "2026-09-15": [
+      {
+        "id": "ovr_1779234008139",
+        "text": "CEPS",
+        "blocks": null,
+        "docIds": [
+          "doc_1778186481926",
+          "doc_1778185687751"
+        ]
+      }
+    ],
+    "2026-11-16": [
+      {
+        "id": "ovr_1779234062107",
+        "text": "CEPS",
+        "blocks": null,
+        "docIds": [
+          "doc_1778186481926",
+          "doc_1778185687751"
+        ]
+      }
+    ],
+    "2026-11-17": [
+      {
+        "id": "ovr_1779234096289",
+        "text": "CEPS",
+        "blocks": null,
+        "docIds": [
+          "doc_1778186481926",
+          "doc_1778185687751"
+        ]
+      }
+    ],
+    "2026-10-12": [
+      {
+        "id": "ovr_1779235330207",
+        "text": "Akutövningar",
+        "blocks": "hel",
+        "docIds": [
+          "doc_1778096099101"
+        ]
+      }
+    ],
+    "2026-10-13": [
+      {
+        "id": "ovr_1779236928236_9b7j",
+        "text": "Akutövningar",
+        "blocks": "hel",
+        "docIds": [
+          "doc_1778096099101"
+        ]
+      }
+    ],
+    "2026-10-14": [
+      {
+        "id": "ovr_1779236928237_9fzk",
+        "text": "Akutövningar",
+        "blocks": "hel",
+        "docIds": [
+          "doc_1778096099101"
+        ]
+      }
+    ],
+    "2026-10-15": [
+      {
+        "id": "ovr_1779236928237_mb4a",
+        "text": "Akutövningar",
+        "blocks": "hel",
+        "docIds": [
+          "doc_1778096099101"
+        ]
+      }
+    ]
+  },
+  "ovrigtRecurring": [],
+  "sjukskrivning": {},
+  "foraldraledig": {
+    "2026-06-10": [
+      {
+        "id": "fl_doc_1778186481926_2026-06-10",
+        "docId": "doc_1778186481926"
+      }
+    ]
+  },
+  "onskadPass": {
+    "doc_1778095996168": {
+      "2026-05-04": {
+        "posId": "pos_avd_ol",
+        "note": null
+      },
+      "2026-05-05": {
+        "posId": "pos_avd_ol",
+        "note": null
+      },
+      "2026-05-06": {
+        "posId": "pos_avd_ol",
+        "note": null
+      },
+      "2026-05-07": {
+        "posId": "pos_avd_ol",
+        "note": null
+      },
+      "2026-05-08": {
+        "posId": "pos_avd_ol",
+        "note": null
+      },
+      "2026-05-11": {
+        "posId": "pos_mott",
+        "note": null
+      },
+      "2026-05-12": {
+        "posId": "pos_mott",
+        "note": null
+      },
+      "2026-05-13": {
+        "posId": "pos_mott",
+        "note": null
+      },
+      "2026-05-14": {
+        "posId": "pos_mott",
+        "note": null
+      },
+      "2026-05-15": {
+        "posId": "pos_mott",
+        "note": null
+      }
+    },
+    "doc_1778186481926": {}
+  },
+  "specialRecurring": [
+    {
+      "id": "srec_1778875515305",
+      "type": "adm",
+      "docId": "doc_1778185352445",
+      "halfDay": "",
+      "note": "Cosmic",
+      "startDate": "2026-05-12",
+      "recurrence": "weekly"
+    }
+  ],
+  "onskadJourvecka": {
+    "doc_1778186481926": {
+      "2026-W36": "JV2"
+    },
+    "doc_1778096099101": {},
+    "doc_1778096188034": {},
+    "doc_1778096315868": {},
+    "doc_1778096346052": {},
+    "doc_1778096407185": {}
+  },
+  "ledighetOnskemal": {
+    "doc_1778186481926": {
+      "2026-10-27": true,
+      "2026-10-28": true,
+      "2026-10-29": true,
+      "2026-10-30": true
+    },
+    "doc_1778185235229": {
+      "2026-08-27": true,
+      "2026-08-28": true
+    },
+    "doc_1778185271329": {
+      "2026-11-09": true,
+      "2026-11-10": true
+    },
+    "doc_1778185526778": {
+      "2026-08-28": true
+    },
+    "doc_1778185352445": {
+      "2026-09-16": true,
+      "2026-09-17": true,
+      "2026-09-18": true
+    },
+    "doc_1778185404829": {
+      "2026-08-24": true,
+      "2026-09-25": true,
+      "2026-10-02": true,
+      "2026-10-19": true,
+      "2026-11-02": true
+    },
+    "doc_1778185481812": {
+      "2026-10-28": true,
+      "2026-10-29": true,
+      "2026-10-30": true,
+      "2026-10-26": true,
+      "2026-10-27": true
+    },
+    "doc_1778185604961": {
+      "2026-09-14": true,
+      "2026-09-15": true,
+      "2026-09-16": true,
+      "2026-10-02": true,
+      "2026-11-05": true,
+      "2026-11-12": true
+    },
+    "doc_1778186441693": {
+      "2026-08-17": true,
+      "2026-10-01": true,
+      "2026-10-02": true
+    },
+    "doc_1778185687751": {},
+    "doc_1778271856853": {
+      "2026-09-17": true,
+      "2026-09-18": true
+    },
+    "doc_1778095996168": {
+      "2026-08-17": true,
+      "2026-08-27": true,
+      "2026-08-28": true,
+      "2026-11-02": true
+    },
+    "doc_1778098219322": {
+      "2026-09-17": true,
+      "2026-09-18": true
+    },
+    "doc_1778096099101": {
+      "2026-10-09": true,
+      "2026-11-11": true
+    },
+    "doc_1778096154634": {},
+    "doc_1778096188034": {},
+    "doc_1778096275085": {
+      "2026-08-27": true,
+      "2026-08-28": true,
+      "2026-09-21": true,
+      "2026-11-05": true,
+      "2026-11-06": true
+    },
+    "doc_1778096346052": {},
+    "doc_1778129680148": {
+      "2026-08-24": true
+    }
+  },
+  "ledighetVeckorOnskemal": {
+    "doc_1778186481926": {},
+    "doc_1778129680148": {
+      "2026-W40": {
+        "flexible": "forward"
+      },
+      "2026-W46": {
+        "flexible": "forward"
+      }
+    },
+    "doc_1778185235229": {
+      "2026-W40": true
+    },
+    "doc_1778185271329": {
+      "2026-W39": true
+    },
+    "doc_1778185526778": {
+      "2026-W39": true
+    },
+    "doc_1778185404829": {
+      "2026-W44": true
+    },
+    "doc_1778185481812": {
+      "2026-W39": {
+        "flexible": "forward"
+      },
+      "2026-W48": true
+    },
+    "doc_1778185604961": {
+      "2026-W47": true
+    },
+    "doc_1778186441693": {
+      "2026-W35": true,
+      "2026-W44": true,
+      "2026-W46": true
+    },
+    "doc_1778185687751": {
+      "2026-W44": true
+    },
+    "doc_1778271881686": {},
+    "doc_1778271856853": {
+      "2026-W34": true
+    },
+    "doc_1778095996168": {
+      "2026-W44": true
+    },
+    "doc_1778096099101": {},
+    "doc_1778096154634": {},
+    "doc_1778096188034": {},
+    "doc_1778098219322": {},
+    "doc_1778096275085": {},
+    "doc_1778096315868": {},
+    "doc_1778096346052": {},
+    "doc_1778096407185": {}
+  },
+  "utbildningOnskemal": {
+    "doc_1778186481926": {},
+    "doc_1778129680148": {
+      "2026-09-07": {
+        "note": "Neo Högberga"
+      },
+      "2026-09-08": {
+        "note": "Neo Högberga"
+      }
+    },
+    "doc_1778185526778": {
+      "2026-11-19": {
+        "note": "Reumamöte"
+      },
+      "2026-11-20": {
+        "note": "Reumamöte"
+      }
+    },
+    "doc_1778185352445": {
+      "2026-11-19": {
+        "note": "Reuma"
+      },
+      "2026-11-20": {
+        "note": "Reuma"
+      }
+    },
+    "doc_1778186441693": {
+      "2026-09-23": {
+        "note": "Höstmöte"
+      },
+      "2026-09-24": {
+        "note": "Höstmöte"
+      },
+      "2026-09-25": {
+        "note": "Höstmöte"
+      }
+    },
+    "doc_1778185687751": {},
+    "doc_1778095996168": {},
+    "doc_1778098219322": {},
+    "doc_1778096099101": {},
+    "doc_1778096154634": {},
+    "doc_1778096188034": {},
+    "doc_1778096275085": {},
+    "doc_1778096315868": {},
+    "doc_1778096407185": {}
+  },
+  "jourfriOnskemal": {
+    "doc_1778186481926": {},
+    "doc_1778185352445": {
+      "2026-W47": {
+        "scope": "weekend",
+        "note": null
+      }
+    },
+    "doc_1778185404829": {},
+    "doc_1778185481812": {
+      "2026-W35": {
+        "scope": "weekend",
+        "note": null
+      },
+      "2026-W44": {
+        "scope": "weekend",
+        "note": null
+      },
+      "2026-W47": {
+        "scope": "weekend",
+        "note": null
+      }
+    },
+    "doc_1778185604961": {
+      "2026-W35": {
+        "scope": "weekend",
+        "note": null
+      }
+    },
+    "doc_1778186441693": {
+      "2026-W34": {
+        "scope": "weekend",
+        "note": null
+      }
+    },
+    "doc_1778185687751": {},
+    "doc_1778095996168": {
+      "2026-W43": {
+        "scope": "weekend",
+        "note": null
+      }
+    },
+    "doc_1778098219322": {},
+    "doc_1778096188034": {},
+    "doc_1778096275085": {},
+    "doc_1778096315868": {},
+    "doc_1778096346052": {},
+    "doc_1778096407185": {},
+    "doc_1778129680148": {},
+    "doc_1778096154634": {},
+    "doc_1778271881686": {}
+  },
+  "foraldraledigenOnskemal": {
+    "doc_1778186481926": {},
+    "doc_1778185604961": {},
+    "doc_1778567502527": {},
+    "doc_1779195976719": {},
+    "doc_1779196053767": {}
+  },
+  "posMinFillOverrides": {}
+}
