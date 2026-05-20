@@ -1596,6 +1596,90 @@ function exportSchema(){
   const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`schema-barnkliniken-v${wn}.txt`;a.click();URL.revokeObjectURL(url);showToast('Exporterat');
 }
 
+// ── GitHub-synk ──────────────────────────────────────────────
+const GH_LS_KEY='barnkliniken_github';
+
+function openGithubModal(){
+  const cfg=_ghCfg();
+  document.getElementById('ghPatInput').value=cfg.pat||'';
+  document.getElementById('ghRepoInput').value=cfg.repo||'arefalk/schema';
+  document.getElementById('ghPathInput').value=cfg.path||'schema.json';
+  document.getElementById('ghStatus').style.display='none';
+  _updateGhBtn();
+  openModal('githubModal');
+}
+
+function _ghCfg(){
+  try{return JSON.parse(localStorage.getItem(GH_LS_KEY)||'{}');}catch(e){return {};}
+}
+
+function _updateGhBtn(){
+  const btn=document.getElementById('githubSyncBtn');
+  if(!btn)return;
+  const cfg=_ghCfg();
+  btn.title=cfg.pat?`GitHub-synk aktiv (${cfg.repo} → ${cfg.path})`:'Inställningar för GitHub-synk';
+  btn.style.color=cfg.pat?'var(--accent)':'';
+}
+
+function saveGithubSettings(){
+  const pat=document.getElementById('ghPatInput').value.trim();
+  const repo=document.getElementById('ghRepoInput').value.trim()||'arefalk/schema';
+  const path=document.getElementById('ghPathInput').value.trim()||'schema.json';
+  if(!pat){_ghStatus('Ange en PAT','error');return;}
+  localStorage.setItem(GH_LS_KEY,JSON.stringify({pat,repo,path}));
+  _updateGhBtn();
+  // Testa direkt med en liten push
+  _pushToGitHub(JSON.stringify({test:true}),repo,path,pat,true);
+}
+
+function clearGithubSettings(){
+  localStorage.removeItem(GH_LS_KEY);
+  document.getElementById('ghPatInput').value='';
+  _updateGhBtn();
+  _ghStatus('Inställningar borttagna','info');
+}
+
+function _ghStatus(msg,type){
+  const el=document.getElementById('ghStatus');
+  if(!el)return;
+  el.textContent=msg;
+  el.style.display='block';
+  el.style.background=type==='error'?'#fce8e6':type==='ok'?'#e8f4e4':'#e8f0fa';
+  el.style.color=type==='error'?'#c0392b':type==='ok'?'#2d6a2d':'#1a3a6a';
+}
+
+async function _pushToGitHub(jsonStr,repo,path,pat,isTest){
+  const base='https://api.github.com';
+  const headers={'Authorization':'Bearer '+pat,'Content-Type':'application/json'};
+  // Hämta befintlig SHA (krävs för att uppdatera)
+  let sha=null;
+  try{
+    const r=await fetch(`${base}/repos/${repo}/contents/${path}`,{headers});
+    if(r.ok){const d=await r.json();sha=d.sha;}
+    else if(r.status!==404){const d=await r.json();_ghStatus('Fel: '+(d.message||r.status),'error');return;}
+  }catch(e){_ghStatus('Nätverksfel: '+e.message,'error');return;}
+  // Pusha
+  const body={message:'Schema uppdaterat '+new Date().toISOString().slice(0,10),content:btoa(unescape(encodeURIComponent(jsonStr)))};
+  if(sha)body.sha=sha;
+  if(isTest)body.content=btoa('{}'); // testa med tom fil
+  try{
+    const r=await fetch(`${base}/repos/${repo}/contents/${path}`,{method:'PUT',headers,body:JSON.stringify(body)});
+    const d=await r.json();
+    if(r.ok){
+      if(isTest){_ghStatus('✓ Anslutning OK — inställningar sparade','ok');}
+      else{showToast('Synkat till GitHub');}
+    } else {
+      _ghStatus('GitHub-fel: '+(d.message||r.status),'error');
+    }
+  }catch(e){_ghStatus('Nätverksfel: '+e.message,'error');}
+}
+
+function pushCurrentDataToGitHub(jsonStr){
+  const cfg=_ghCfg();
+  if(!cfg.pat)return;
+  _pushToGitHub(jsonStr,cfg.repo,cfg.path,cfg.pat,false);
+}
+
 function saveData(){
   const data={
     version:2,savedAt:new Date().toISOString(),
@@ -1609,10 +1693,13 @@ function saveData(){
     ledighetOnskemal,ledighetVeckorOnskemal,utbildningOnskemal,jourfriOnskemal,foraldraledigenOnskemal,
     posMinFillOverrides
   };
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const jsonStr=JSON.stringify(data,null,2);
+  const blob=new Blob([jsonStr],{type:'application/json'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='barnkliniken-schema-'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();URL.revokeObjectURL(url);showToast('Schema sparat');
+  a.click();URL.revokeObjectURL(url);
+  pushCurrentDataToGitHub(jsonStr);
+  showToast('Schema sparat');
 }
 function loadData(event){
   const file=event.target.files[0];if(!file)return;
