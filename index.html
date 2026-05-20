@@ -5,63 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schemaläggning — Barnkliniken</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
+<div id="doctorSelectorOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:14px;padding:32px;max-width:500px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.25)">
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text1);margin-bottom:4px">Barnkliniken</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:24px">Välj din läkare för att fortsätta</div>
+    <div id="doctorSelectorList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto"></div>
+  </div>
+</div>
 <header>
   <div class="logo">Barnkliniken <span>Schemaläggning</span></div>
   <div class="header-nav">
-    <button class="nav-btn active" id="btn5" onclick="setSpan(5)">Mån–Fre</button>
-    <button class="nav-btn" id="btn7" onclick="setSpan(7)">Mån–Sön</button>
+    <button class="nav-btn" id="btn5" onclick="setSpan(5)">Mån–Fre</button>
+    <button class="nav-btn active" id="btn7" onclick="setSpan(7)">Mån–Sön</button>
+    <button class="nav-btn" id="btnMonth" onclick="setViewMode('month')">Månad</button>
   </div>
   <div id="periodBadge" class="period-badge" onclick="openPeriodModal()" title="Välj schemaperiod">📆 <span id="periodBadgeText">Ingen period vald</span></div>
-  <div class="header-right">
-    <button class="btn-action" onclick="openPositionsModal()">⚙ Positioner</button>
-    <button class="btn-action" onclick="openLedighetModal()">📅 Ledighet</button>
-    <button class="btn-action" onclick="openUtbildningModal()">📚 Utbildning</button>
-    <button class="btn-action" onclick="openForaldraledModal()">👶 Föräldraledighet</button>
-    <button class="btn-action" onclick="openHandledningModal()">🎓 Handledning</button>
-    <button class="btn-action" onclick="openImportOnskadeModal()">📥 Importera önskemål</button>
-    <button class="btn-action" onclick="openReviewModal()">📋 Granska önskemål</button>
-    <button class="btn-action" onclick="openRotationModal()">🔄 Jourveckor</button>
-    <button class="btn-action" onclick="openModal('autoModal')">⚡ Auto-fördela</button>
-    <button class="btn-action" onclick="saveData()" title="Spara allt som JSON-fil">💾 Spara</button>
-    <button class="btn-action" onclick="document.getElementById('loadFileInput').click()" title="Ladda in sparad JSON-fil">📂 Ladda</button>
-    <input type="file" id="loadFileInput" accept=".json" style="display:none" onchange="loadData(event)">
-    <button class="btn-action primary" onclick="exportSchema()">↓ Exportera</button>
-  </div>
 </header>
+<div class="toolbar">
+  <button class="btn-action" onclick="window.open('?mode=doctor','_blank')" title="Öppna läkarvy i ny flik" style="color:var(--accent)">👁 Läkarvy</button>
+  <button class="btn-action" onclick="openDoctorListModal()">👥 Läkare</button>
+  <button class="btn-action" onclick="openPositionsModal()">⚙ Positioner</button>
+  <button class="btn-action" onclick="openLedighetModal()">📅 Ledighet</button>
+  <button class="btn-action" onclick="openSjukskrivningModal(isoDate(getMonday(currentDate)))" title="Sjukskrivning och VAB">🤒 Sjuk/VAB</button>
+  <button class="btn-action" onclick="openFlModal(isoDate(getMonday(currentDate)))" title="Föräldraledig">👶 Föräldraledig</button>
+  <button class="btn-action" onclick="openAuskultationModal(isoDate(getMonday(currentDate)))" title="Auskultation och introduktion">🔬 Ausk/Intro</button>
+  <button class="btn-action" onclick="openOvrigtModal(isoDate(getMonday(currentDate)))" title="Övrigt — möten och åtaganden">📌 Övrigt</button>
+  <button class="btn-action" onclick="openOnskadPassModal()" title="Önskade pass per läkare">⭐ Önskemål</button>
+  <button class="btn-action" onclick="openUtbildningModal()">📚 Utbildning</button>
+  <button class="btn-action" onclick="openDeltidModal()">📋 Deltidsschema</button>
+  <button class="btn-action" onclick="openHandledningModal()">🎓 Handledning</button>
+  <button class="btn-action" onclick="openRotationModal()">🔄 Jourveckor</button>
+  <button class="btn-action" onclick="openBemanningModal()">📊 Bemanning</button>
+  <button class="btn-action" onclick="openAutoModal()">⚡ Auto-fördela</button>
+  <button class="btn-action" onclick="openPersonScheduleModal()">👤 Personschema</button>
+  <button class="btn-action" onclick="openJoursaldoModal()" title="Jouräknesaldo per läkare">⚖ Joursaldo</button>
+  <button class="btn-action" onclick="openChangelogModal()" title="Ändringslogg för denna session">📋 Ändringslogg</button>
+  <button class="btn-action" onclick="openStatisticsModal()" title="Exportera placeringsstatistik per läkare till Excel">📊 Statistik</button>
+  <button class="btn-action" onclick="saveData()" title="Spara allt som JSON-fil">💾 Spara</button>
+  <button class="btn-action" onclick="document.getElementById('loadFileInput').click()" title="Ladda in sparad JSON-fil">📂 Ladda</button>
+  <input type="file" id="loadFileInput" accept=".json" style="display:none" onchange="loadData(event)">
+  <button class="btn-action primary" onclick="exportSchema()">↓ Exportera</button>
+</div>
+<div id="doctorToolbar" style="display:none;flex-shrink:0;align-items:center;gap:8px;padding:6px 18px;background:var(--surface);border-bottom:1px solid var(--border)">
+  <span id="doctorModeLabel" style="font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:3px 10px;border-radius:20px;margin-right:8px">Läkarvy</span>
+  <button class="btn-action" onclick="openPersonScheduleModal()">👤 Personschema</button>
+  <button class="btn-action" onclick="openOnskadPassModal()">📋 Önskemål</button>
+  <button class="btn-action" onclick="openBemanningModal()">📊 Bemanning</button>
+  <div style="flex:1"></div>
+  <button class="nav-btn" onclick="goToDoctorSelector()" title="Byt läkare">↩ Byt läkare</button>
+</div>
 <main>
-<aside>
-  <div class="aside-section">
-    <div class="aside-title">Lägg till läkare</div>
-    <div class="add-form"><input type="text" id="newDoctorInput" placeholder="Namn..." onkeydown="if(event.key==='Enter')openAddDoctorModal()"><button class="btn-add" onclick="openAddDoctorModal()">+</button></div>
-  </div>
-  <div class="aside-section">
-    <div class="aside-title">Läkare (<span id="docCount">0</span>) <button class="aside-btn" onclick="openRolesModal()">Roller &amp; komp.</button></div>
-  </div>
-  <div class="doctors-list" id="doctorsList"></div>
-  <div class="aside-section" style="margin-top:auto">
-    <div class="aside-title">Förklaring</div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--jv1-light);border:1.5px solid var(--jv1);color:var(--jv1)">JV1</div>Jourvecka 1</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--jv2-light);border:1.5px solid var(--jv2);color:var(--jv2)">JV2</div>Jourvecka 2</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--nlo-light);border:1.5px solid var(--nlo);color:var(--nlo)">NLÖ</div>Nattlördag</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--bjfs-light);border:1.5px solid var(--bjfs);color:var(--bjfs)">BJFS</div>Bakjour fre–sön</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--bjlo-light);border:1.5px solid var(--bjlo);color:var(--bjlo)">BJLÖ</div>Bakjour lördag</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--bjnv-light);border:1.5px solid var(--bjnv);color:var(--bjnv)">BJNV</div>Nattbakjour vardag</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--bvc-light);border:1.5px solid var(--bvc);color:var(--bvc)">BVC</div>BVC torsdag</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--ledighet-light);border:1.5px solid var(--ledighet);color:var(--ledighet)">LED</div>Önskad ledighet</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--utb-light);border:1.5px solid #c0c060;color:var(--utb)">UTB</div>Utbildning</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--fl-light);border:1.5px solid var(--fl);color:var(--fl)">FL</div>Föräldraledighet</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:#f0f0f0;border:1.5px solid #c0c0c0;color:#555">ADM</div>Administration</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:#fff0f8;border:1.5px solid #e0a0c0;color:#8a2060">HLD</div>Handledning</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--night-light);border:1.5px solid #a0a4c0">🌙</div>Nattpass</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--day-s-light);border:1.5px solid #a0c8b8">☀</div>Dagpass / dagjour</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--jourledigt-light);border:1.5px solid #f0c080">✦</div>Jourledigt</div>
-    </div>
-  </div>
-</aside>
 
 <div class="content">
   <div class="week-header">
@@ -84,6 +80,13 @@
   <div class="ctx-head" id="ctxHead">Välj läkare</div>
   <div id="ctxHalfRow" style="display:none;padding:4px 8px 6px;display:none;gap:4px;flex-wrap:wrap"></div>
   <div class="ctx-doc-list" id="ctxDocList"></div>
+  <div id="ctxLocRow" style="display:none;padding:3px 8px 2px;display:none;gap:4px">
+  </div>
+  <div id="ctxActivityRow" style="display:none;padding:3px 8px 2px;gap:4px;flex-wrap:wrap"></div>
+  <div id="ctxNoteRow" style="display:none;padding:4px 8px 6px">
+    <input type="text" id="ctxNoteInput" placeholder="Notering (lokal, inriktning…)" maxlength="60" style="width:100%;box-sizing:border-box;font-size:11px;padding:4px 7px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text1);outline:none" oninput="ctxNoteChanged(this.value)">
+  </div>
+  <div id="ctxCopyRow" style="display:none"><div class="ctx-sep"></div><div class="ctx-item" onclick="openCopySlot()"><span style="width:14px;text-align:center">📋</span> Kopiera till…</div></div>
   <div class="ctx-sep"></div>
   <div class="ctx-item danger" onclick="ctxClear()"><span style="width:14px;text-align:center">✕</span> Rensa</div>
 </div>
@@ -102,6 +105,12 @@
   <div class="ctx-item danger" onclick="clearBJCtx()"><span style="width:14px;text-align:center">✕</span> Rensa</div>
 </div>
 
+<div class="ctx-menu" id="ctxLedig" style="min-width:230px">
+  <div class="ctx-head" id="ctxLedigHead">Ledighet</div>
+  <div id="ctxLedigSubRow" style="display:none;padding:4px 8px 2px;gap:4px;flex-wrap:wrap"></div>
+  <div class="ctx-doc-list" id="ctxLedigList"></div>
+</div>
+
 <div class="modal-overlay" id="addDoctorModal">
   <div class="modal" style="min-width:500px">
     <h3>Lägg till läkare</h3><p class="modal-sub">Namn, befattning, kompetenser och jourinformation.</p>
@@ -109,7 +118,16 @@
       <div class="fg"><label class="fl">Namn</label><input type="text" id="addDocName" placeholder="För- och efternamn"></div>
       <div class="fg"><label class="fl">Befattning</label><div class="tg" id="addRoleGrid"></div></div>
     </div>
-    <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><div class="tg" id="addAllowedGrid"></div></div>
+    <div class="fg" style="max-width:180px"><label class="fl">Tjänstgrad (%)</label><input type="number" id="addTjgrad" value="100" min="10" max="100" step="5" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    <div class="two-col">
+      <div class="fg"><label class="fl">Anställningsstart</label><input type="date" id="addEmpStart" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+      <div class="fg"><label class="fl">Anställningsslut <span style="font-weight:400;color:var(--text3)">(tom = tillsvidare)</span></label><input type="date" id="addEmpEnd" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    </div>
+    <div class="two-col">
+      <div class="fg"><label class="fl" style="color:var(--fl)">👶 Föräldraledig från</label><input type="date" id="addFlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+      <div class="fg"><label class="fl" style="color:var(--fl)">Föräldraledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="addFlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    </div>
+    <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><button class="btn sm" type="button" onclick="applyRoleDefaults('add')" style="font-size:10px;margin-bottom:4px">↩ Fyll från rollstandard</button><div class="tg" id="addAllowedGrid"></div></div>
     <div class="fg"><label class="fl">Föredragna positioner</label><div class="tg" id="addPrefGrid"></div></div>
     <div class="fg"><label class="fl">JV-preferens</label>
       <div class="tg">
@@ -120,16 +138,16 @@
     </div>
     <div class="fg"><label class="fl">Deltar i jourveckor</label>
       <div class="tg">
-        <input type="checkbox" class="tc" id="addJV1"><label class="tl" for="addJV1">JV1</label>
-        <input type="checkbox" class="tc" id="addJV2"><label class="tl" for="addJV2">JV2</label>
-        <input type="checkbox" class="tc" id="addNLO"><label class="tl" for="addNLO">NLÖ</label>
+        <input type="checkbox" class="tc" id="addJV1"><label class="tl" for="addJV1" title="Jourvecka 1 — primärjour fredag kväll t.o.m. måndag morgon">JV1</label>
+        <input type="checkbox" class="tc" id="addJV2"><label class="tl" for="addJV2" title="Jourvecka 2 — primärjour lördag kväll t.o.m. tisdag morgon">JV2</label>
+        <input type="checkbox" class="tc" id="addNLO"><label class="tl" for="addNLO" title="Nattlördag — primärjour natt lördag">NLÖ</label>
       </div>
     </div>
     <div class="fg"><label class="fl">Deltar i bakjour</label>
       <div class="tg">
-        <input type="checkbox" class="tc" id="addBJFS"><label class="tl" for="addBJFS">BJFS</label>
-        <input type="checkbox" class="tc" id="addBJLO"><label class="tl" for="addBJLO">BJLÖ</label>
-        <input type="checkbox" class="tc" id="addBJNV"><label class="tl" for="addBJNV">BJNV</label>
+        <input type="checkbox" class="tc" id="addBJFS"><label class="tl" for="addBJFS" title="Bakjour fredag–söndag">BJFS</label>
+        <input type="checkbox" class="tc" id="addBJLO"><label class="tl" for="addBJLO" title="Bakjour lördag">BJLÖ</label>
+        <input type="checkbox" class="tc" id="addBJNV"><label class="tl" for="addBJNV" title="Nattbakjour vardag">BJNV</label>
       </div>
     </div>
     <div class="modal-actions"><button class="btn" onclick="closeModal('addDoctorModal')">Avbryt</button><button class="btn primary" onclick="confirmAddDoctor()">Lägg till</button></div>
@@ -144,8 +162,17 @@
       <div class="fg"><label class="fl">Namn</label><input type="text" id="editDocName"></div>
       <div class="fg"><label class="fl">Befattning</label><div class="tg" id="editRoleGrid"></div></div>
     </div>
+    <div class="fg" style="max-width:180px"><label class="fl">Tjänstgrad (%)</label><input type="number" id="editTjgrad" value="100" min="10" max="100" step="5" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    <div class="two-col">
+      <div class="fg"><label class="fl">Anställningsstart</label><input type="date" id="editEmpStart" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+      <div class="fg"><label class="fl">Anställningsslut <span style="font-weight:400;color:var(--text3)">(tom = tillsvidare)</span></label><input type="date" id="editEmpEnd" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    </div>
+    <div class="two-col">
+      <div class="fg"><label class="fl" style="color:var(--fl)">👶 Föräldraledig från</label><input type="date" id="editFlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+      <div class="fg"><label class="fl" style="color:var(--fl)">Föräldraledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="editFlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    </div>
     <div class="fg"><label class="fl">Föredragna positioner</label><div class="tg" id="editPrefGrid"></div></div>
-    <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><div class="tg" id="editAllowedGrid"></div></div>
+    <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><button class="btn sm" type="button" onclick="applyRoleDefaults('edit')" style="font-size:10px;margin-bottom:4px">↩ Fyll från rollstandard</button><div class="tg" id="editAllowedGrid"></div></div>
     <div class="fg"><label class="fl">JV-preferens</label>
       <div class="tg">
         <input type="radio" name="editPrefJV" id="editPrefJVnone" value=""><label class="tl" for="editPrefJVnone">Ingen</label>
@@ -155,19 +182,36 @@
     </div>
     <div class="fg"><label class="fl">Deltar i jourveckor</label>
       <div class="tg">
-        <input type="checkbox" class="tc" id="editJV1"><label class="tl" for="editJV1">JV1</label>
-        <input type="checkbox" class="tc" id="editJV2"><label class="tl" for="editJV2">JV2</label>
-        <input type="checkbox" class="tc" id="editNLO"><label class="tl" for="editNLO">NLÖ</label>
+        <input type="checkbox" class="tc" id="editJV1"><label class="tl" for="editJV1" title="Jourvecka 1 — primärjour fredag kväll t.o.m. måndag morgon">JV1</label>
+        <input type="checkbox" class="tc" id="editJV2"><label class="tl" for="editJV2" title="Jourvecka 2 — primärjour lördag kväll t.o.m. tisdag morgon">JV2</label>
+        <input type="checkbox" class="tc" id="editNLO"><label class="tl" for="editNLO" title="Nattlördag — primärjour natt lördag">NLÖ</label>
       </div>
     </div>
     <div class="fg"><label class="fl">Deltar i bakjour</label>
       <div class="tg">
-        <input type="checkbox" class="tc" id="editBJFS"><label class="tl" for="editBJFS">BJFS</label>
-        <input type="checkbox" class="tc" id="editBJLO"><label class="tl" for="editBJLO">BJLÖ</label>
-        <input type="checkbox" class="tc" id="editBJNV"><label class="tl" for="editBJNV">BJNV</label>
+        <input type="checkbox" class="tc" id="editBJFS"><label class="tl" for="editBJFS" title="Bakjour fredag–söndag">BJFS</label>
+        <input type="checkbox" class="tc" id="editBJLO"><label class="tl" for="editBJLO" title="Bakjour lördag">BJLÖ</label>
+        <input type="checkbox" class="tc" id="editBJNV"><label class="tl" for="editBJNV" title="Nattbakjour vardag">BJNV</label>
       </div>
     </div>
-    <div class="modal-actions"><button class="btn danger" onclick="promptDeleteFromEdit()">Ta bort</button><div style="flex:1"></div><button class="btn" onclick="closeModal('editDoctorModal')">Avbryt</button><button class="btn primary" onclick="confirmEditDoctor()">Spara</button></div>
+    <div class="modal-actions"><button class="btn danger" onclick="promptDeleteFromEdit()">Ta bort</button><div style="flex:1"></div><button class="btn" onclick="closeEditDoctorModal()">Avbryt</button><button class="btn primary" onclick="confirmEditDoctor()">Spara</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="jvOverrideModal">
+  <div class="modal" style="min-width:360px">
+    <h3 id="jvOverrideTitle">Byt jourhavande</h3>
+    <p class="modal-sub" id="jvOverrideSub"></p>
+    <div class="fg">
+      <label class="fl">Välj läkare</label>
+      <select id="jvOverrideSel" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="clearJVOverride()">Återställ till JV-schema</button>
+      <div style="flex:1"></div>
+      <button class="btn" onclick="closeModal('jvOverrideModal')">Avbryt</button>
+      <button class="btn primary" onclick="confirmJVOverride()">Spara</button>
+    </div>
   </div>
 </div>
 
@@ -190,24 +234,32 @@
       </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div class="fl" style="margin:0">Veckor</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn sm" onclick="rotNav(-4)">⟨⟨</button>
+        <button class="btn sm" onclick="rotNav(-1)">←</button>
+        <button class="btn sm" onclick="rotNav(0)" title="Hoppa till aktuell vecka">Idag</button>
+        <button class="btn sm" onclick="rotNav(1)">→</button>
+        <button class="btn sm" onclick="rotNav(4)">⟩⟩</button>
+      </div>
       <div style="display:flex;gap:6px">
         <input type="number" id="rotFrom" min="1" max="52" style="width:70px;font-size:12px" placeholder="Fr.v.">
         <input type="number" id="rotTo" min="1" max="52" style="width:70px;font-size:12px" placeholder="T.o.m.">
         <button class="btn sm primary" onclick="autoRotate()">Auto-rotera</button>
         <button class="btn sm" onclick="clearRotation()">Rensa</button>
+        <button class="btn sm" onclick="undoClearRotation()" title="Ångra senaste rensning eller auto-rotation">↩ Ångra</button>
       </div>
     </div>
-    <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+    <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px" id="rotTableWrap">
       <table class="rot-table" id="rotTable"></table>
     </div>
 
     <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:13px;font-weight:700">Bakjour helg</div>
+        <div style="font-size:13px;font-weight:700">Bakjour helg <span style="font-size:11px;font-weight:400;color:var(--text3)">(BJFS = Bakjour fre–sön · BJLÖ = Bakjour lördag)</span></div>
         <div style="display:flex;gap:6px">
           <button class="btn sm primary" onclick="autoBJRotate()">Auto-rotera BJ</button>
           <button class="btn sm" onclick="clearBJRotation()">Rensa BJ</button>
+          <button class="btn sm" onclick="undoClearBJRotation()" title="Ångra senaste rensning eller auto-rotation">↩ Ångra</button>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
@@ -220,7 +272,7 @@
           <div style="font-size:10px;color:var(--text2)">Lör dag+natt · Jourledig måndag</div>
         </div>
       </div>
-      <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+      <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px" id="bjRotTableWrap">
         <table class="rot-table" id="bjRotTable"></table>
       </div>
     </div>
@@ -237,7 +289,7 @@
         <div style="font-size:11px;font-weight:700;color:var(--bjnv);margin-bottom:2px">BJNV</div>
         <div style="font-size:10px;color:var(--text2)">Max 1 natt/vecka per läkare · Ej i anslutning till bakjourshelg · Jourledig nästa vardag</div>
       </div>
-      <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+      <div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px" id="bjNVRotTableWrap">
         <table class="rot-table" id="bjNVRotTable"></table>
       </div>
     </div>
@@ -252,26 +304,68 @@
     <div id="posListEl"></div>
     <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
       <label class="fl">Ny position</label>
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input type="text" id="newPosName" placeholder="Namn..." style="flex:2">
-        <div style="flex:1"><label class="fl">Slots</label><input type="number" id="newPosSlots" value="1" min="1" max="6"></div>
+      <div style="margin-bottom:8px">
+        <input type="text" id="newPosName" placeholder="Namn..." style="width:100%;box-sizing:border-box">
       </div>
-      <div class="two-col">
-        <div><label class="fl">Befattningskrav</label><select id="newPosRole"><option value="">Alla</option><option value="ÖL">ÖL</option><option value="UL">UL (ST/AT)</option></select></div>
-        <div><label class="fl">Placering i schema</label><select id="newPosSection"><option value="">Ovan dagjour</option><option value="mott">Under dagjour (Mottagning)</option></select></div>
-        <div>
-          <label class="fl">Aktiva veckodagar</label>
-          <div id="newPosDays" style="display:flex;gap:4px;margin-top:4px">
-            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="1" checked style="margin:0">Mån</label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="2" checked style="margin:0">Tis</label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="3" checked style="margin:0">Ons</label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="4" checked style="margin:0">Tor</label>
-            <label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text2)"><input type="checkbox" value="5" checked style="margin:0">Fre</label>
-          </div>
+      <div class="two-col" style="margin-bottom:8px">
+        <div><label class="fl">Sektion i schema</label><select id="newPosSection"><option value="">Avdelningsplaceringar</option><option value="mott">Mottagning</option><option value="specmott">Specialistmottagningar</option></select></div>
+        <div><label class="fl">Veckofrekvens</label><select id="newPosWeekParity"><option value="">Varje vecka</option><option value="even">Jämna veckor</option><option value="odd">Ojämna veckor</option></select></div>
+      </div>
+      <div>
+        <label class="fl">Platser per dag (0 = inaktiv)</label>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:4px">
+          <div style="text-align:center"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">Mån</div><input type="number" id="newPosDay_1" value="1" min="0" max="6" style="width:100%;text-align:center;padding:3px"><label style="display:flex;align-items:center;justify-content:center;gap:2px;font-size:9px;color:#1d4ed8;margin-top:2px;cursor:pointer" title="En slot är Karlshamn"><input type="checkbox" id="newPosKH_1" style="margin:0;accent-color:#1d4ed8">KH</label><select id="newPosParity_1" style="width:100%;font-size:9px;padding:2px;margin-top:2px;border:1px solid var(--border);border-radius:4px" title="Veckofrekvens för måndag"><option value="">Varje v.</option><option value="even">Jämna v.</option><option value="odd">Ojämna v.</option></select></div>
+          <div style="text-align:center"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">Tis</div><input type="number" id="newPosDay_2" value="1" min="0" max="6" style="width:100%;text-align:center;padding:3px"><label style="display:flex;align-items:center;justify-content:center;gap:2px;font-size:9px;color:#1d4ed8;margin-top:2px;cursor:pointer" title="En slot är Karlshamn"><input type="checkbox" id="newPosKH_2" style="margin:0;accent-color:#1d4ed8">KH</label><select id="newPosParity_2" style="width:100%;font-size:9px;padding:2px;margin-top:2px;border:1px solid var(--border);border-radius:4px" title="Veckofrekvens för tisdag"><option value="">Varje v.</option><option value="even">Jämna v.</option><option value="odd">Ojämna v.</option></select></div>
+          <div style="text-align:center"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">Ons</div><input type="number" id="newPosDay_3" value="1" min="0" max="6" style="width:100%;text-align:center;padding:3px"><label style="display:flex;align-items:center;justify-content:center;gap:2px;font-size:9px;color:#1d4ed8;margin-top:2px;cursor:pointer" title="En slot är Karlshamn"><input type="checkbox" id="newPosKH_3" style="margin:0;accent-color:#1d4ed8">KH</label><select id="newPosParity_3" style="width:100%;font-size:9px;padding:2px;margin-top:2px;border:1px solid var(--border);border-radius:4px" title="Veckofrekvens för onsdag"><option value="">Varje v.</option><option value="even">Jämna v.</option><option value="odd">Ojämna v.</option></select></div>
+          <div style="text-align:center"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">Tor</div><input type="number" id="newPosDay_4" value="1" min="0" max="6" style="width:100%;text-align:center;padding:3px"><label style="display:flex;align-items:center;justify-content:center;gap:2px;font-size:9px;color:#1d4ed8;margin-top:2px;cursor:pointer" title="En slot är Karlshamn"><input type="checkbox" id="newPosKH_4" style="margin:0;accent-color:#1d4ed8">KH</label><select id="newPosParity_4" style="width:100%;font-size:9px;padding:2px;margin-top:2px;border:1px solid var(--border);border-radius:4px" title="Veckofrekvens för torsdag"><option value="">Varje v.</option><option value="even">Jämna v.</option><option value="odd">Ojämna v.</option></select></div>
+          <div style="text-align:center"><div style="font-size:9px;color:var(--text3);margin-bottom:2px">Fre</div><input type="number" id="newPosDay_5" value="1" min="0" max="6" style="width:100%;text-align:center;padding:3px"><label style="display:flex;align-items:center;justify-content:center;gap:2px;font-size:9px;color:#1d4ed8;margin-top:2px;cursor:pointer" title="En slot är Karlshamn"><input type="checkbox" id="newPosKH_5" style="margin:0;accent-color:#1d4ed8">KH</label><select id="newPosParity_5" style="width:100%;font-size:9px;padding:2px;margin-top:2px;border:1px solid var(--border);border-radius:4px" title="Veckofrekvens för fredag"><option value="">Varje v.</option><option value="even">Jämna v.</option><option value="odd">Ojämna v.</option></select></div>
         </div>
       </div>
     </div>
     <div class="modal-actions"><button class="btn" onclick="closeModal('positionsModal')">Stäng</button><button class="btn primary" onclick="addPosition()">+ Lägg till</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="copySlotModal">
+  <div class="modal" style="max-width:380px">
+    <h3>Kopiera pass</h3>
+    <p class="modal-sub" id="copySlotDesc"></p>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);cursor:pointer"><input type="checkbox" onchange="toggleCopySlotAll(this.checked)" style="margin:0;accent-color:var(--accent)"> Markera alla</label>
+    </div>
+    <div id="copySlotList" style="max-height:380px;overflow-y:auto;border:1px solid var(--border);border-radius:7px;padding:4px 6px"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('copySlotModal')">Avbryt</button>
+      <button class="btn primary" onclick="confirmCopySlot()">📋 Kopiera markerade</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="copyOvrigtModal">
+  <div class="modal" style="max-width:360px">
+    <h3>Kopiera aktivitet</h3>
+    <p class="modal-sub" id="copyOvrigtDesc"></p>
+    <div class="two-col" style="margin-bottom:10px">
+      <div><label class="fl">Från</label><input type="date" id="copyOvrigtFrom" oninput="updateOvrigtCopyPreview()"></div>
+      <div><label class="fl">Till</label><input type="date" id="copyOvrigtTo" oninput="updateOvrigtCopyPreview()"></div>
+    </div>
+    <div style="margin-bottom:10px">
+      <label class="fl">Kopiera till dessa veckodagar</label>
+      <div style="display:flex;gap:6px;margin-top:5px">
+        <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" class="copyOvrigtDow" value="1" oninput="updateOvrigtCopyPreview()" style="margin:0;accent-color:var(--accent)">Mån</label>
+        <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" class="copyOvrigtDow" value="2" oninput="updateOvrigtCopyPreview()" style="margin:0;accent-color:var(--accent)">Tis</label>
+        <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" class="copyOvrigtDow" value="3" oninput="updateOvrigtCopyPreview()" style="margin:0;accent-color:var(--accent)">Ons</label>
+        <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" class="copyOvrigtDow" value="4" oninput="updateOvrigtCopyPreview()" style="margin:0;accent-color:var(--accent)">Tor</label>
+        <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" class="copyOvrigtDow" value="5" oninput="updateOvrigtCopyPreview()" style="margin:0;accent-color:var(--accent)">Fre</label>
+        <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" class="copyOvrigtDow" value="6" oninput="updateOvrigtCopyPreview()" style="margin:0;accent-color:var(--accent)">Lör</label>
+        <label style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text2);cursor:pointer"><input type="checkbox" class="copyOvrigtDow" value="0" oninput="updateOvrigtCopyPreview()" style="margin:0;accent-color:var(--accent)">Sön</label>
+      </div>
+    </div>
+    <div id="copyOvrigtPreview" style="font-size:12px;color:var(--text3);margin-bottom:4px;min-height:18px"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('copyOvrigtModal')">Avbryt</button>
+      <button class="btn primary" onclick="confirmOvrigtCopy()">📋 Kopiera</button>
+    </div>
   </div>
 </div>
 
@@ -291,9 +385,25 @@
       <div style="display:flex;flex-direction:column;gap:6px">
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="autoChkDag" checked> Dagpositioner (exkl. jourveckans läkare)</label>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="autoChkDJ" checked> Dagjour &amp; Dagbakjour</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="autoChkRond" checked> Dagvård — Rond 08:30–09:00</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding-left:20px"><input type="checkbox" id="autoChkDvMott" checked> Dagvård — Mottagning</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="autoChkHandl" checked> Handledning (1 fm/mån per ST-läkare)</label>
       </div>
     </div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal('autoModal')">Avbryt</button><button class="btn" onclick="undoAutoDistribute();closeModal('autoModal')" title="Återställ senaste autofördelning">↩ Ångra</button><button class="btn primary" onclick="runAutoDistribute()">⚡ Fördela</button></div>
+    <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px">
+      <label class="fl" style="margin-bottom:6px">Rensa pass</label>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input type="date" id="clearFrom" style="padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;background:var(--surface);color:var(--text1)" oninput="updateClearInfo()">
+        <span style="color:var(--text2);font-size:12px">–</span>
+        <input type="date" id="clearTo" style="padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;background:var(--surface);color:var(--text1)" oninput="updateClearInfo()">
+        <span id="clearInfo" style="font-size:11px;color:var(--text2)"></span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn sm danger" onclick="clearSchedule(false)" title="Rensa bara vald period">🗑 Rensa period</button>
+        <button class="btn sm danger" onclick="clearSchedule(true)" title="Töm hela schemat">🗑 Rensa hela schemat</button>
+      </div>
+    </div>
+    <div class="modal-actions"><div style="flex:1"></div><button class="btn" onclick="closeModal('autoModal')">Avbryt</button><button class="btn" onclick="undoAutoDistribute();closeModal('autoModal')" title="Återställ senaste autofördelning">↩ Ångra</button><button class="btn primary" onclick="runAutoDistribute()">⚡ Fördela</button></div>
   </div>
 </div>
 
@@ -303,25 +413,35 @@
   </div>
 </div>
 
-<!-- BVC ctx -->
-<div class="ctx-menu" id="ctxBVC" style="min-width:220px">
-  <div class="ctx-head" style="color:var(--bvc)">BVC — välj läkare</div>
-  <div class="ctx-doc-list" id="ctxBVCList"></div>
-  <div class="ctx-sep"></div>
-  <div class="ctx-item danger" onclick="clearBVCCtx()"><span style="width:14px;text-align:center">✕</span> Rensa</div>
-</div>
-
 <!-- Special ctx (edit/delete) -->
 <div class="ctx-menu" id="ctxSpecial" style="min-width:180px">
   <div class="ctx-head" id="ctxSpecialHead">Inslag</div>
   <div class="ctx-item danger" onclick="deleteSpecialCtx()"><span style="width:14px;text-align:center">✕</span> Ta bort</div>
 </div>
 
+<!-- Bemanning Modal -->
+<div class="modal-overlay" id="bemanningModal">
+  <div class="modal" style="min-width:560px;max-width:700px">
+    <h3>Bemanning</h3>
+    <p class="modal-sub">Antal läkare i tjänst per dag, exklusive frånvaro (ledighet, utbildning, FL, sjukskrivning m.m.). Röd = under minimum för obligatoriska positioner. Gul = exakt vid gränsen. Grön = OK.</p>
+    <div class="fg">
+      <label class="fl">Månad</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn sm" onclick="bemanningNavMonth(-1)">‹</button>
+        <span id="bemanningMonthLabel" style="font-size:13px;font-weight:600;min-width:140px;text-align:center"></span>
+        <button class="btn sm" onclick="bemanningNavMonth(1)">›</button>
+      </div>
+    </div>
+    <div id="bemanningContainer"></div>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('bemanningModal')">Stäng</button></div>
+  </div>
+</div>
+
 <!-- Ledighet Modal -->
 <div class="modal-overlay" id="ledighetModal">
   <div class="modal" style="min-width:560px;max-width:700px">
-    <h3>Önskad ledighet</h3>
-    <p class="modal-sub">Klicka på dagar eller markera hela veckor. Röda markeringar visas i schemat och genererar varningar vid schemaläggning.</p>
+    <h3>Ledighet &amp; jourfritt</h3>
+    <p class="modal-sub">Klicka på veckotalet för att cykla: ingen → ledig → jourfri hel vecka → jourfri helg → ingen. Klicka på enstaka dagar för att toggla ledig/jourfri.</p>
     <div class="fg">
       <label class="fl">Läkare</label>
       <select id="ledDocSelect" onchange="renderLedighetCal()"></select>
@@ -335,7 +455,154 @@
       </div>
     </div>
     <div id="ledCalContainer"></div>
+    <div id="ledStaffingContainer"></div>
     <div class="modal-actions"><button class="btn primary" onclick="closeModal('ledighetModal');render()">Klar</button></div>
+  </div>
+</div>
+
+<!-- Önskepass Modal -->
+<div class="modal-overlay" id="onskadPassModal">
+  <div class="modal" style="min-width:500px;max-width:620px">
+    <button class="modal-close" onclick="closeModal('onskadPassModal')">×</button>
+    <h3 id="opModalTitle">⭐ Önskemål</h3>
+    <p class="modal-sub" style="margin-top:-6px">Önskade pass, jourveckor, ledighet, utbildning, jourfritt och föräldraledig</p>
+    <!-- Doctor select -->
+    <select id="opDocSelect" style="width:100%;margin-bottom:10px" onchange="opDocChanged()"></select>
+    <div id="opDocLabel" style="display:none;font-weight:700;font-size:13px;padding:6px 0;margin-bottom:10px;color:var(--text1)"></div>
+    <!-- Tabs -->
+    <div style="display:flex;gap:4px;margin-bottom:12px;border-bottom:2px solid var(--border);padding-bottom:8px;flex-wrap:wrap">
+      <button id="opTab_pass" class="btn sm active" onclick="switchOpTab('pass')">⭐ Pass</button>
+      <button id="opTab_jourvecka" class="btn sm" onclick="switchOpTab('jourvecka')">🔄 PJ/BJ</button>
+      <button id="opTab_ledighet" class="btn sm" onclick="switchOpTab('ledighet')">📅 Ledighet & Jourfritt</button>
+      <button id="opTab_utbildning" class="btn sm" onclick="switchOpTab('utbildning')">📚 Utbildning</button>
+      <button id="opTab_admin" class="btn sm" onclick="switchOpTab('admin')">🗂 Admin</button>
+      <button id="opTab_fl" class="btn sm" onclick="switchOpTab('fl')">👶 FL</button>
+    </div>
+
+    <!-- Pass panel -->
+    <div id="opPanel_pass">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+        <select id="opPosSelect" style="flex:1;min-width:140px;font-size:12px">
+          <option value="">Valfri position</option>
+        </select>
+        <input type="text" id="opNote" placeholder="Notering (valfritt)" style="flex:1;min-width:120px;font-size:12px">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <button class="btn sm" onclick="opMonth(-1)">←</button>
+        <span id="opMonthLabel" style="font-size:13px;font-weight:700;flex:1;text-align:center"></span>
+        <button class="btn sm" onclick="opMonth(1)">→</button>
+      </div>
+      <div id="opCalContainer" style="margin-bottom:10px"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.05em;margin-bottom:4px">ÖNSKADE PASS</div>
+      <div id="opList" style="max-height:140px;overflow-y:auto;margin-bottom:8px"></div>
+    </div>
+
+    <!-- Jourvecka panel -->
+    <div id="opPanel_jourvecka" style="display:none">
+      <p style="font-size:11px;color:var(--text3);margin-bottom:8px;padding:6px 8px;background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 4px 4px 0">ℹ️ Välj veckan då <strong>helgen</strong> infaller — veckan <em>före</em> veckodagsjourerna (mån–tor).</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <button class="btn sm" onclick="opJVMonth(-1)">←</button>
+        <span id="opJVMonthLabel" style="font-size:13px;font-weight:700;flex:1;text-align:center"></span>
+        <button class="btn sm" onclick="opJVMonth(1)">→</button>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--jv1);padding-bottom:4px;border-bottom:2px solid var(--jv1);margin-bottom:5px">🔵 Primärjour — JV1 · JV2 · NLÖ</div>
+      <p style="font-size:10px;color:var(--text3);margin:0 0 6px">Klicka vecka: JV1 → JV2 → NLÖ → av</p>
+      <div id="opJVCalContainer" style="margin-bottom:10px;max-height:200px;overflow-y:auto"></div>
+      <div style="font-size:12px;font-weight:700;color:var(--bjfs);padding-bottom:4px;border-bottom:2px solid var(--bjfs);margin-bottom:5px">🟤 Bakjour — BJFS · BJLÖ</div>
+      <p style="font-size:10px;color:var(--text3);margin:0 0 6px">Klicka vecka: BJFS → BJLÖ → av</p>
+      <div id="opBJCalContainer" style="margin-bottom:10px;max-height:200px;overflow-y:auto"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.05em;margin-bottom:4px">ÖNSKADE PJ/BJ</div>
+      <div id="opJVList" style="max-height:150px;overflow-y:auto;margin-bottom:8px"></div>
+    </div>
+
+    <!-- Ledighet & Jourfritt panel -->
+    <div id="opPanel_ledighet" style="display:none">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <button class="btn sm" onclick="opWishCalNav(-1,'ledighet')">←</button>
+        <span id="opWishMonthLabel_ledjour" style="font-size:13px;font-weight:700;flex:1;text-align:center"></span>
+        <button class="btn sm" onclick="opWishCalNav(1,'ledighet')">→</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:11px;color:var(--text2)">
+        <span style="display:flex;align-items:center;gap:4px"><span style="background:var(--accent);color:#fff;padding:1px 7px;border-radius:3px;font-weight:700;font-size:10px">L</span>Ledighet</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="background:var(--night);color:#fff;padding:1px 7px;border-radius:3px;font-weight:700;font-size:10px">J</span>Jourfri</span>
+        <span style="color:var(--text3);font-size:10px">· vardagar: L→J→av · helger: J→av · <strong>vXX</strong>: ledig mån–fre → jourfri hela veckan → av</span>
+      </div>
+      <div id="opWishCalContainer_ledjour" style="margin-bottom:8px"></div>
+      <div style="font-size:10px;color:var(--text3);font-style:italic;margin-bottom:3px">💬 Fyll i kommentaren innan du markerar dagarna</div>
+      <input type="text" id="opWishNote_ledjour" placeholder="Kommentar (valfri)..." style="width:100%;font-size:12px;padding:4px 8px;border-radius:5px;border:1px solid var(--border);margin-bottom:8px;box-sizing:border-box">
+      <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em;margin-bottom:4px">VALDA DAGAR & VECKOR</div>
+      <div id="opWishList_ledjour" style="max-height:150px;overflow-y:auto"></div>
+      <div id="opStaffingContainer_ledjour"></div>
+    </div>
+
+    <!-- Utbildning panel -->
+    <div id="opPanel_utbildning" style="display:none">
+      <div style="font-size:13px;font-weight:700;color:var(--utb);margin-bottom:6px;padding-bottom:5px;border-bottom:2px solid var(--utb)">📚 Utbildningsönskemål</div>
+      <p style="font-size:11px;color:var(--text3);margin:0 0 6px">Klicka på enstaka dagar, eller på <strong>vXX</strong> för hela veckan.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <button class="btn sm" onclick="opWishCalNav(-1,'utbildning')">←</button>
+        <span id="opWishMonthLabel_utbildning" style="font-size:13px;font-weight:700;flex:1;text-align:center"></span>
+        <button class="btn sm" onclick="opWishCalNav(1,'utbildning')">→</button>
+      </div>
+      <div id="opWishCalContainer_utbildning" style="margin-bottom:8px"></div>
+      <div style="font-size:10px;color:var(--text3);font-style:italic;margin-bottom:3px">💬 Fyll i kommentaren innan du markerar dagarna</div>
+      <input type="text" id="opWishNote_utbildning" placeholder="Kursnamn eller kommentar (valfri)..." style="width:100%;font-size:12px;padding:4px 8px;border-radius:5px;border:1px solid var(--border);margin-bottom:8px;box-sizing:border-box">
+      <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em;margin-bottom:4px">VALDA DAGAR</div>
+      <div id="opWishList_utbildning" style="max-height:160px;overflow-y:auto"></div>
+    </div>
+
+    <!-- Admin panel -->
+    <div id="opPanel_admin" style="display:none">
+      <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:6px;padding-bottom:5px;border-bottom:2px solid #c0c0c0">🗂 Administrationsönskemål</div>
+      <p style="font-size:11px;color:var(--text3);margin:0 0 6px">Klicka på enstaka dagar, eller på <strong>vXX</strong> för hela veckan. Lägg till kommentar om vad det gäller.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <button class="btn sm" onclick="opWishCalNav(-1,'admin')">←</button>
+        <span id="opWishMonthLabel_admin" style="font-size:13px;font-weight:700;flex:1;text-align:center"></span>
+        <button class="btn sm" onclick="opWishCalNav(1,'admin')">→</button>
+      </div>
+      <div id="opWishCalContainer_admin" style="margin-bottom:8px"></div>
+      <div style="font-size:10px;color:var(--text3);font-style:italic;margin-bottom:3px">💬 Fyll i kommentaren innan du markerar dagarna</div>
+      <input type="text" id="opWishNote_admin" placeholder="Kommentar, t.ex. Kvalitetsarbete, APT..." style="width:100%;font-size:12px;padding:4px 8px;border-radius:5px;border:1px solid var(--border);margin-bottom:8px;box-sizing:border-box">
+      <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em;margin-bottom:4px">VALDA DAGAR</div>
+      <div id="opWishList_admin" style="max-height:160px;overflow-y:auto"></div>
+    </div>
+
+    <!-- FL panel -->
+    <div id="opPanel_fl" style="display:none">
+      <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:6px;padding-bottom:5px;border-bottom:2px solid #7c3aed">👶 Föräldraledighet</div>
+      <p style="font-size:11px;color:var(--text3);margin:0 0 6px">Klicka på enstaka dagar, eller på <strong>vXX</strong> till vänster för att välja hela veckan.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <button class="btn sm" onclick="opWishCalNav(-1,'fl')">←</button>
+        <span id="opWishMonthLabel_fl" style="font-size:13px;font-weight:700;flex:1;text-align:center"></span>
+        <button class="btn sm" onclick="opWishCalNav(1,'fl')">→</button>
+      </div>
+      <div id="opWishCalContainer_fl" style="margin-bottom:8px"></div>
+      <div style="font-size:10px;color:var(--text3);font-style:italic;margin-bottom:3px">💬 Fyll i kommentaren innan du markerar dagarna</div>
+      <input type="text" id="opWishNote_fl" placeholder="Kommentar (valfri)..." style="width:100%;font-size:12px;padding:4px 8px;border-radius:5px;border:1px solid var(--border);margin-bottom:8px;box-sizing:border-box">
+      <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em;margin-bottom:4px">VALDA DAGAR</div>
+      <div id="opWishList_fl" style="max-height:160px;overflow-y:auto"></div>
+    </div>
+
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('onskadPassModal')">Klar</button></div>
+  </div>
+</div>
+
+<!-- Utbildning notering Modal -->
+<div class="modal-overlay" id="utbNoteModal">
+  <div class="modal" style="max-width:360px">
+    <button class="modal-close" onclick="closeModal('utbNoteModal')">×</button>
+    <h3>Utbildning</h3>
+    <p id="utbNoteTitle" class="modal-sub" style="margin-top:-6px"></p>
+    <input type="hidden" id="utbNoteDs">
+    <input type="hidden" id="utbNoteDocId">
+    <div class="fg">
+      <label class="fl">Kommentar (visas i schemat)</label>
+      <input type="text" id="utbNoteInput" placeholder="T.ex. Pediatrikdagarna, BLF-kongress..." onkeydown="if(event.key==='Enter')saveUtbNote()">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('utbNoteModal')">Avbryt</button>
+      <button class="btn primary" onclick="saveUtbNote()">Spara</button>
+    </div>
   </div>
 </div>
 
@@ -357,44 +624,45 @@
       </div>
     </div>
     <div id="utbCalContainer"></div>
+    <div id="utbNoteSection" style="display:none;margin-top:10px;padding:10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)">
+      <label id="utbNoteLabel" style="font-size:11px;font-weight:700;color:var(--text3);display:block;margin-bottom:6px"></label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="utbNoteField" placeholder="T.ex. BLF-kongress, Pediatrikdagarna..." style="flex:1;font-size:12px" oninput="saveUtbNoteInline()" onkeydown="if(event.key==='Enter')saveUtbNoteInline()">
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px">Sparas direkt · Klicka på dagen igen för att ta bort utbildningsdagen</div>
+    </div>
     <div class="modal-actions"><button class="btn primary" onclick="closeModal('utbildningModal');render()">Klar</button></div>
   </div>
 </div>
 
-<!-- Föräldraledighet Modal -->
-<div class="modal-overlay" id="foraldraledModal">
-  <div class="modal" style="min-width:420px">
-    <h3>Föräldraledighet</h3>
-    <p class="modal-sub">Registrera föräldraledighet per dag. Välj hel- eller halvdag.</p>
-    <div class="fg"><label class="fl">Läkare</label><select id="flDocSelect" onchange="renderFLList()"></select></div>
-    <div class="two-col">
-      <div class="fg"><label class="fl">Från</label><input type="date" id="flDateFrom"></div>
-      <div class="fg"><label class="fl">Till</label><input type="date" id="flDateTo"></div>
+<!-- Deltidsschema Modal -->
+<div class="modal-overlay" id="deltidModal">
+  <div class="modal" style="min-width:480px">
+    <h3>Deltidsschema</h3>
+    <p class="modal-sub">Klicka på dagar för att cykla: ingen → fm ledig → em ledig → heldag ledig. Klicka på veckonumret för att markera hela veckan som ledig.</p>
+    <div class="fg"><label class="fl">Läkare</label><select id="deltDocSelect" onchange="renderDeltidCal()"></select></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <button class="btn sm" onclick="deltMonth(-1)">‹</button>
+      <span id="deltMonthLabel" style="font-weight:600;flex:1;text-align:center"></span>
+      <button class="btn sm" onclick="deltMonth(1)">›</button>
     </div>
-    <div id="flRangeInfo" style="font-size:12px;color:var(--text2);margin-bottom:4px"></div>
-    <div class="fg"><label class="fl">Omfattning</label>
-      <div class="tg">
-        <input type="radio" name="flHalf" id="flHalfFm" value="fm"><label class="tl" for="flHalfFm" style="padding:4px 12px">Förmiddag</label>
-        <input type="radio" name="flHalf" id="flHalfEm" value="em"><label class="tl" for="flHalfEm" style="padding:4px 12px">Eftermiddag</label>
-        <input type="radio" name="flHalf" id="flHalfFull" value="" checked><label class="tl" for="flHalfFull" style="padding:4px 12px">Heldag</label>
-      </div>
+    <div id="deltCalContainer"></div>
+    <div style="display:flex;gap:10px;margin-top:6px;font-size:10px;color:var(--text3)">
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--deltid-light);border:1px solid var(--deltid);border-radius:2px;vertical-align:middle;margin-right:3px"></span>FM/EM ledig</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--deltid);border-radius:2px;vertical-align:middle;margin-right:3px"></span>Heldag ledig</span>
     </div>
-    <div class="fg"><label class="fl">Anteckning (valfri)</label><input type="text" id="flNote" placeholder="T.ex. mammaledighet v.23–30..."></div>
-    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
-      <div class="fl" style="margin-bottom:6px">Registrerade dagar</div>
-      <div id="flList" style="max-height:160px;overflow-y:auto"></div>
-    </div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal('foraldraledModal')">Stäng</button><button class="btn primary" onclick="confirmAddFL()">+ Lägg till dag</button></div>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('deltidModal');render()">Klar</button></div>
   </div>
 </div>
 
 <!-- Add Special Modal (Utb/Admin/Handledning) -->
 <div class="modal-overlay" id="addSpecialModal">
-  <div class="modal" style="min-width:420px">
+  <div class="modal" style="min-width:420px;max-width:500px">
     <h3 id="addSpecialTitle">Lägg till</h3>
     <p class="modal-sub" id="addSpecialSub"></p>
     <input type="hidden" id="addSpecialDs">
     <input type="hidden" id="addSpecialType">
+    <input type="hidden" id="addSpecialEditKey">
     <div class="fg"><label class="fl">Läkare</label><select id="addSpecialDoc"></select></div>
     <div id="addSpecialSupervisorRow" class="fg" style="display:none"><label class="fl">Handledare</label><select id="addSpecialSupervisor"></select></div>
     <div class="fg"><label class="fl">Halvdag</label>
@@ -405,7 +673,32 @@
       </div>
     </div>
     <div class="fg"><label class="fl">Anteckning (valfri)</label><input type="text" id="addSpecialNote" placeholder="T.ex. kursnamn..."></div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal('addSpecialModal')">Avbryt</button><button class="btn primary" onclick="confirmAddSpecial()">Lägg till</button></div>
+    <div class="modal-actions" style="margin-bottom:0">
+      <button id="addSpecialDeleteBtn" class="btn danger" onclick="deleteEditSpecial()" style="display:none;margin-right:auto">Ta bort</button>
+      <button class="btn" onclick="closeModal('addSpecialModal')">Avbryt</button>
+      <button id="addSpecialConfirmBtn" class="btn primary" onclick="confirmAddSpecial()">Lägg till</button>
+    </div>
+    <!-- Återkommande – dolt för handledning -->
+    <div id="addSpecialRecSection">
+      <hr style="margin:14px 0 10px;border:none;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">🔁 ÅTERKOMMANDE</div>
+      <div id="addSpecialRecList" style="margin-bottom:8px"></div>
+      <div style="display:flex;gap:6px;align-items:flex-end">
+        <div style="flex:1">
+          <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:2px">Startdatum</label>
+          <input type="date" id="addSpecialRecStart" style="font-size:12px;width:100%">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:2px">Upprepning</label>
+          <select id="addSpecialRecurrence" style="font-size:12px;width:100%">
+            <option value="weekly">Varje vecka</option>
+            <option value="biweekly">Varannan vecka</option>
+            <option value="quadweekly">Var 4:e vecka</option>
+          </select>
+        </div>
+        <button class="btn sm primary" onclick="addSpecialRecurring()" style="white-space:nowrap">+ Lägg till</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -428,6 +721,238 @@
 </div>
 
 
+<!-- Statistik Export Modal -->
+<div class="modal-overlay" id="statisticsModal">
+  <div class="modal" style="min-width:380px">
+    <h3>Exportera statistik</h3>
+    <p class="modal-sub">Välj period för placeringsstatistiken. Kan vara både bakåt och framåt i tiden.</p>
+    <div class="two-col">
+      <div class="fg"><label class="fl">Från</label><input type="date" id="statFrom" oninput="updateStatPeriodInfo()" style="width:100%"></div>
+      <div class="fg"><label class="fl">Till</label><input type="date" id="statTo" oninput="updateStatPeriodInfo()" style="width:100%"></div>
+    </div>
+    <div id="statPeriodInfo" style="font-size:12px;color:var(--text2);min-height:18px;margin-bottom:8px"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('statisticsModal')">Avbryt</button>
+      <button class="btn primary" onclick="exportStatisticsExcel()">↓ Exportera Excel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Personschema Modal -->
+<div class="modal-overlay" id="personScheduleModal">
+  <div class="modal" style="max-width:820px;width:95vw">
+    <h3>Personschema</h3>
+    <p class="modal-sub">Visa en läkares schema över schemaperioden.</p>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+      <select id="personScheduleDocSelect" onchange="renderPersonSchedule()" style="flex:1;padding:7px 10px;border-radius:6px;border:1px solid var(--border);font-size:13px;background:var(--surface);color:var(--text1)"></select>
+    </div>
+    <div id="personScheduleContent" style="max-height:520px;overflow-y:auto;border:1px solid var(--border);border-radius:6px">
+      <p style="color:var(--text2);padding:20px;text-align:center">Välj en läkare ovan.</p>
+    </div>
+    <div class="modal-actions" style="margin-top:10px">
+      <button class="btn" onclick="closeModal('personScheduleModal')">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dagvård Modal -->
+<div class="modal-overlay" id="dagvardModal">
+  <div class="modal" style="max-width:380px">
+    <button class="modal-close" onclick="closeModal('dagvardModal')">×</button>
+    <h3>Dagvård</h3>
+    <p id="dagvardDateLabel" class="modal-sub" style="margin-top:-6px"></p>
+    <input type="hidden" id="dagvardDs">
+    <div style="margin-bottom:14px">
+      <label class="fl">Dagsnotering (t ex provokation, speciell aktivitet)</label>
+      <input type="text" id="dagvardNoteInput" placeholder="Fritext om dagen..." style="width:100%;margin-top:4px">
+    </div>
+    <div style="margin-bottom:12px">
+      <label class="fl">Läkare</label>
+      <div id="dagvardDocList" style="margin:6px 0 8px"></div>
+      <div style="display:flex;gap:6px">
+        <select id="dagvardDocSel" style="flex:1;font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text1)"></select>
+        <button class="btn sm" onclick="addDagvardDoc()">+ Lägg till</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('dagvardModal')">Stäng</button>
+      <button class="btn primary" onclick="saveDagvardNote()">Spara</button>
+    </div>
+  </div>
+</div>
+
+<!-- Auskultation Modal -->
+<div class="modal-overlay" id="auskultationModal">
+  <div class="modal" style="max-width:420px">
+    <button class="modal-close" onclick="closeModal('auskultationModal')">×</button>
+    <h3>Auskultation/Intro</h3>
+    <input type="hidden" id="auskDs">
+    <!-- Mode toggle -->
+    <div style="display:flex;gap:4px;margin-bottom:10px">
+      <button id="auskModeDag" class="btn sm active" onclick="setAuskMode('dag')">
+        📅 Enskild dag — <span id="auskDateLabel" style="font-weight:400"></span>
+      </button>
+      <button id="auskModeVecka" class="btn sm" onclick="setAuskMode('vecka')">
+        📆 Hela veckan — <span id="auskWeekLabel" style="font-weight:400"></span>
+      </button>
+    </div>
+    <div id="auskList" style="margin-bottom:10px;max-height:260px;overflow-y:auto"></div>
+    <div style="background:var(--bg2);border-radius:8px;padding:10px;border:1px solid var(--border)">
+      <label class="fl">Lägg till auskultant</label>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <select id="auskDocSel" style="flex:1;font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text1)"></select>
+        <button class="btn sm" onclick="addAuskultationEntry()">+</button>
+      </div>
+      <select id="auskPlaceSel" style="width:100%;margin-top:6px;font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text1)">
+        <option value="">— Välj placering —</option>
+        <option value="Avdelning">Avdelning</option>
+        <option value="Neonatal">Neonatal</option>
+        <option value="Mottagning">Mottagning</option>
+        <option value="Dagjour">Dagjour</option>
+      </select>
+      <input type="text" id="auskNoteInput" placeholder="Kommentar, t ex läkare att gå med..." style="width:100%;margin-top:6px;font-size:12px" onkeydown="if(event.key==='Enter')addAuskultationEntry()">
+    </div>
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn" onclick="closeModal('auskultationModal')">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Övrigt Modal -->
+<div class="modal-overlay" id="ovrigtModal">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeModal('ovrigtModal')">×</button>
+    <h3>Övrigt</h3>
+    <p id="ovrigtDateLabel" class="modal-sub" style="margin-top:-6px"></p>
+    <input type="hidden" id="ovrigtDs">
+    <!-- Engångshändelser -->
+    <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">ENGÅNGSHÄNDELSE</div>
+    <div id="ovrigtList" style="margin-bottom:10px"></div>
+    <div style="display:flex;gap:6px">
+      <input type="text" id="ovrigtInput" placeholder="Aktivitet, t ex Neoteammöte kl 15..." style="flex:1" onkeydown="if(event.key==='Enter')addOvrigtNote()">
+      <button class="btn sm" onclick="addOvrigtNote()">+ Lägg till</button>
+    </div>
+    <div id="ovrigtDocChips" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;min-height:24px"></div>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <select id="ovrigtDocSelect" style="flex:1;font-size:12px" onchange="addOvrigtDocChip()">
+        <option value="">+ Lägg till läkare...</option>
+      </select>
+      <select id="ovrigtBlocks" style="font-size:12px">
+        <option value="">Blockerar inte</option>
+        <option value="fm">Blockerar FM</option>
+        <option value="em">Blockerar EM</option>
+        <option value="hel">Blockerar hela dagen</option>
+      </select>
+    </div>
+    <!-- Återkommande -->
+    <hr style="margin:14px 0 10px;border:none;border-top:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">🔁 ÅTERKOMMANDE</div>
+    <div id="ovrigtRecurringList" style="margin-bottom:10px"></div>
+    <div style="display:flex;gap:6px">
+      <input type="text" id="ovrigtRecInput" placeholder="Aktivitet, t ex Teamkonferens..." style="flex:1" onkeydown="if(event.key==='Enter')addOvrigtRecurring()">
+      <button class="btn sm" onclick="addOvrigtRecurring()">+ Lägg till</button>
+    </div>
+    <div id="ovrigtRecDocChips" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;min-height:24px"></div>
+    <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+      <select id="ovrigtRecDocSelect" style="flex:1;font-size:12px;min-width:130px" onchange="addOvrigtRecDocChip()">
+        <option value="">+ Lägg till läkare...</option>
+      </select>
+      <select id="ovrigtRecBlocks" style="font-size:12px">
+        <option value="">Blockerar inte</option>
+        <option value="fm">Blockerar FM</option>
+        <option value="em">Blockerar EM</option>
+        <option value="hel">Blockerar hela dagen</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <div style="flex:1">
+        <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:2px">Startdatum</label>
+        <input type="date" id="ovrigtRecStart" style="font-size:12px;width:100%">
+      </div>
+      <div style="flex:1">
+        <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:2px">Upprepning</label>
+        <select id="ovrigtRecurrence" style="font-size:12px;width:100%">
+          <option value="weekly">Varje vecka</option>
+          <option value="biweekly">Varannan vecka</option>
+          <option value="quadweekly">Var fjärde vecka</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn" onclick="closeModal('ovrigtModal')">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sjukskrivning/VAB Modal -->
+<div class="modal-overlay" id="sjukskrivningModal">
+  <div class="modal" style="max-width:360px">
+    <button class="modal-close" onclick="closeModal('sjukskrivningModal')">×</button>
+    <h3>Sjukskrivning / VAB</h3>
+    <p id="sjukTitle" class="modal-sub" style="margin-top:-6px"></p>
+    <div id="sjukList" style="margin-bottom:10px"></div>
+    <div style="display:flex;gap:6px;margin-top:4px">
+      <select id="sjukDocSel" style="flex:1;font-size:12px" onchange="">
+        <option value="">+ Lägg till läkare...</option>
+      </select>
+      <select id="sjukTypeSel" style="font-size:12px">
+        <option value="sjuk">Sjuk</option>
+        <option value="vab">VAB</option>
+      </select>
+      <button class="btn sm" onclick="addSjukEntry()">+</button>
+    </div>
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn" onclick="closeModal('sjukskrivningModal')">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Föräldraledig Modal -->
+<div class="modal-overlay" id="flModal">
+  <div class="modal" style="max-width:360px">
+    <button class="modal-close" onclick="closeModal('flModal')">×</button>
+    <h3>Föräldraledig</h3>
+    <p id="flTitle" class="modal-sub" style="margin-top:-6px"></p>
+    <div id="flList" style="margin-bottom:10px"></div>
+    <div style="display:flex;gap:6px;margin-top:4px">
+      <select id="flDocSel" style="flex:1;font-size:12px">
+        <option value="">+ Lägg till läkare...</option>
+      </select>
+      <button class="btn sm" onclick="addFlEntry()">+</button>
+    </div>
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn" onclick="closeModal('flModal')">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Joursaldo Modal -->
+<div class="modal-overlay" id="joursaldoModal">
+  <div class="modal" style="max-width:780px;width:95vw">
+    <button class="modal-close" onclick="closeModal('joursaldoModal')">×</button>
+    <h3>Jouräknesaldo</h3>
+    <p class="modal-sub" style="margin-top:-6px">Period: <span id="joursaldoPeriod"></span></p>
+    <div id="joursaldoContent" style="margin-top:8px"></div>
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn" onclick="closeModal('joursaldoModal')">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ändringslogg Modal -->
+<div class="modal-overlay" id="changelogModal">
+  <div class="modal" style="max-width:560px;width:95vw">
+    <button class="modal-close" onclick="closeModal('changelogModal')">×</button>
+    <h3>Ändringslogg</h3>
+    <p class="modal-sub" style="margin-top:-6px">Ändringar sedan sidan laddades (sparas ej)</p>
+    <div id="changelogContent" style="margin-top:8px;max-height:420px;overflow-y:auto"></div>
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn danger sm" onclick="changeLog=[];openChangelogModal()" style="margin-right:auto">Rensa logg</button>
+      <button class="btn" onclick="closeModal('changelogModal')">Stäng</button>
+    </div>
+  </div>
+</div>
+
 <!-- Period Modal -->
 <div class="modal-overlay" id="periodModal">
   <div class="modal" style="min-width:420px">
@@ -447,47 +972,69 @@
   </div>
 </div>
 
-<!-- Import önskemål -->
-<div class="modal-overlay" id="importOnskadeModal">
-  <div class="modal" style="min-width:580px">
-    <h3>Importera önskemål</h3>
-    <p class="modal-sub">Excel-filen ska ha kolumnerna: <strong>Läkare</strong>, <strong>Startdatum</strong>, Slutdatum (valfritt), <strong>Typ</strong> (Ledighet / Utbildning), Notering (valfritt).</p>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <input type="file" id="importExcelInput" accept=".xlsx,.xls" style="flex:1;font-size:12px">
-      <button class="btn sm primary" onclick="parseImportFile()">Läs fil</button>
-    </div>
-    <div id="importPreview"></div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal('importOnskadeModal')">Avbryt</button>
-      <button class="btn primary" id="importConfirmBtn" onclick="confirmImport()" disabled>Importera som önskemål</button>
-    </div>
-  </div>
-</div>
 
-<!-- Granska önskemål -->
-<div class="modal-overlay" id="reviewOnskadeModal">
-  <div class="modal" style="min-width:560px">
-    <h3>Granska önskemål</h3>
-    <p class="modal-sub">Bevilja eller avslå importerade önskemål. Beviljade läggs in som vanlig ledighet/utbildning.</p>
-    <div id="reviewOnskadeBody" style="max-height:480px;overflow-y:auto"></div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal('reviewOnskadeModal');render()">Stäng</button>
+<!-- Doctor List Modal -->
+<div class="modal-overlay" id="doctorListModal">
+  <div class="modal" style="min-width:340px;max-width:420px;display:flex;flex-direction:column;max-height:85vh">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h3 style="margin:0">Läkare (<span id="docCount">0</span>)</h3>
+      <button class="aside-btn" onclick="openRolesModal()">Roller &amp; komp.</button>
     </div>
+    <div class="add-form" style="margin-bottom:10px">
+      <input type="text" id="newDoctorInput" placeholder="Namn..." onkeydown="if(event.key==='Enter')openAddDoctorModal()">
+      <button class="btn-add" onclick="openAddDoctorModal()">+</button>
+    </div>
+    <div class="doctors-list" id="doctorsList" style="flex:1;overflow-y:auto;min-height:0;max-height:55vh;padding:4px 6px"></div>
+    <details style="margin-top:10px;flex-shrink:0">
+      <summary style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);cursor:pointer;padding:4px 0">Förklaring</summary>
+      <div class="legend" style="margin-top:8px">
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--jv1-light);border:1.5px solid var(--jv1);color:var(--jv1)">JV1</div>Jourvecka 1</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--jv2-light);border:1.5px solid var(--jv2);color:var(--jv2)">JV2</div>Jourvecka 2</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--nlo-light);border:1.5px solid var(--nlo);color:var(--nlo)">NLÖ</div>Nattlördag</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--bjfs-light);border:1.5px solid var(--bjfs);color:var(--bjfs)">BJFS</div>Bakjour fre–sön</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--bjlo-light);border:1.5px solid var(--bjlo);color:var(--bjlo)">BJLÖ</div>Bakjour lördag</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--bjnv-light);border:1.5px solid var(--bjnv);color:var(--bjnv)">BJNV</div>Nattbakjour vardag</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--hd-light);border:1.5px solid var(--hd);color:var(--hd)">HJ</div>Primärjour röd dag</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--bjhd-light);border:1.5px solid var(--bjhd);color:var(--bjhd)">HBJ</div>Bakjour röd dag</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--ledighet-light);border:1.5px solid var(--ledighet);color:var(--ledighet)">LED</div>Önskad ledighet</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--utb-light);border:1.5px solid #c0c060;color:var(--utb)">UTB</div>Utbildning</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--deltid-light);border:1.5px solid var(--deltid);color:var(--deltid)">DT</div>Deltidsschema</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#f0f0f0;border:1.5px solid #c0c0c0;color:#555">ADM</div>Administration</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#fff0f8;border:1.5px solid #e0a0c0;color:#8a2060">HLD</div>Handledning</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--night-light);border:1.5px solid #a0a4c0">🌙</div>Nattpass</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--day-s-light);border:1.5px solid #a0c8b8">☀</div>Dagpass / dagjour</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--jourledigt-light);border:1.5px solid #f0c080">✦</div>Jourledigt</div>
+      </div>
+    </details>
+    <div class="modal-actions"><div style="flex:1"></div><button class="btn primary" onclick="closeModal('doctorListModal')">Stäng</button></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <!-- Modules loaded in dependency order -->
-<script src="state.js"></script>
-<script src="helpers.js"></script>
-<script src="render.js"></script>
-<script src="context.js"></script>
-<script src="modals.js"></script>
-<script src="features.js"></script>
-<script src="storage.js"></script>
+<script src="state.js?v=133"></script>
+<script src="helpers.js?v=140"></script>
+<script src="render.js?v=158"></script>
+<script src="context.js?v=130"></script>
+<script src="modals.js?v=167"></script>
+<script src="features.js?v=152"></script>
+<script src="storage.js?v=126"></script>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-<script src="period.js"></script>
-<script>loadFromLocalStorage();render();initDragNav();</script>
+<script src="period.js?v=118"></script>
+<script>
+  loadFromLocalStorage();setSpan(daySpan);initDragNav();initDoctorMode();
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.isContentEditable)return;
+    const rotOpen=document.getElementById('rotationModal')&&document.getElementById('rotationModal').style.display==='flex';
+    if(rotOpen){
+      if(e.key==='ArrowLeft'||e.key==='ArrowRight')e.preventDefault();
+      return;
+    }
+    if(document.querySelector('.modal-overlay[style*="flex"]'))return;
+    if(e.key==='ArrowRight'){e.preventDefault();navigate(1);}
+    else if(e.key==='ArrowLeft'){e.preventDefault();navigate(-1);}
+  });
+</script>
 </body>
 </html>
