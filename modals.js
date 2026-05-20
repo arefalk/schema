@@ -1,6 +1,3 @@
-function toggleMerMenu(e){e.stopPropagation();document.getElementById('merMenu').classList.toggle('open');}
-function closeMerMenu(){document.getElementById('merMenu').classList.remove('open');}
-
 function _rotScrollToToday(){
   ['rotTableWrap','bjRotTableWrap','bjNVRotTableWrap'].forEach(id=>{
     const wrap=document.getElementById(id);

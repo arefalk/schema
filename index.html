@@ -24,74 +24,31 @@
   </div>
   <div id="periodBadge" class="period-badge" onclick="openPeriodModal()" title="Välj schemaperiod">📆 <span id="periodBadgeText">Ingen period vald</span></div>
 </header>
-<div class="toolbar" id="adminToolbar">
-  <!-- Grupp: Personal -->
-  <div class="tb-group">
-    <div class="tb-label">Personal</div>
-    <div class="tb-row">
-      <button class="btn-action" onclick="openDoctorListModal()">👥 Läkare</button>
-      <button class="btn-action" onclick="openPositionsModal()">⚙ Positioner</button>
-    </div>
-  </div>
-  <div class="tb-sep"></div>
-  <!-- Grupp: Frånvaro -->
-  <div class="tb-group">
-    <div class="tb-label">Frånvaro</div>
-    <div class="tb-row">
-      <button class="btn-action" onclick="openLedighetModal()">📅 Ledighet</button>
-      <button class="btn-action" onclick="openSjukskrivningModal(isoDate(getMonday(currentDate)))" title="Sjukskrivning och VAB">🤒 Sjuk/VAB</button>
-      <button class="btn-action" onclick="openFlModal(isoDate(getMonday(currentDate)))" title="Föräldraledig">👶 Föräldraledig</button>
-    </div>
-  </div>
-  <div class="tb-sep"></div>
-  <!-- Grupp: Jour -->
-  <div class="tb-group">
-    <div class="tb-label">Jour</div>
-    <div class="tb-row">
-      <button class="btn-action" onclick="openRotationModal()">🔄 Jourveckor</button>
-      <button class="btn-action" onclick="openJoursaldoModal()" title="Jouräknesaldo per läkare">⚖ Joursaldo</button>
-    </div>
-  </div>
-  <div class="tb-sep"></div>
-  <!-- Grupp: Verktyg -->
-  <div class="tb-group">
-    <div class="tb-label">Verktyg</div>
-    <div class="tb-row">
-      <button class="btn-action" onclick="openAutoModal()">⚡ Auto-fördela</button>
-      <button class="btn-action" onclick="openBemanningModal()">📊 Bemanning</button>
-    </div>
-  </div>
-  <!-- Mer-meny -->
-  <div class="tb-sep"></div>
-  <div class="tb-group" style="justify-content:flex-end">
-    <div class="tb-label" style="visibility:hidden">_</div>
-    <div class="tb-row">
-      <div class="tb-dropdown">
-        <button class="btn-action" onclick="toggleMerMenu(event)" id="merBtn">Mer ▾</button>
-        <div class="tb-menu" id="merMenu">
-          <button class="btn-action" onclick="openUtbildningModal();closeMerMenu()">📚 Utbildning</button>
-          <button class="btn-action" onclick="openDeltidModal();closeMerMenu()">📋 Deltidsschema</button>
-          <button class="btn-action" onclick="openHandledningModal();closeMerMenu()">🎓 Handledning</button>
-          <button class="btn-action" onclick="openAuskultationModal(isoDate(getMonday(currentDate)));closeMerMenu()" title="Auskultation och introduktion">🔬 Ausk/Intro</button>
-          <button class="btn-action" onclick="openOvrigtModal(isoDate(getMonday(currentDate)));closeMerMenu()" title="Övrigt — möten och åtaganden">📌 Övrigt</button>
-          <button class="btn-action" onclick="openOnskadPassModal();closeMerMenu()" title="Önskade pass per läkare">⭐ Önskemål</button>
-          <button class="btn-action" onclick="openPersonScheduleModal();closeMerMenu()">👤 Personschema</button>
-          <div class="tb-menu-sep"></div>
-          <button class="btn-action" onclick="openChangelogModal();closeMerMenu()" title="Ändringslogg för denna session">📋 Ändringslogg</button>
-          <button class="btn-action" onclick="openStatisticsModal();closeMerMenu()" title="Exportera placeringsstatistik per läkare till Excel">📊 Statistik</button>
-          <button class="btn-action" onclick="document.getElementById('loadFileInput').click();closeMerMenu()" title="Ladda in sparad JSON-fil">📂 Ladda JSON</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Höger: Spara + Export + Läkarvy -->
-  <div class="tb-right">
-    <button class="btn-action" onclick="window.open('?mode=doctor','_blank')" title="Öppna läkarvy i ny flik" style="color:var(--accent)">👁 Läkarvy</button>
-    <button class="btn-action" onclick="saveData()" title="Spara allt som JSON-fil (laddar ned + synkar till GitHub om konfigurerat)">💾 Spara</button>
-    <button class="btn-action" onclick="openGithubModal()" title="Inställningar för GitHub-synk" id="githubSyncBtn">☁</button>
-    <button class="btn-action primary" onclick="exportSchema()">↓ Exportera</button>
-  </div>
+<div class="toolbar">
+  <button class="btn-action" onclick="window.open('?mode=doctor','_blank')" title="Öppna läkarvy i ny flik" style="color:var(--accent)">👁 Läkarvy</button>
+  <button class="btn-action" onclick="openDoctorListModal()">👥 Läkare</button>
+  <button class="btn-action" onclick="openPositionsModal()">⚙ Positioner</button>
+  <button class="btn-action" onclick="openLedighetModal()">📅 Ledighet</button>
+  <button class="btn-action" onclick="openSjukskrivningModal(isoDate(getMonday(currentDate)))" title="Sjukskrivning och VAB">🤒 Sjuk/VAB</button>
+  <button class="btn-action" onclick="openFlModal(isoDate(getMonday(currentDate)))" title="Föräldraledig">👶 Föräldraledig</button>
+  <button class="btn-action" onclick="openAuskultationModal(isoDate(getMonday(currentDate)))" title="Auskultation och introduktion">🔬 Ausk/Intro</button>
+  <button class="btn-action" onclick="openOvrigtModal(isoDate(getMonday(currentDate)))" title="Övrigt — möten och åtaganden">📌 Övrigt</button>
+  <button class="btn-action" onclick="openOnskadPassModal()" title="Önskade pass per läkare">⭐ Önskemål</button>
+  <button class="btn-action" onclick="openUtbildningModal()">📚 Utbildning</button>
+  <button class="btn-action" onclick="openDeltidModal()">📋 Deltidsschema</button>
+  <button class="btn-action" onclick="openHandledningModal()">🎓 Handledning</button>
+  <button class="btn-action" onclick="openRotationModal()">🔄 Jourveckor</button>
+  <button class="btn-action" onclick="openBemanningModal()">📊 Bemanning</button>
+  <button class="btn-action" onclick="openAutoModal()">⚡ Auto-fördela</button>
+  <button class="btn-action" onclick="openPersonScheduleModal()">👤 Personschema</button>
+  <button class="btn-action" onclick="openJoursaldoModal()" title="Jouräknesaldo per läkare">⚖ Joursaldo</button>
+  <button class="btn-action" onclick="openChangelogModal()" title="Ändringslogg för denna session">📋 Ändringslogg</button>
+  <button class="btn-action" onclick="openStatisticsModal()" title="Exportera placeringsstatistik per läkare till Excel">📊 Statistik</button>
+  <button class="btn-action" onclick="saveData()" title="Spara allt som JSON-fil (laddar ned + synkar till GitHub om konfigurerat)">💾 Spara</button>
+  <button class="btn-action" onclick="document.getElementById('loadFileInput').click()" title="Ladda in sparad JSON-fil">📂 Ladda</button>
+  <button class="btn-action" onclick="openGithubModal()" title="Inställningar för GitHub-synk" id="githubSyncBtn">☁</button>
   <input type="file" id="loadFileInput" accept=".json" style="display:none" onchange="loadData(event)">
+  <button class="btn-action primary" onclick="exportSchema()">↓ Exportera</button>
 </div>
 <div id="doctorToolbar" style="display:none;flex-shrink:0;align-items:center;gap:8px;padding:6px 18px;background:var(--surface);border-bottom:1px solid var(--border)">
   <span id="doctorModeLabel" style="font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-light);padding:3px 10px;border-radius:20px;margin-right:8px">Läkarvy</span>
@@ -1068,10 +1025,6 @@
 <script src="period.js?v=118"></script>
 <script>
   loadFromLocalStorage();setSpan(daySpan);initDragNav();initDoctorMode();_updateGhBtn();
-  document.addEventListener('click',e=>{
-    const menu=document.getElementById('merMenu');
-    if(menu&&menu.classList.contains('open')&&!e.target.closest('#merBtn')&&!e.target.closest('#merMenu'))closeMerMenu();
-  });
   document.addEventListener('keydown',e=>{
     if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.isContentEditable)return;
     const rotOpen=document.getElementById('rotationModal')&&document.getElementById('rotationModal').style.display==='flex';
