@@ -43,6 +43,8 @@ function renderRotationTable(){
     // Konfliktkoll — godkänd/önskad ledighet eller jourfritt under spillveckan
     const _jvDts=_offs2.map(o=>isoDate(addDays(_jvMon2,o)));
     const _getConflict=docId=>{
+      // Föräldraledig under jourveckan
+      if(_jvDts.some(ds=>(foraldraledig[ds]||[]).some(e=>e.docId===docId)))return{msg:'Föräldraledig under jourveckan'};
       // Önskad ledighetsvecka (inkl. spillvecka)
       const wkWishes=ledighetVeckorOnskemal[docId];
       if(wkWishes){
@@ -116,11 +118,12 @@ function renderRotationTable(){
     };
     const _mkOpt=d=>{
       const conflict=Object.entries(getJV(wn,yr)).find(([k,v])=>k!==key&&v===d.id);
+      const hasFL=_spillDts2.some(dt=>(foraldraledig[isoDate(dt)]||[]).some(e=>e.docId===d.id));
       const hasLed=docHasLedighetVecka(d.id,wn,yr)||_spillDts2.some(dt=>docHasLedighet(d.id,isoDate(dt)));
       const jf=_spillDts2.some(dt=>{const dow=dt.getDay(),isWe=dow===0||dow===6,dwn=weekNum(dt),dyr=weekYear(dt);return docHasJourfriOnskad(d.id,dwn,dyr,isWe?'weekend':'week');});
       const hasWish=!!(onskadJourvecka[d.id]&&onskadJourvecka[d.id][wkStr]===key);
       const freqIcon=conflict?'':_optFreqIcon(d);
-      const prefix=conflict?'⚠ ':hasLed?'🏖 ':jf?'🚫 ':hasWish?'✋ ':freqIcon;
+      const prefix=conflict?'⚠ ':hasFL?'👶 ':hasLed?'🏖 ':jf?'🚫 ':hasWish?'✋ ':freqIcon;
       return`<option value="${d.id}"${cur===d.id?' selected':''}${conflict?' disabled':''}>${prefix}${d.name.split(' ')[0]} ${d.name.split(' ').slice(-1)[0]}${conflict?' ('+conflict[0]+')':''}</option>`;
     };
     const extraGroup=olExtraDocs.length?`<optgroup label="Övriga ÖL">${olExtraDocs.map(_mkOpt).join('')}</optgroup>`:'';
@@ -176,6 +179,7 @@ function renderBJRotationTable(){
       ?[isoDate(addDays(wkMon,4)),isoDate(addDays(wkMon,6))]  // fre + sön
       :[isoDate(addDays(wkMon,5))];                             // lör
     const _getBJConflict=docId=>{
+      if(bjDts.some(ds=>(foraldraledig[ds]||[]).some(e=>e.docId===docId)))return'Föräldraledig under helgen';
       if(docHasJourfriOnskad(docId,wn,yr,'weekend'))return'Jourfritt denna helg';
       if(bjDts.some(ds=>docHasLedighet(docId,ds)))return'Godkänd ledighet under helgen';
       if(bjDts.some(ds=>{const od=ledighetOnskemal[docId];return od&&od[ds];}))return'Önskad ledighet under helgen';
@@ -183,7 +187,7 @@ function renderBJRotationTable(){
     };
     const _bjWarn=cur?_getBJConflict(cur):null;
     const _bjBanner=_bjWarn?`<div style="font-size:9px;color:#b91c1c;background:#fee2e2;padding:2px 6px;border-radius:3px;margin-bottom:3px">⚠ ${_bjWarn}</div>`:'';
-    return`<div>${_bjBanner}<select onchange="setBJFromTable('${type}',${wn},${yr},this.value)" style="width:100%;font-size:11px;padding:3px 6px;background:${cur?'var(--'+color+'-light)':'var(--bg)'};color:${cur?'var(--'+color+')':'var(--text2)'};border:1px solid ${cur?'var(--'+color+')':'var(--border)'};border-radius:5px"><option value="">— —</option>${allDocs.map(d=>{const conflict=d.id===otherDoc;const jf=docHasJourfriOnskad(d.id,wn,yr,'weekend');return`<option value="${d.id}"${cur===d.id?' selected':''}${conflict?' disabled':''}>${conflict?'⚠ ':jf?'🏠 ':''}${d.name.split(' ')[0]} ${d.name.split(' ').slice(-1)[0]}${conflict?' ('+otherType+')':''}</option>`;}).join('')}</select></div>`;
+    return`<div>${_bjBanner}<select onchange="setBJFromTable('${type}',${wn},${yr},this.value)" style="width:100%;font-size:11px;padding:3px 6px;background:${cur?'var(--'+color+'-light)':'var(--bg)'};color:${cur?'var(--'+color+')':'var(--text2)'};border:1px solid ${cur?'var(--'+color+')':'var(--border)'};border-radius:5px"><option value="">— —</option>${allDocs.map(d=>{const conflict=d.id===otherDoc;const hasFL=bjDts.some(ds=>(foraldraledig[ds]||[]).some(e=>e.docId===d.id));const jf=docHasJourfriOnskad(d.id,wn,yr,'weekend');return`<option value="${d.id}"${cur===d.id?' selected':''}${conflict?' disabled':''}>${conflict?'⚠ ':hasFL?'👶 ':jf?'🏠 ':''}${d.name.split(' ')[0]} ${d.name.split(' ').slice(-1)[0]}${conflict?' ('+otherType+')':''}</option>`;}).join('')}</select></div>`;
   }
   let html=`<thead><tr><th>Vecka</th><th style="color:var(--bjfs)">BJFS</th><th style="color:var(--bjlo)">BJLÖ</th></tr></thead><tbody>`;
   rows.forEach(({wn,yr,dt})=>{
@@ -217,7 +221,7 @@ function renderBJNVRotationTable(){
     const allDocs=docs.filter(d=>docIsActive(d,ds));
     if(cur&&!allDocs.find(d=>d.id===cur)){const doc=docById(cur);if(doc)allDocs.push(doc);}
     const _dt=new Date(ds),_wn=weekNum(_dt),_yr=weekYear(_dt);
-    return`<select onchange="setBJNVFromTable('${ds}',this.value)" style="width:100%;font-size:11px;padding:2px 4px;background:${cur?'var(--bjnv-light)':'var(--bg)'};color:${cur?'var(--bjnv)':'var(--text2)'};border:1px solid ${cur?'var(--bjnv)':'var(--border)'};border-radius:5px"><option value="">—</option>${allDocs.map(d=>{const c=bjnvConflict(d.id,ds)&&cur!==d.id;const jf=docHasJourfriOnskad(d.id,_wn,_yr,'week');return`<option value="${d.id}"${cur===d.id?' selected':''}${c?' disabled':''}>${c?'⚠ ':jf?'🚫 ':''}${d.name.split(' ')[0]} ${d.name.split(' ').slice(-1)[0]}</option>`;}).join('')}</select>`;
+    return`<select onchange="setBJNVFromTable('${ds}',this.value)" style="width:100%;font-size:11px;padding:2px 4px;background:${cur?'var(--bjnv-light)':'var(--bg)'};color:${cur?'var(--bjnv)':'var(--text2)'};border:1px solid ${cur?'var(--bjnv)':'var(--border)'};border-radius:5px"><option value="">—</option>${allDocs.map(d=>{const c=bjnvConflict(d.id,ds)&&cur!==d.id;const hasFL=(foraldraledig[ds]||[]).some(e=>e.docId===d.id);const jf=docHasJourfriOnskad(d.id,_wn,_yr,'week');return`<option value="${d.id}"${cur===d.id?' selected':''}${c?' disabled':''}>${c?'⚠ ':hasFL?'👶 ':jf?'🚫 ':''}${d.name.split(' ')[0]} ${d.name.split(' ').slice(-1)[0]}</option>`;}).join('')}</select>`;
   }
   let html=`<thead><tr><th>Vecka</th><th>Mån</th><th>Tis</th><th>Ons</th><th>Tor</th></tr></thead><tbody>`;
   rows.forEach(({wn,yr,dt})=>{
