@@ -110,8 +110,10 @@ let randningDagar={};
 let jourfriOnskad={};
 // specialSlots[dateStr][slotKey] = {type:'utb'|'adm'|'handledning', docId, note, halfDay:'fm'|'em'|''}
 // specialRecurring = [{id, type:'utb'|'adm', docId, halfDay, note, startDate, recurrence}]
+// specialRecurringExceptions[recId] = ['YYYY-MM-DD', ...] — skipped occurrences
 let specialSlots={};
 let specialRecurring=[];
+let specialRecurringExceptions={};
 let bvcSchedule={};
 // handledning pairs: [{stId, supervisorId}]
 let handledningPairs=[];

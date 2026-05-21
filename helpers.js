@@ -411,6 +411,7 @@ function specialRecurringOnDate(ds,type){
     if(r.type!==type)return false;
     if(!r.startDate||ds<r.startDate)return false;
     if(r.endDate&&ds>r.endDate)return false;
+    if((specialRecurringExceptions[r.id]||[]).includes(ds))return false;
     const start=new Date(r.startDate+'T12:00:00'),target=new Date(ds+'T12:00:00');
     const diffDays=Math.round((target-start)/86400000);
     if(r.recurrence==='weekly')return diffDays%7===0;

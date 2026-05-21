@@ -606,7 +606,8 @@ function renderWeek(){
       });
       recAdm.forEach(r=>{const doc=docById(r.docId);if(!doc)return;
         const admLabel=r.note||'ADM';
-        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;border-left:2px solid #3b82f6" title="Återkommande${r.note?' – '+r.note:''}"><span style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${r.halfDay?` (${r.halfDay})`:''}</span><span style="font-size:8px;opacity:.6">🔁</span></div>`;
+        const removeRecBtn=!IS_DOCTOR_MODE?`<button onclick="skipRecurringOccurrence(event,'${r.id}','${ds}')" style="margin-left:2px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort detta tillfälle">✕</button>`:'';
+        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;border-left:2px solid #3b82f6" title="Återkommande${r.note?' – '+r.note:''}"><span style="max-width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${r.halfDay?` (${r.halfDay})`:''}</span><span style="font-size:8px;opacity:.6">🔁</span>${removeRecBtn}</div>`;
       });
       html+=`<div class="bj-slot empty-cell" style="min-height:22px;font-size:10px;color:var(--text3)" onclick="openAddSpecialModal('${ds}','adm')"><span style="font-size:12px;color:var(--border)">+</span></div>`;
       html+=`</td>`;
@@ -639,7 +640,9 @@ function renderWeek(){
         const recEntry=specialRecurringOnDate(ds,'utb').find(r=>r.docId===doc.id);
         const isRec=!!recEntry;
         const note=isRec?(recEntry.note||''):(getUtbNote(doc.id,ds));
-        const removeBtn=!IS_DOCTOR_MODE&&!isRec?`<button onclick="quickRemoveUtb(event,'${doc.id}','${ds}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort utbildning">✕</button>`:'';
+        const removeBtn=!IS_DOCTOR_MODE?(isRec
+          ?`<button onclick="skipRecurringOccurrence(event,'${recEntry.id}','${ds}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort detta tillfälle">✕</button>`
+          :`<button onclick="quickRemoveUtb(event,'${doc.id}','${ds}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort utbildning">✕</button>`):'';
         html+=`<div class="utb-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;${isRec?'border-left:2px solid #3b82f6':''}" title="${note}">
           <span style="font-size:9px">✓ ${docShortName(doc)}</span>
           ${note?`<span style="font-size:9px;color:var(--text3);font-style:italic;max-width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${note}</span>`:''}

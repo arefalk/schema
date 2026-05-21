@@ -804,6 +804,15 @@ function quickRemoveLedighet(e,docId,ds){
   else if(ledighetVeckor[docId]&&ledighetVeckor[docId][wk]){delete ledighetVeckor[docId][wk];removed=true;}
   if(removed){const doc=docById(docId);if(doc)logChange(`Tog bort ledighet: ${docShortName(doc)} (${ds})`);autoSave();render();}
 }
+function skipRecurringOccurrence(e,recId,ds){
+  e.stopPropagation();
+  if(!specialRecurringExceptions[recId])specialRecurringExceptions[recId]=[];
+  if(!specialRecurringExceptions[recId].includes(ds))specialRecurringExceptions[recId].push(ds);
+  const r=(specialRecurring||[]).find(x=>x.id===recId);
+  const doc=r?docById(r.docId):null;
+  logChange(`Hoppade över återkommande ${r?r.type:''}${r&&r.note?' ('+r.note+')':''}: ${doc?docShortName(doc):''} (${ds})`);
+  autoSave();render();
+}
 function quickRemoveAdm(e,ds,slotKey){
   e.stopPropagation();
   const v=getSpecial(ds,slotKey);
