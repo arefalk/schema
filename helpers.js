@@ -423,9 +423,16 @@ function docHasUtbildning(docId,ds){
 }
 function docHasRandning(docId,ds){return!!(randningDagar[docId]&&randningDagar[docId][ds]);}
 // utbildningDagar[docId][ds] = true (ingen notering) eller {note:'text'}
+// utbildningVeckor[docId][wk] = true eller {note:'text'}
 function getUtbNote(docId,ds){
   const v=utbildningDagar[docId]&&utbildningDagar[docId][ds];
-  return(v&&typeof v==='object')?v.note||'':'';
+  if(v&&typeof v==='object')return v.note||'';
+  if(v)return '';
+  // Fall back to week note if only week entry exists
+  const mon=getMonday(new Date(ds+'T12:00:00'));
+  const wk=wkey(weekNum(mon),weekYear(mon));
+  const wv=utbildningVeckor[docId]&&utbildningVeckor[docId][wk];
+  return(wv&&typeof wv==='object')?wv.note||'':'';
 }
 function setUtbNote(docId,ds,note){
   if(!utbildningDagar[docId]||!utbildningDagar[docId][ds])return;

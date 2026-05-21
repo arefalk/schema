@@ -109,6 +109,9 @@
 <div class="ctx-menu" id="ctxLedig" style="min-width:230px">
   <div class="ctx-head" id="ctxLedigHead">Ledighet</div>
   <div id="ctxLedigSubRow" style="display:none;padding:4px 8px 2px;gap:4px;flex-wrap:wrap"></div>
+  <div id="ctxLedigNoteRow" style="display:none;padding:4px 8px 2px">
+    <input id="ctxLedigNote" type="text" placeholder="Kommentar (valfritt)" style="width:100%;box-sizing:border-box;font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text1)">
+  </div>
   <div class="ctx-doc-list" id="ctxLedigList"></div>
 </div>
 
@@ -1036,10 +1039,10 @@
 
 <!-- Modules loaded in dependency order -->
 <script src="state.js?v=134"></script>
-<script src="helpers.js?v=141"></script>
-<script src="render.js?v=159"></script>
-<script src="context.js?v=130"></script>
-<script src="modals.js?v=168"></script>
+<script src="helpers.js?v=142"></script>
+<script src="render.js?v=160"></script>
+<script src="context.js?v=131"></script>
+<script src="modals.js?v=169"></script>
 <script src="features.js?v=152"></script>
 <script src="storage.js?v=127"></script>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>

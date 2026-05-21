@@ -234,6 +234,7 @@ function openInlineWeekCtx(e,mode,wn,yr){
   const subRow=document.getElementById('ctxLedigSubRow');
   if(mode==='sjuk'){subRow.style.display='flex';_renderSjukSubRow();}
   else{subRow.style.display='none';}
+  const noteEl=document.getElementById('ctxLedigNote');if(noteEl&&mode==='utb')noteEl.value='';
   _renderLedigCtxList();
   positionCtx('ctxLedig',e);
 }
@@ -251,6 +252,7 @@ function openInlineDayCtx(e,mode,ds){
   const subRow=document.getElementById('ctxLedigSubRow');
   if(mode==='sjuk'){subRow.style.display='flex';_renderSjukSubRow();}
   else{subRow.style.display='none';}
+  const noteEl=document.getElementById('ctxLedigNote');if(noteEl&&mode==='utb')noteEl.value='';
   _renderLedigCtxList();
   positionCtx('ctxLedig',e);
 }
@@ -294,6 +296,9 @@ function setJourfriCtxScope(s){_jourfriCtxScope=s;_renderJourfriSubRow();_render
 function _renderLedigCtxList(){
   const list=document.getElementById('ctxLedigList');
   list.innerHTML='';
+  // Show note input only for utbildning modes
+  const noteRow=document.getElementById('ctxLedigNoteRow');
+  if(noteRow){const showNote=_ledigCtxMode==='utb'||_ledigCtxMode==='utb-week';noteRow.style.display=showNote?'block':'none';}
   const sorted=[...doctors].sort((a,b)=>a.name.localeCompare(b.name,'sv'));
   const modeColor={day:'var(--ledighet)',week:'var(--ledighet)',utb:'var(--utb)','utb-week':'var(--utb)',sjuk:'var(--sjuk)','sjuk-week':'var(--sjuk)',ausk:'#7c3aed','ausk-week':'#7c3aed',fl:'var(--fl)','fl-week':'var(--fl)',jourfri:'var(--jourledigt)',rand:'#b45309'};
   const modeBg={day:'var(--ledighet-light)',week:'var(--ledighet-light)',utb:'#f0fdf4','utb-week':'#f0fdf4',sjuk:'var(--sjuk-light)','sjuk-week':'var(--sjuk-light)',ausk:'#ede9fe','ausk-week':'#ede9fe',fl:'var(--fl-light)','fl-week':'var(--fl-light)',jourfri:'var(--jourledigt-light)',rand:'#fef9c3'};
@@ -309,6 +314,7 @@ function _renderLedigCtxList(){
     } else if(_ledigCtxMode==='utb'){
       active=!!(utbildningDagar[doc.id]&&utbildningDagar[doc.id][_ledigCtxDs]);
       onskemal=docHasUtbildningOnskemal(doc.id,_ledigCtxDs);
+      if(active){const n=getUtbNote(doc.id,_ledigCtxDs);badge=`<span style="font-size:9px;color:${col};font-weight:700;flex-shrink:0;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">✓${n?` <em>${n}</em>`:''}</span>`;}
     } else if(_ledigCtxMode==='sjuk'){
       const entry=(sjukskrivning[_ledigCtxDs]||[]).find(e=>e.docId===doc.id);
       active=!!entry;
@@ -327,6 +333,7 @@ function _renderLedigCtxList(){
       if(active){const lbl=entry.scope==='weekend'?'Helg':'Hela v.';badge=`<span style="font-size:9px;color:${col};font-weight:700;flex-shrink:0">✓ ${lbl}</span>`;}
     } else if(_ledigCtxMode==='utb-week'){
       active=!!(utbildningVeckor[doc.id]&&utbildningVeckor[doc.id][_ledigCtxWk]);
+      if(active){const wv=utbildningVeckor[doc.id][_ledigCtxWk];const n=wv&&typeof wv==='object'?wv.note||'':'';badge=`<span style="font-size:9px;color:${col};font-weight:700;flex-shrink:0;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">✓${n?` <em>${n}</em>`:''}</span>`;}
     } else if(_ledigCtxMode==='sjuk-week'){
       const wds=_wkDays(_ledigCtxWk);
       active=wds.some(ds=>(sjukskrivning[ds]||[]).some(e=>e.docId===doc.id));
@@ -390,7 +397,8 @@ function _toggleLedigCtxDoc(docId){
       delete utbildningDagar[docId][ds];
     } else {
       if(!utbildningDagar[docId])utbildningDagar[docId]={};
-      utbildningDagar[docId][ds]=true;
+      const noteVal=(document.getElementById('ctxLedigNote')?.value||'').trim();
+      utbildningDagar[docId][ds]=noteVal?{note:noteVal}:true;
       if(utbildningOnskemal[docId])delete utbildningOnskemal[docId][ds];
     }
     logChange(`${had?'Tog bort':'Lade till'} utbildning: ${docShortName(doc)} (${ds})`);
@@ -452,7 +460,8 @@ function _toggleLedigCtxDoc(docId){
       if(utbildningVeckor[docId])delete utbildningVeckor[docId][wk];
     } else {
       if(!utbildningVeckor[docId])utbildningVeckor[docId]={};
-      utbildningVeckor[docId][wk]=true;
+      const noteVal=(document.getElementById('ctxLedigNote')?.value||'').trim();
+      utbildningVeckor[docId][wk]=noteVal?{note:noteVal}:true;
       if(utbildningOnskemal[docId]){_wkDays(wk).forEach(ds=>delete utbildningOnskemal[docId][ds]);}
     }
     logChange(`${had?'Tog bort':'Lade till'} utbildningsvecka: ${docShortName(doc)} (${wk})`);
@@ -773,4 +782,25 @@ function openRotationModal(){
   if(!tEl.value) tEl.value=toWn;
   renderRotationTable();renderBJRotationTable();renderBJNVRotationTable();openModal('rotationModal');
   setTimeout(_rotScrollToToday,50);
+}
+
+// ── Snabbtagning direkt från schemavyn ──
+function quickRemoveUtb(e,docId,ds){
+  e.stopPropagation();
+  const mon=getMonday(new Date(ds+'T12:00:00'));
+  const wk=wkey(weekNum(mon),weekYear(mon));
+  let removed=false;
+  if(utbildningDagar[docId]&&utbildningDagar[docId][ds]){delete utbildningDagar[docId][ds];removed=true;}
+  else if(utbildningVeckor[docId]&&utbildningVeckor[docId][wk]){delete utbildningVeckor[docId][wk];removed=true;}
+  if(removed){const doc=docById(docId);if(doc)logChange(`Tog bort utbildning: ${docShortName(doc)} (${ds})`);autoSave();render();}
+}
+
+function quickRemoveLedighet(e,docId,ds){
+  e.stopPropagation();
+  const mon=getMonday(new Date(ds+'T12:00:00'));
+  const wk=wkey(weekNum(mon),weekYear(mon));
+  let removed=false;
+  if(ledighetRequests[docId]&&ledighetRequests[docId][ds]){delete ledighetRequests[docId][ds];removed=true;}
+  else if(ledighetVeckor[docId]&&ledighetVeckor[docId][wk]){delete ledighetVeckor[docId][wk];removed=true;}
+  if(removed){const doc=docById(docId);if(doc)logChange(`Tog bort ledighet: ${docShortName(doc)} (${ds})`);autoSave();render();}
 }

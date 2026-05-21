@@ -638,10 +638,12 @@ function renderWeek(){
         const recEntry=specialRecurringOnDate(ds,'utb').find(r=>r.docId===doc.id);
         const isRec=!!recEntry;
         const note=isRec?(recEntry.note||''):(getUtbNote(doc.id,ds));
+        const removeBtn=!IS_DOCTOR_MODE&&!isRec?`<button onclick="quickRemoveUtb(event,'${doc.id}','${ds}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort utbildning">✕</button>`:'';
         html+=`<div class="utb-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;${isRec?'border-left:2px solid #3b82f6':''}" title="${note}">
           <span style="font-size:9px">✓ ${docShortName(doc)}</span>
-          ${note?`<span style="font-size:9px;color:var(--text3);font-style:italic;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${note}</span>`:''}
+          ${note?`<span style="font-size:9px;color:var(--text3);font-style:italic;max-width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${note}</span>`:''}
           ${isRec?'<span style="font-size:8px;opacity:.6">🔁</span>':''}
+          ${removeBtn}
         </div>`;
       });
       html+=`<div style="min-height:10px"></div>`;
@@ -795,7 +797,10 @@ function renderWeek(){
         const rejectCall=isVecka?`rejectLedighetVeckaOnskemal('${doc.id}','${wk}')`:`rejectLedighetDagOnskemal('${doc.id}','${ds}')`;
         html+=`<div style="display:flex;align-items:center;gap:2px;margin-bottom:2px;padding:2px 4px;border-radius:4px;background:#fefce8;border:1px solid #ca8a0488;font-size:9px;font-weight:700;color:#854d0e;white-space:nowrap" title="Önskat ledigt — ej godkänt">✋ ${docShortName(doc)}${isVecka?' (v)':''}<button style="margin-left:3px;font-size:9px;padding:0 4px;border-radius:3px;border:none;background:#16a34a;color:#fff;cursor:pointer;line-height:15px" onclick="event.stopPropagation();${approveCall}" title="Godkänn">✓</button><button style="font-size:9px;padding:0 4px;border-radius:3px;border:none;background:#dc2626;color:#fff;cursor:pointer;line-height:15px" onclick="event.stopPropagation();${rejectCall}" title="Avslå">✕</button></div>`;
       });
-      ledDocs.forEach(doc=>{html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:var(--ledighet-light);border:1px solid var(--ledighet)44;font-size:9px;font-weight:700;color:var(--ledighet)">✓ ${docShortName(doc)}</div>`;});
+      ledDocs.forEach(doc=>{
+        const removeBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveLedighet(event,'${doc.id}','${ds}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--ledighet);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort ledighet">✕</button>`:'';
+        html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:var(--ledighet-light);border:1px solid var(--ledighet)44;font-size:9px;font-weight:700;color:var(--ledighet)">✓ ${docShortName(doc)}${removeBtn}</div>`;
+      });
       html+=`</td>`;
     });
     html+=`</tr>`;
@@ -848,8 +853,8 @@ function renderWeek(){
       });
       // Period-based FL (flFrom/flTo on doctor) — click to edit doctor (admin only)
       periodFlDocs.forEach(doc=>{
-        const _flOnclick=IS_DOCTOR_MODE?'event.stopPropagation()':`event.stopPropagation();openEditDoctorModal('${doc.id}')`;
-        const _flTitle=IS_DOCTOR_MODE?'FL-period':'FL-period — klicka för att redigera';
+        const _flOnclick=IS_DOCTOR_MODE?'event.stopPropagation()':`event.stopPropagation();openEditDoctorModalFL('${doc.id}')`;
+        const _flTitle=IS_DOCTOR_MODE?'FL-period':'FL-period — klicka för att öppna FL-inställningar';
         html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:var(--fl-light);border:1px solid var(--fl)88;${IS_DOCTOR_MODE?'':'cursor:pointer'}" onclick="${_flOnclick}" title="${_flTitle}">
           <span style="font-size:9px;font-weight:700;color:var(--fl)">📅 ${docShortName(doc)}</span>
         </div>`;

@@ -553,6 +553,14 @@ function closeEditDoctorModal(){
   closeModal('editDoctorModal');
   if(_editDocOpenedFromList){_editDocOpenedFromList=false;openModal('doctorListModal');}
 }
+function openEditDoctorModalFL(docId){
+  openEditDoctorModal(docId);
+  // Scroll to and highlight the FL section after modal opens
+  setTimeout(()=>{
+    const el=document.getElementById('editFlFrom');
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.focus();}
+  },60);
+}
 function openEditDoctorModal(docId){
   const doc=docById(docId);if(!doc)return;
   document.getElementById('editDocId').value=docId;document.getElementById('editDocName').value=doc.name;
