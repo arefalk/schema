@@ -9,7 +9,7 @@ function autoSave() {
       roleTags, positions, doctors, schedule, scheduleHalfDay, scheduleNotes, slotLocations, jourveckor, jourveckorManual, bjScheduleManual, nightOverrides, bjSchedule,
       ledighetRequests, ledighetVeckor, specialSlots, bvcSchedule,
       handledningPairs, mandatoryPositions: [...mandatoryPositions], schedulePeriod,
-      utbildningDagar, utbildningVeckor, jourfriOnskad, deltidDagar, deltidVeckor,
+      utbildningDagar, utbildningVeckor, randningDagar, jourfriOnskad, deltidDagar, deltidVeckor,
       dagvardEntries, auskultationEntries, ovrigtNotes, ovrigtRecurring, sjukskrivning, foraldraledig, onskadPass, specialRecurring, onskadJourvecka, onskadBJ,
       ledighetOnskemal, ledighetVeckorOnskemal, utbildningOnskemal, jourfriOnskemal, jourfriOnskemalDag, jourfriOnskadDag, adminOnskemal, foraldraledigenOnskemal,
       posMinFillOverrides, daySpan, roleDefaultPositions
@@ -72,6 +72,7 @@ function loadFromLocalStorage() {
     if (data.mandatoryPositions) mandatoryPositions = new Set(data.mandatoryPositions);
     if (data.schedulePeriod) schedulePeriod = data.schedulePeriod;
     if (data.utbildningDagar) utbildningDagar = data.utbildningDagar;
+    if (data.randningDagar) randningDagar = data.randningDagar;
     if (data.utbildningVeckor) utbildningVeckor = data.utbildningVeckor;
     if (data.jourfriOnskad) jourfriOnskad = data.jourfriOnskad;
     if (data.deltidDagar) deltidDagar = data.deltidDagar;

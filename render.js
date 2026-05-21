@@ -547,6 +547,57 @@ function renderWeek(){
     }
   }
 
+  // ── SEKTION: ÖVRIGT OCH ADMINISTRATION ──
+  html+=`<tr class="section-hdr"><td colspan="${cols}">Övrigt och Administration</td></tr>`;
+
+  // ── ÖVRIGT ──
+  {
+    html+=`<tr class="pos-row"><td class="label-cell">
+      <div class="pos-name-el" style="color:var(--text2)">Övrigt</div>
+      <div class="pos-reqs"><span style="font-size:9px;color:var(--text3)">Möten & åtaganden</span></div>
+    </td>`;
+    days.forEach(d=>{
+      const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
+      const notes=ovrigtForDate(ds);
+      html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
+      notes.forEach(n=>{
+        const recIcon=n._recurring?'<span style="font-size:8px;opacity:.6">🔁</span>':'';
+        html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:var(--bg2);border:1px solid ${n._recurring?'#93c5fd':'var(--border)'};cursor:pointer" onclick="openOvrigtModal('${ds}')">${recIcon}<span style="font-size:9px;color:var(--text2)">${n.text}</span></div>`;
+      });
+      html+=`<div class="bj-slot empty-cell" style="min-height:20px" onclick="openOvrigtModal('${ds}')"><span style="font-size:12px;color:var(--border)">+</span></div>`;
+      html+=`</td>`;
+    });
+    html+=`</tr>`;
+  }
+
+  // ── ADMINISTRATION ──
+  {
+    html+=`<tr class="pos-row"><td class="label-cell">
+      <div class="pos-name-el" style="color:#666">Administration</div>
+      <div class="pos-reqs"><span style="font-size:9px;color:var(--text2)">Admin vid behov</span></div>
+    </td>`;
+    days.forEach(d=>{
+      const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
+      const entries=specialsOnDate(ds).filter(([k,v])=>v.type==='adm');
+      const recAdm=specialRecurringOnDate(ds,'adm');
+      html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
+      entries.forEach(([k,v])=>{const doc=docById(v.docId);if(!doc)return;
+        const admLabel=v.note||'ADM';
+        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;cursor:pointer" onclick="openEditSpecialModal('${ds}','${k}')"><span style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${v.note||''}">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${v.halfDay?` (${v.halfDay})`:''}</span></div>`;
+      });
+      recAdm.forEach(r=>{const doc=docById(r.docId);if(!doc)return;
+        const admLabel=r.note||'ADM';
+        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;border-left:2px solid #3b82f6" title="Återkommande${r.note?' – '+r.note:''}"><span style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${r.halfDay?` (${r.halfDay})`:''}</span><span style="font-size:8px;opacity:.6">🔁</span></div>`;
+      });
+      html+=`<div class="bj-slot empty-cell" style="min-height:22px;font-size:10px;color:var(--text3)" onclick="openAddSpecialModal('${ds}','adm')"><span style="font-size:12px;color:var(--border)">+</span></div>`;
+      html+=`</td>`;
+    });
+    html+=`</tr>`;
+  }
+
+  // ── SEKTION: UTBILDNING ──
+  html+=`<tr class="section-hdr"><td colspan="${cols}">Utbildning</td></tr>`;
+
   // ── UTBILDNING ──
   {
     html+=`<tr class="pos-row"><td class="label-cell${IS_DOCTOR_MODE?'':' clickable'}" ${IS_DOCTOR_MODE?`onclick="openUtbildningModal()"`:` onclick="openInlineWeekCtx(event,'utb',${wn},${yr})" title="Klicka för att hantera utbildning hela veckan"`}>
@@ -576,31 +627,6 @@ function renderWeek(){
         </div>`;
       });
       html+=`<div style="min-height:10px"></div>`;
-      html+=`</td>`;
-    });
-    html+=`</tr>`;
-  }
-
-  // ── ADMINISTRATION ──
-  {
-    html+=`<tr class="pos-row"><td class="label-cell">
-      <div class="pos-name-el" style="color:#666">Administration</div>
-      <div class="pos-reqs"><span style="font-size:9px;color:var(--text2)">Admin vid behov</span></div>
-    </td>`;
-    days.forEach(d=>{
-      const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
-      const entries=specialsOnDate(ds).filter(([k,v])=>v.type==='adm');
-      const recAdm=specialRecurringOnDate(ds,'adm');
-      html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
-      entries.forEach(([k,v])=>{const doc=docById(v.docId);if(!doc)return;
-        const admLabel=v.note||'ADM';
-        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;cursor:pointer" onclick="openEditSpecialModal('${ds}','${k}')"><span style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${v.note||''}">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${v.halfDay?` (${v.halfDay})`:''}</span></div>`;
-      });
-      recAdm.forEach(r=>{const doc=docById(r.docId);if(!doc)return;
-        const admLabel=r.note||'ADM';
-        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;border-left:2px solid #3b82f6" title="Återkommande${r.note?' – '+r.note:''}"><span style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${r.halfDay?` (${r.halfDay})`:''}</span><span style="font-size:8px;opacity:.6">🔁</span></div>`;
-      });
-      html+=`<div class="bj-slot empty-cell" style="min-height:22px;font-size:10px;color:var(--text3)" onclick="openAddSpecialModal('${ds}','adm')"><span style="font-size:12px;color:var(--border)">+</span></div>`;
       html+=`</td>`;
     });
     html+=`</tr>`;
@@ -657,25 +683,29 @@ function renderWeek(){
     html+=`</tr>`;
   }
 
-  // ── ÖVRIGT ──
+  // ── RANDNING ──
   {
-    html+=`<tr class="pos-row"><td class="label-cell">
-      <div class="pos-name-el" style="color:var(--text2)">Övrigt</div>
-      <div class="pos-reqs"><span style="font-size:9px;color:var(--text3)">Möten & åtaganden</span></div>
+    html+=`<tr class="pos-row"><td class="label-cell${IS_DOCTOR_MODE?'':' clickable'}" ${IS_DOCTOR_MODE?'':` onclick="openInlineDayCtx(event,'rand',isoDate(days[0]))" title="Klicka på en dag för att lägga till/ta bort randning"`}>
+      <div class="pos-name-el" style="color:#b45309">Randning</div>
+      <div class="pos-reqs"><span style="font-size:9px;color:var(--text2)">Blockerar schemaläggning</span></div>
     </td>`;
     days.forEach(d=>{
       const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
-      const notes=ovrigtForDate(ds);
-      html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
-      notes.forEach(n=>{
-        const recIcon=n._recurring?'<span style="font-size:8px;opacity:.6">🔁</span>':'';
-        html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:var(--bg2);border:1px solid ${n._recurring?'#93c5fd':'var(--border)'};cursor:pointer" onclick="openOvrigtModal('${ds}')">${recIcon}<span style="font-size:9px;color:var(--text2)">${n.text}</span></div>`;
+      const randDocs=doctors.filter(doc=>docHasRandning(doc.id,ds)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
+      html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}" style="cursor:pointer" onclick="openInlineDayCtx(event,'rand','${ds}')">`;
+      randDocs.forEach(doc=>{
+        html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:#fef9c3;border:1px solid #b4530944">
+          <span style="font-size:9px;font-weight:700;color:#b45309">✓ ${docShortName(doc)}</span>
+        </div>`;
       });
-      html+=`<div class="bj-slot empty-cell" style="min-height:20px" onclick="openOvrigtModal('${ds}')"><span style="font-size:12px;color:var(--border)">+</span></div>`;
+      html+=`<div style="min-height:10px"></div>`;
       html+=`</td>`;
     });
     html+=`</tr>`;
   }
+
+  // ── SEKTION: FRÅNVARO ──
+  html+=`<tr class="section-hdr"><td colspan="${cols}">Frånvaro</td></tr>`;
 
   // ── JOURFRITT ──
   {

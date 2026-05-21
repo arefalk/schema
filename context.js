@@ -227,8 +227,8 @@ function openInlineWeekCtx(e,mode,wn,yr){
   closeAllCtx();
   const wk=wkey(wn,yr);
   _ledigCtxMode=mode+'-week';_ledigCtxWk=wk;
-  const labels={utb:'Utbildning',sjuk:'Sjukskrivning/VAB',ausk:'Auskultation/Intro',fl:'Föräldraledig'};
-  const colors={utb:'var(--utb)',sjuk:'var(--sjuk)',ausk:'#7c3aed',fl:'var(--fl)'};
+  const labels={utb:'Utbildning',sjuk:'Sjukskrivning/VAB',ausk:'Auskultation/Intro',fl:'Föräldraledig',rand:'Randning'};
+  const colors={utb:'var(--utb)',sjuk:'var(--sjuk)',ausk:'#7c3aed',fl:'var(--fl)',rand:'#b45309'};
   document.getElementById('ctxLedigHead').innerHTML=
     `<span style="color:${colors[mode]}">Hel vecka — ${labels[mode]}</span><span style="font-size:9px;font-weight:400;color:var(--text3);margin-left:5px">v.${wn}</span>`;
   const subRow=document.getElementById('ctxLedigSubRow');
@@ -244,8 +244,8 @@ function openInlineDayCtx(e,mode,ds){
   closeAllCtx();
   _ledigCtxMode=mode;_ledigCtxDs=ds;
   const d=new Date(ds+'T12:00:00');
-  const labels={utb:'Utbildning',sjuk:'Sjukskrivning/VAB',ausk:'Auskultation/Intro',fl:'Föräldraledig'};
-  const colors={utb:'var(--utb)',sjuk:'var(--sjuk)',ausk:'#7c3aed',fl:'var(--fl)'};
+  const labels={utb:'Utbildning',sjuk:'Sjukskrivning/VAB',ausk:'Auskultation/Intro',fl:'Föräldraledig',rand:'Randning'};
+  const colors={utb:'var(--utb)',sjuk:'var(--sjuk)',ausk:'#7c3aed',fl:'var(--fl)',rand:'#b45309'};
   document.getElementById('ctxLedigHead').innerHTML=
     `<span style="color:${colors[mode]}">${labels[mode]}</span><span style="font-size:9px;font-weight:400;color:var(--text3);margin-left:5px">${svDay(d)} ${d.getDate()} ${svMonth(d)}</span>`;
   const subRow=document.getElementById('ctxLedigSubRow');
@@ -295,8 +295,8 @@ function _renderLedigCtxList(){
   const list=document.getElementById('ctxLedigList');
   list.innerHTML='';
   const sorted=[...doctors].sort((a,b)=>a.name.localeCompare(b.name,'sv'));
-  const modeColor={day:'var(--ledighet)',week:'var(--ledighet)',utb:'var(--utb)','utb-week':'var(--utb)',sjuk:'var(--sjuk)','sjuk-week':'var(--sjuk)',ausk:'#7c3aed','ausk-week':'#7c3aed',fl:'var(--fl)','fl-week':'var(--fl)',jourfri:'var(--jourledigt)'};
-  const modeBg={day:'var(--ledighet-light)',week:'var(--ledighet-light)',utb:'#f0fdf4','utb-week':'#f0fdf4',sjuk:'var(--sjuk-light)','sjuk-week':'var(--sjuk-light)',ausk:'#ede9fe','ausk-week':'#ede9fe',fl:'var(--fl-light)','fl-week':'var(--fl-light)',jourfri:'var(--jourledigt-light)'};
+  const modeColor={day:'var(--ledighet)',week:'var(--ledighet)',utb:'var(--utb)','utb-week':'var(--utb)',sjuk:'var(--sjuk)','sjuk-week':'var(--sjuk)',ausk:'#7c3aed','ausk-week':'#7c3aed',fl:'var(--fl)','fl-week':'var(--fl)',jourfri:'var(--jourledigt)',rand:'#b45309'};
+  const modeBg={day:'var(--ledighet-light)',week:'var(--ledighet-light)',utb:'#f0fdf4','utb-week':'#f0fdf4',sjuk:'var(--sjuk-light)','sjuk-week':'var(--sjuk-light)',ausk:'#ede9fe','ausk-week':'#ede9fe',fl:'var(--fl-light)','fl-week':'var(--fl-light)',jourfri:'var(--jourledigt-light)',rand:'#fef9c3'};
   sorted.forEach(doc=>{
     let active=false,onskemal=false,badge='';
     const col=modeColor[_ledigCtxMode]||'var(--ledighet)';
@@ -318,6 +318,8 @@ function _renderLedigCtxList(){
     } else if(_ledigCtxMode==='fl'){
       active=(foraldraledig[_ledigCtxDs]||[]).some(e=>e.docId===doc.id);
       onskemal=docHasFlOnskemal(doc.id,_ledigCtxDs);
+    } else if(_ledigCtxMode==='rand'){
+      active=!!(randningDagar[doc.id]&&randningDagar[doc.id][_ledigCtxDs]);
     } else if(_ledigCtxMode==='jourfri'){
       const entry=jourfriOnskad[doc.id]&&jourfriOnskad[doc.id][_ledigCtxWk];
       active=!!entry;
@@ -426,6 +428,12 @@ function _toggleLedigCtxDoc(docId){
       if(foraldraledigenOnskemal[docId])delete foraldraledigenOnskemal[docId][ds];
     }
     logChange(`${existing?'Tog bort':'Lade till'} FL: ${docShortName(doc)} (${ds})`);
+  } else if(_ledigCtxMode==='rand'){
+    const ds=_ledigCtxDs;
+    const had=!!(randningDagar[docId]&&randningDagar[docId][ds]);
+    if(had){delete randningDagar[docId][ds];}
+    else{if(!randningDagar[docId])randningDagar[docId]={};randningDagar[docId][ds]=true;}
+    logChange(`${had?'Tog bort':'Lade till'} randning: ${docShortName(doc)} (${ds})`);
   } else if(_ledigCtxMode==='jourfri'){
     const wk=_ledigCtxWk;
     const had=!!(jourfriOnskad[docId]&&jourfriOnskad[docId][wk]);

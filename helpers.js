@@ -357,6 +357,7 @@ function docHasUtbildning(docId,ds){
   if(utbildningVeckor[docId]&&utbildningVeckor[docId][wkey(wn,yr)])return true;
   return specialRecurringOnDate(ds,'utb').some(r=>r.docId===docId);
 }
+function docHasRandning(docId,ds){return!!(randningDagar[docId]&&randningDagar[docId][ds]);}
 // utbildningDagar[docId][ds] = true (ingen notering) eller {note:'text'}
 function getUtbNote(docId,ds){
   const v=utbildningDagar[docId]&&utbildningDagar[docId][ds];
@@ -603,6 +604,7 @@ function isHoliday(ds){
 function _docAbsentOnDay(docId,ds,inclWished){
   if(docHasAnyLedighet(docId,ds))return true;
   if(docHasUtbildning(docId,ds))return true;
+  if(docHasRandning(docId,ds))return true;
   if(docHasForaldraledig(docId,ds))return true;
   if(docHasSjukskrivning(docId,ds))return true;
   if(deltidOnDay(docId,ds)==='hel')return true;
