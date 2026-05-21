@@ -63,6 +63,8 @@ function docRestrictedOnDate(docId,ds){
   if(docHasSjukskrivning(docId,ds)) return 'Sjukskrivning/VAB';
   // Föräldraledig
   if(docHasForaldraledig(docId,ds)) return 'Föräldraledig';
+  // Tjänstledig
+  if(docHasTjänstledig(docId,ds)) return 'Tjänstledig';
   return null;
 }
 function docHasSjukskrivning(docId,ds){
@@ -74,6 +76,10 @@ function docHasForaldraledig(docId,ds){
   const doc=docById(docId);
   if(doc&&doc.flFrom&&ds>=doc.flFrom&&(!doc.flTo||ds<=doc.flTo))return true;
   return false;
+}
+function docHasTjänstledig(docId,ds){
+  const doc=docById(docId);
+  return !!(doc&&doc.tlFrom&&ds>=doc.tlFrom&&(!doc.tlTo||ds<=doc.tlTo));
 }
 
 // ── Jourledigt helpers (override-aware) ──
@@ -228,8 +234,8 @@ function jvNightDates(wn,yr,jvType){const m=isoWeekMon(wn,yr);if(jvType==='JV1')
 // True if doctor cannot do a night shift on ds: has ledighet/utbildning on that day or the next morning
 function docBlockedForNight(docId,ds){
   const next=isoDate(addDays(new Date(ds),1));
-  return docHasAnyLedighet(docId,ds)||docHasUtbildning(docId,ds)||docHasForaldraledig(docId,ds)||docHasSjukskrivning(docId,ds)
-    ||docHasAnyLedighet(docId,next)||docHasUtbildning(docId,next)||docHasForaldraledig(docId,next)||docHasSjukskrivning(docId,next);
+  return docHasAnyLedighet(docId,ds)||docHasUtbildning(docId,ds)||docHasForaldraledig(docId,ds)||docHasTjänstledig(docId,ds)||docHasSjukskrivning(docId,ds)
+    ||docHasAnyLedighet(docId,next)||docHasUtbildning(docId,next)||docHasForaldraledig(docId,next)||docHasTjänstledig(docId,next)||docHasSjukskrivning(docId,next);
 }
 function isoDate(d){return d.toISOString().slice(0,10);}
 function isToday(d){return isoDate(d)===isoDate(new Date());}
@@ -679,6 +685,7 @@ function _docAbsentOnDay(docId,ds,inclWished){
   if(docHasUtbildning(docId,ds))return true;
   if(docHasRandning(docId,ds))return true;
   if(docHasForaldraledig(docId,ds))return true;
+  if(docHasTjänstledig(docId,ds))return true;
   if(docHasSjukskrivning(docId,ds))return true;
   if(deltidOnDay(docId,ds)==='hel')return true;
   const _ovrIds=n=>(n.docIds&&n.docIds.length?n.docIds:n.docId?[n.docId]:[]);

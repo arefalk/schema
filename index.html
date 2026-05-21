@@ -131,6 +131,10 @@
       <div class="fg"><label class="fl" style="color:var(--fl)">👶 Föräldraledig från</label><input type="date" id="addFlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
       <div class="fg"><label class="fl" style="color:var(--fl)">Föräldraledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="addFlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
     </div>
+    <div class="two-col">
+      <div class="fg"><label class="fl" style="color:#6366f1">🏢 Tjänstledig från</label><input type="date" id="addTlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+      <div class="fg"><label class="fl" style="color:#6366f1">Tjänstledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="addTlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    </div>
     <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><button class="btn sm" type="button" onclick="applyRoleDefaults('add')" style="font-size:10px;margin-bottom:4px">↩ Fyll från rollstandard</button><div class="tg" id="addAllowedGrid"></div></div>
     <div class="fg"><label class="fl">Föredragna positioner</label><div class="tg" id="addPrefGrid"></div></div>
     <div class="fg"><label class="fl">JV-preferens</label>
@@ -174,6 +178,10 @@
     <div class="two-col">
       <div class="fg"><label class="fl" style="color:var(--fl)">👶 Föräldraledig från</label><input type="date" id="editFlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
       <div class="fg"><label class="fl" style="color:var(--fl)">Föräldraledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="editFlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    </div>
+    <div class="two-col">
+      <div class="fg"><label class="fl" style="color:#6366f1">🏢 Tjänstledig från</label><input type="date" id="editTlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+      <div class="fg"><label class="fl" style="color:#6366f1">Tjänstledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="editTlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
     </div>
     <div class="fg"><label class="fl">Föredragna positioner</label><div class="tg" id="editPrefGrid"></div></div>
     <div class="fg"><label class="fl">Tillåtna positioner <span style="font-weight:400;color:var(--text3)">(tom = alla tillåtna)</span></label><button class="btn sm" type="button" onclick="applyRoleDefaults('edit')" style="font-size:10px;margin-bottom:4px">↩ Fyll från rollstandard</button><div class="tg" id="editAllowedGrid"></div></div>
@@ -1039,10 +1047,10 @@
 
 <!-- Modules loaded in dependency order -->
 <script src="state.js?v=134"></script>
-<script src="helpers.js?v=142"></script>
-<script src="render.js?v=160"></script>
+<script src="helpers.js?v=143"></script>
+<script src="render.js?v=161"></script>
 <script src="context.js?v=131"></script>
-<script src="modals.js?v=169"></script>
+<script src="modals.js?v=170"></script>
 <script src="features.js?v=152"></script>
 <script src="storage.js?v=127"></script>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>

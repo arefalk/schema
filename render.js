@@ -837,7 +837,7 @@ function renderWeek(){
   {
     html+=`<tr class="pos-row"><td class="label-cell${IS_DOCTOR_MODE?'':' clickable'}" ${IS_DOCTOR_MODE?'':` onclick="openInlineWeekCtx(event,'fl',${wn},${yr})" title="Klicka för att hantera föräldraledig hela veckan"`}>
       <div class="pos-name-el" style="color:var(--fl)">Föräldraledig</div>
-      <div class="pos-reqs"><span style="font-size:9px;color:var(--text2)">Önskemål / Godkänd</span></div>
+      <div class="pos-reqs"><span style="font-size:9px;color:#6366f1">+ Tjänstledig</span></div>
     </td>`;
     days.forEach(d=>{
       const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
@@ -845,6 +845,8 @@ function renderWeek(){
       // Doctors on period-based FL (flFrom/flTo) who are not already in day-entries
       const dayEntryIds=new Set(entries.map(e=>e.docId));
       const periodFlDocs=doctors.filter(doc=>doc.flFrom&&ds>=doc.flFrom&&(!doc.flTo||ds<=doc.flTo)&&!dayEntryIds.has(doc.id)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
+      // Doctors on period-based TL (tlFrom/tlTo)
+      const periodTlDocs=doctors.filter(doc=>docHasTjänstledig(doc.id,ds)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
       const flOnskemalDocs=doctors.filter(doc=>docHasFlOnskemal(doc.id,ds)&&!docHasForaldraledig(doc.id,ds)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
       html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}" style="cursor:pointer" onclick="openInlineDayCtx(event,'fl','${ds}')">`;
       // Pending FL-önskemål
@@ -857,6 +859,14 @@ function renderWeek(){
         const _flTitle=IS_DOCTOR_MODE?'FL-period':'FL-period — klicka för att öppna FL-inställningar';
         html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:var(--fl-light);border:1px solid var(--fl)88;${IS_DOCTOR_MODE?'':'cursor:pointer'}" onclick="${_flOnclick}" title="${_flTitle}">
           <span style="font-size:9px;font-weight:700;color:var(--fl)">📅 ${docShortName(doc)}</span>
+        </div>`;
+      });
+      // Period-based TL (tlFrom/tlTo on doctor) — click to edit doctor (admin only)
+      periodTlDocs.forEach(doc=>{
+        const _tlOnclick=IS_DOCTOR_MODE?'event.stopPropagation()':`event.stopPropagation();openEditDoctorModalFL('${doc.id}')`;
+        const _tlTitle=IS_DOCTOR_MODE?'TL-period':'Tjänstledig — klicka för att redigera';
+        html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:#eef2ff;border:1px solid #6366f188;${IS_DOCTOR_MODE?'':'cursor:pointer'}" onclick="${_tlOnclick}" title="${_tlTitle}">
+          <span style="font-size:9px;font-weight:700;color:#6366f1">🏢 ${docShortName(doc)}</span>
         </div>`;
       });
       // Day-by-day approved FL
