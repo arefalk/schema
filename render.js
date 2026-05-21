@@ -601,8 +601,8 @@ function renderWeek(){
       html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
       entries.forEach(([k,v])=>{const doc=docById(v.docId);if(!doc)return;
         const admLabel=v.note||'ADM';
-        const removeAdmBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveAdm(event,'${ds}','${k}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort administration">✕</button>`:'';
-        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;cursor:pointer" onclick="openEditSpecialModal('${ds}','${k}')"><span style="max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${v.note||''}">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${v.halfDay?` (${v.halfDay})`:''}</span>${removeAdmBtn}</div>`;
+        const removeAdmBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveAdm(event,'${ds}','${k}')" style="margin-left:2px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort administration">✕</button>`:'';
+        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px"><span style="flex:1;min-width:0;cursor:pointer;max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${v.note||''}" onclick="openEditSpecialModal('${ds}','${k}')">${admLabel}</span><span style="font-size:9px;color:var(--text2);cursor:pointer" onclick="openEditSpecialModal('${ds}','${k}')">${docShortName(doc)}${v.halfDay?` (${v.halfDay})`:''}</span>${removeAdmBtn}</div>`;
       });
       recAdm.forEach(r=>{const doc=docById(r.docId);if(!doc)return;
         const admLabel=r.note||'ADM';

@@ -806,12 +806,11 @@ function quickRemoveLedighet(e,docId,ds){
 }
 function quickRemoveAdm(e,ds,slotKey){
   e.stopPropagation();
-  if(specialSlots[ds]&&specialSlots[ds][slotKey]){
-    const v=specialSlots[ds][slotKey];const doc=docById(v.docId);
-    delete specialSlots[ds][slotKey];
-    logChange(`Tog bort administration: ${doc?docShortName(doc):''} (${ds})`);
-    autoSave();render();
-  }
+  const v=getSpecial(ds,slotKey);
+  const doc=v?docById(v.docId):null;
+  delSpecial(ds,slotKey);
+  logChange(`Tog bort administration: ${doc?docShortName(doc):''} (${ds})`);
+  autoSave();render();
 }
 function quickRemoveHandledning(e,ds,slotKey){
   e.stopPropagation();
