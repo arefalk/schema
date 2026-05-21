@@ -2036,8 +2036,10 @@ function renderStaffingBar(containerId,month,year,inclWished){
 }
 
 let _bemanningMonth=new Date().getMonth(),_bemanningYear=new Date().getFullYear();
+let _bemanningWn=weekNum(new Date()),_bemanningWnYr=weekYear(new Date());
 function openBemanningModal(){
   _bemanningMonth=currentDate.getMonth();_bemanningYear=currentDate.getFullYear();
+  _bemanningWn=weekNum(getMonday(currentDate));_bemanningWnYr=weekYear(getMonday(currentDate));
   _renderBemanningModal();
   openModal('bemanningModal');
 }
@@ -2045,12 +2047,90 @@ function _renderBemanningModal(){
   const months=['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December'];
   document.getElementById('bemanningMonthLabel').textContent=`${months[_bemanningMonth]} ${_bemanningYear}`;
   renderStaffingBar('bemanningContainer',_bemanningMonth,_bemanningYear,true);
+  _renderBemanningWeekView();
 }
 function bemanningNavMonth(dir){
   _bemanningMonth+=dir;
   if(_bemanningMonth>11){_bemanningMonth=0;_bemanningYear++;}
   if(_bemanningMonth<0){_bemanningMonth=11;_bemanningYear--;}
   _renderBemanningModal();
+}
+function bemanningNavWeek(dir){
+  const dt=addDays(isoWeekMon(_bemanningWn,_bemanningWnYr),dir*7);
+  _bemanningWn=weekNum(dt);_bemanningWnYr=weekYear(dt);
+  _renderBemanningWeekView();
+}
+function _renderBemanningWeekView(){
+  const el=document.getElementById('bemanningWeekContainer');
+  if(!el)return;
+  const wkMon=isoWeekMon(_bemanningWn,_bemanningWnYr);
+  const days=[0,1,2,3,4].map(i=>addDays(wkMon,i));
+  const dayLabels=['Mån','Tis','Ons','Tor','Fre'];
+  const d0=days[0],d4=days[4];
+  const sameMonth=d0.getMonth()===d4.getMonth();
+  const rangeStr=sameMonth
+    ?`${d0.getDate()}–${d4.getDate()} ${svMonth(d4)} ${_bemanningWnYr}`
+    :`${d0.getDate()} ${svMonth(d0)} – ${d4.getDate()} ${svMonth(d4)} ${_bemanningWnYr}`;
+  document.getElementById('bemanningWeekLabel').textContent=`v.${_bemanningWn} · ${rangeStr}`;
+  // Status per läkare/dag
+  const _status=(docId,ds)=>{
+    if(docHasForaldraledig(docId,ds))return{type:'fl',label:'FL'};
+    if(docHasSjukskrivning(docId,ds))return{type:'sjuk',label:'Sjuk'};
+    if(docHasAnyLedighet(docId,ds))return{type:'led',label:'Led'};
+    if(docHasUtbildning(docId,ds))return{type:'utb',label:'Utb'};
+    if(deltidOnDay(docId,ds)==='hel')return{type:'deltid',label:'Deltid'};
+    const dt=new Date(ds+'T12:00:00'),wn=weekNum(dt),yr=weekYear(dt);
+    if(docHasJourfriOnskad(docId,wn,yr,'week'))return{type:'jourfri',label:'JF'};
+    return{type:'ok',label:'✓'};
+  };
+  const _st={
+    ok:     {bg:'#f0fdf4',col:'#166534'},
+    jourfri:{bg:'var(--surface2)',col:'var(--text3)'},
+    fl:     {bg:'#fce7f3',col:'#9d174d'},
+    sjuk:   {bg:'#fee2e2',col:'#b91c1c'},
+    led:    {bg:'#e0f2fe',col:'#075985'},
+    utb:    {bg:'#ede9fe',col:'#5b21b6'},
+    deltid: {bg:'#fef9c3',col:'#713f12'},
+  };
+  // Gruppera aktiva läkare per roll
+  const wkMonDs=isoDate(wkMon);
+  const activeDocs=doctors.filter(d=>docIsActive(d,wkMonDs));
+  const groups=[];
+  roleTags.forEach(role=>{
+    const docs=activeDocs.filter(d=>(d.roles||[]).includes(role)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
+    if(docs.length)groups.push({role,docs});
+  });
+  // Läkare utan matchande roll
+  const assignedIds=new Set(groups.flatMap(g=>g.docs.map(d=>d.id)));
+  const unassigned=activeDocs.filter(d=>!assignedIds.has(d.id)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
+  if(unassigned.length)groups.push({role:'Övriga',docs:unassigned});
+
+  let html=`<div style="display:grid;grid-template-columns:130px repeat(5,1fr);gap:2px;font-size:11px">`;
+  // Rubrikrad
+  html+=`<div></div>`;
+  days.forEach((dt,i)=>{
+    html+=`<div style="text-align:center;font-weight:700;color:var(--text3);padding:2px 0;font-size:10px">${dayLabels[i]}<br><span style="font-weight:400">${dt.getDate()}</span></div>`;
+  });
+  groups.forEach(({role,docs})=>{
+    const inService=docs.filter(d=>{const s=_status(d.id,isoDate(days[0]));return s.type==='ok'||s.type==='jourfri';}).length;
+    const jourfriCount=docs.filter(d=>_status(d.id,isoDate(days[0])).type==='jourfri').length;
+    html+=`<div style="grid-column:1/-1;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding:8px 0 3px;border-top:1px solid var(--border)">`;
+    html+=`${role} <span style="font-weight:400;font-size:9px">${inService} i tjänst${jourfriCount?` (${jourfriCount} JF)`:''}`;
+    html+=`</span></div>`;
+    docs.forEach(d=>{
+      const shortN=docShortName(d);
+      html+=`<div style="display:flex;align-items:center;padding:2px 2px;color:var(--text2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px" title="${d.name}">${shortN}</div>`;
+      days.forEach(dt=>{
+        const ds=isoDate(dt);
+        const s=_status(d.id,ds);
+        const style=_st[s.type]||_st.ok;
+        const dim=s.type==='jourfri'?';opacity:.6':'';
+        html+=`<div style="text-align:center;padding:2px 1px;border-radius:3px;background:${style.bg};color:${style.col};font-size:9px;font-weight:600${dim}">${s.label}</div>`;
+      });
+    });
+  });
+  html+=`</div>`;
+  el.innerHTML=html;
 }
 
 function showDoctorSelector(){
