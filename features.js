@@ -31,7 +31,7 @@ function _setupSpecialModal(ds,type){
   document.getElementById('addSpecialTitle').textContent=titles[type]||type;
   document.getElementById('addSpecialSub').textContent=subs[type]||'';
   const docSel=document.getElementById('addSpecialDoc');
-  docSel.innerHTML=doctors.map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+  docSel.innerHTML=[...doctors].sort((a,b)=>a.name.localeCompare(b.name,'sv')).map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
   const supRow=document.getElementById('addSpecialSupervisorRow');
   const deleteBtn=document.getElementById('addSpecialDeleteBtn');
   if(type==='handledning'){
