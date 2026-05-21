@@ -842,9 +842,9 @@ function renderWeek(){
     days.forEach(d=>{
       const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
       const entries=foraldraledig[ds]||[];
-      // Doctors on period-based FL (flFrom/flTo) who are not already in day-entries
+      // Doctors on period-based FL (flPerioder) who are not already in day-entries
       const dayEntryIds=new Set(entries.map(e=>e.docId));
-      const periodFlDocs=doctors.filter(doc=>doc.flFrom&&ds>=doc.flFrom&&(!doc.flTo||ds<=doc.flTo)&&!dayEntryIds.has(doc.id)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
+      const periodFlDocs=doctors.filter(doc=>(flPerioder[doc.id]||[]).some(p=>ds>=p.from&&(!p.to||ds<=p.to))&&!dayEntryIds.has(doc.id)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
       // Doctors on period-based TL (tlFrom/tlTo)
       const periodTlDocs=doctors.filter(doc=>docHasTjänstledig(doc.id,ds)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
       const flOnskemalDocs=doctors.filter(doc=>docHasFlOnskemal(doc.id,ds)&&!docHasForaldraledig(doc.id,ds)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));

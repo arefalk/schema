@@ -80,6 +80,7 @@ let doctors=[
 
 // posMinFillOverrides[posId] = [{from:'YYYY-MM-DD', to:'YYYY-MM-DD', min:N}]
 let posMinFillOverrides={};
+let flPerioder={}; // {docId: [{id, from, to}]} — godkända FL-perioder, ersätter doc.flFrom/flTo
 let jourveckor={};
 let jourveckorManual={}; // {wkey:{JV1:bool,JV2:bool,NLO:bool}} — true = manually set by user
 let jourledigOverride={}; // {'BJFS_anchorDs'|'BJLO_anchorDs'|'NLO_anchorDs': newDs} — moved jourledigt day

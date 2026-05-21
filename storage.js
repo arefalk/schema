@@ -6,7 +6,7 @@ function autoSave() {
     const data = {
       version: 2,
       savedAt: new Date().toISOString(),
-      roleTags, positions, doctors, schedule, scheduleHalfDay, scheduleNotes, slotLocations, jourveckor, jourveckorManual, jourledigOverride, bjScheduleManual, nightOverrides, bjSchedule,
+      roleTags, positions, doctors, schedule, scheduleHalfDay, scheduleNotes, slotLocations, flPerioder, jourveckor, jourveckorManual, jourledigOverride, bjScheduleManual, nightOverrides, bjSchedule,
       ledighetRequests, ledighetVeckor, specialSlots, bvcSchedule,
       handledningPairs, mandatoryPositions: [...mandatoryPositions], schedulePeriod,
       utbildningDagar, utbildningVeckor, randningDagar, jourfriOnskad, deltidDagar, deltidVeckor,
@@ -44,10 +44,20 @@ function loadFromLocalStorage() {
     if (data.roleTags) roleTags = data.roleTags;
     if (data.positions) positions = data.positions;
     if (data.doctors) doctors = data.doctors;
+    // Migration: move doc.flFrom/flTo → flPerioder (run before flPerioder is loaded so we can merge)
+    doctors.forEach(doc=>{
+      if(doc.flFrom){
+        if(!flPerioder[doc.id])flPerioder[doc.id]=[];
+        if(!flPerioder[doc.id].some(p=>p.from===doc.flFrom))
+          flPerioder[doc.id].push({id:'flp_mig_'+doc.id,from:doc.flFrom,to:doc.flTo||''});
+        delete doc.flFrom;delete doc.flTo;
+      }
+    });
     if (data.schedule) schedule = data.schedule;
     if (data.scheduleHalfDay) scheduleHalfDay = data.scheduleHalfDay;
     if (data.scheduleNotes) scheduleNotes = data.scheduleNotes;
     if (data.slotLocations) slotLocations = data.slotLocations;
+    if(data.flPerioder) flPerioder=data.flPerioder;
     if (data.jourveckor) jourveckor = data.jourveckor;
     if(data.jourledigOverride) jourledigOverride=data.jourledigOverride;
     if(data.jourveckorManual!==undefined) jourveckorManual=data.jourveckorManual;

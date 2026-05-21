@@ -72,10 +72,8 @@ function docHasSjukskrivning(docId,ds){
 }
 function docHasForaldraledig(docId,ds){
   if(foraldraledig[ds]&&foraldraledig[ds].some(e=>e.docId===docId))return true;
-  // Check doctor-level FL period (covers future dates not yet entered day-by-day)
-  const doc=docById(docId);
-  if(doc&&doc.flFrom&&ds>=doc.flFrom&&(!doc.flTo||ds<=doc.flTo))return true;
-  return false;
+  // Check period-based FL (flPerioder replaces doc.flFrom/flTo)
+  return (flPerioder[docId]||[]).some(p=>ds>=p.from&&(!p.to||ds<=p.to));
 }
 function docHasTjänstledig(docId,ds){
   const doc=docById(docId);

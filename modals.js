@@ -538,7 +538,6 @@ function openAddDoctorModal(){
   buildGrid('addRoleGrid',roleTags,[]);buildAllowedGrid('addAllowedGrid',[]);buildPrefGrid('addPrefGrid',[]);
   ['addJV1','addJV2','addNLO'].forEach(id=>document.getElementById(id).checked=false);
   document.getElementById('addEmpStart').value='';document.getElementById('addEmpEnd').value='';
-  document.getElementById('addFlFrom').value='';document.getElementById('addFlTo').value='';
   document.getElementById('addTlFrom').value='';document.getElementById('addTlTo').value='';
   openModal('addDoctorModal');setTimeout(()=>document.getElementById('addDocName').focus(),80);
 }
@@ -546,7 +545,7 @@ function confirmAddDoctor(){
   const name=document.getElementById('addDocName').value.trim();if(!name)return;
   const jv=[];if(document.getElementById('addJV1').checked)jv.push('JV1');if(document.getElementById('addJV2').checked)jv.push('JV2');if(document.getElementById('addNLO').checked)jv.push('NLO');
   const bj=[];if(document.getElementById('addBJFS').checked)bj.push('BJFS');if(document.getElementById('addBJLO').checked)bj.push('BJLO');if(document.getElementById('addBJNV').checked)bj.push('BJNV');
-  const allowed=getPrefChecked('addAllowedGrid');const pref=getPrefChecked('addPrefGrid');const prefJV=[...document.querySelectorAll('input[name="addPrefJV"]')].find(r=>r.checked)?.value||'';const ftePct=parseInt(document.getElementById('addTjgrad').value)||100;const empStart=document.getElementById('addEmpStart').value||'';const empEnd=document.getElementById('addEmpEnd').value||'';const flFrom=document.getElementById('addFlFrom').value||'';const flTo=document.getElementById('addFlTo').value||'';const tlFrom=document.getElementById('addTlFrom').value||'';const tlTo=document.getElementById('addTlTo').value||'';doctors.push({id:'doc_'+Date.now(),name,roles:getChecked('addRoleGrid',roleTags),allowedPositions:allowed,prefPositions:pref,prefJV,jv,bj,fte:ftePct/100,employmentStart:empStart,employmentEnd:empEnd,flFrom,flTo,tlFrom,tlTo,color:AVATAR_COLORS[doctors.length%AVATAR_COLORS.length]});
+  const allowed=getPrefChecked('addAllowedGrid');const pref=getPrefChecked('addPrefGrid');const prefJV=[...document.querySelectorAll('input[name="addPrefJV"]')].find(r=>r.checked)?.value||'';const ftePct=parseInt(document.getElementById('addTjgrad').value)||100;const empStart=document.getElementById('addEmpStart').value||'';const empEnd=document.getElementById('addEmpEnd').value||'';const tlFrom=document.getElementById('addTlFrom').value||'';const tlTo=document.getElementById('addTlTo').value||'';doctors.push({id:'doc_'+Date.now(),name,roles:getChecked('addRoleGrid',roleTags),allowedPositions:allowed,prefPositions:pref,prefJV,jv,bj,fte:ftePct/100,employmentStart:empStart,employmentEnd:empEnd,tlFrom,tlTo,color:AVATAR_COLORS[doctors.length%AVATAR_COLORS.length]});
   closeModal('addDoctorModal');render();showToast(`${name} tillagd`);
 }
 let _editDocOpenedFromList=false;
@@ -555,13 +554,7 @@ function closeEditDoctorModal(){
   if(_editDocOpenedFromList){_editDocOpenedFromList=false;openModal('doctorListModal');}
 }
 function openEditDoctorModalFL(docId){
-  openEditDoctorModal(docId);
-  // Scroll to FL/TL section after modal opens; prefer TL if that's what's set
-  setTimeout(()=>{
-    const doc=docById(docId);
-    const el=document.getElementById(doc&&doc.tlFrom&&!doc.flFrom?'editTlFrom':'editFlFrom');
-    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.focus();}
-  },60);
+  openFlPeriodModal(docId);
 }
 function openEditDoctorModal(docId){
   const doc=docById(docId);if(!doc)return;
@@ -569,7 +562,6 @@ function openEditDoctorModal(docId){
   buildGrid('editRoleGrid',roleTags,doc.roles);buildAllowedGrid('editAllowedGrid',doc.allowedPositions||[]);buildPrefGrid('editPrefGrid',doc.prefPositions||[]);const pjv=doc.prefJV||'';document.querySelectorAll('input[name="editPrefJV"]').forEach(r=>r.checked=(r.value===pjv));
   document.getElementById('editTjgrad').value=Math.round((doc.fte||1)*100);
   document.getElementById('editEmpStart').value=doc.employmentStart||'';document.getElementById('editEmpEnd').value=doc.employmentEnd||'';
-  document.getElementById('editFlFrom').value=doc.flFrom||'';document.getElementById('editFlTo').value=doc.flTo||'';
   document.getElementById('editTlFrom').value=doc.tlFrom||'';document.getElementById('editTlTo').value=doc.tlTo||'';
   document.getElementById('editJV1').checked=(doc.jv||[]).includes('JV1');
   document.getElementById('editJV2').checked=(doc.jv||[]).includes('JV2');
@@ -587,7 +579,6 @@ function confirmEditDoctor(){
   const allowed=getPrefChecked('editAllowedGrid');const pref=getPrefChecked('editPrefGrid');doc.roles=getChecked('editRoleGrid',roleTags);doc.allowedPositions=allowed;doc.prefPositions=pref;doc.prefJV=[...document.querySelectorAll('input[name="editPrefJV"]')].find(r=>r.checked)?.value||'';
   const ftePct=parseInt(document.getElementById('editTjgrad').value)||100;doc.fte=ftePct/100;
   doc.employmentStart=document.getElementById('editEmpStart').value||'';doc.employmentEnd=document.getElementById('editEmpEnd').value||'';
-  doc.flFrom=document.getElementById('editFlFrom').value||'';doc.flTo=document.getElementById('editFlTo').value||'';
   doc.tlFrom=document.getElementById('editTlFrom').value||'';doc.tlTo=document.getElementById('editTlTo').value||'';
   const jv=[];if(document.getElementById('editJV1').checked)jv.push('JV1');if(document.getElementById('editJV2').checked)jv.push('JV2');if(document.getElementById('editNLO').checked)jv.push('NLO');doc.jv=jv;
   const bj=[];if(document.getElementById('editBJFS').checked)bj.push('BJFS');if(document.getElementById('editBJLO').checked)bj.push('BJLO');if(document.getElementById('editBJNV').checked)bj.push('BJNV');doc.bj=bj;

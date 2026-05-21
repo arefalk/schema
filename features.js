@@ -1018,51 +1018,58 @@ function removeSjukEntry(id){
 // ═══════════════════════════════════════════════
 // FÖRÄLDRALEDIG (FL)
 // ═══════════════════════════════════════════════
-let _flDs=null;
-function openFlModal(ds){
-  _flDs=ds;
-  const dt=new Date(ds+'T12:00:00');
-  const dayNames=['Sön','Mån','Tis','Ons','Tor','Fre','Lör'];
-  const svMonths=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
-  document.getElementById('flTitle').textContent=`${dayNames[dt.getDay()]} ${dt.getDate()} ${svMonths[dt.getMonth()]}`;
-  renderFlList();
-  openModal('flModal');
-}
-function renderFlList(){
-  const entries=foraldraledig[_flDs]||[];
-  const el=document.getElementById('flList');
-  if(!entries.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);padding:4px 0">Inga inlagda</div>';}
-  else{el.innerHTML=entries.map(e=>{
-    const doc=docById(e.docId);if(!doc)return'';
-    return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;padding:4px 6px;border-radius:6px;background:var(--fl-light);border:1px solid var(--fl)44">
-      <div class="savatar" style="width:18px;height:18px;font-size:8px;background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div>
-      <span style="flex:1;font-size:12px;font-weight:600">${docShortName(doc)}</span>
-      <span style="font-size:10px;font-weight:700;color:var(--fl);background:var(--fl-light);padding:1px 5px;border-radius:3px">FL</span>
-      <button onclick="removeFlEntry('${e.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:0 2px;line-height:1">×</button>
-    </div>`;
-  }).join('');}
-  const added=entries.map(e=>e.docId);
-  const sel=document.getElementById('flDocSel');
-  sel.innerHTML=`<option value="">+ Lägg till läkare...</option>`+
+function openFlPeriodModal(preSelectDocId){
+  const sel=document.getElementById('flPeriodDocSel');
+  sel.innerHTML=`<option value="">— Välj läkare —</option>`+
     [...doctors].sort((a,b)=>a.name.localeCompare(b.name,'sv'))
-      .filter(d=>!added.includes(d.id))
-      .map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+      .map(d=>`<option value="${d.id}"${d.id===preSelectDocId?' selected':''}>${d.name}</option>`).join('');
+  renderFlPeriodList();
+  document.getElementById('flPeriodAddForm').style.display='none';
+  openModal('flPeriodModal');
 }
-function addFlEntry(){
-  const docId=document.getElementById('flDocSel').value;
-  if(!docId)return;
-  if(!foraldraledig[_flDs])foraldraledig[_flDs]=[];
-  foraldraledig[_flDs].push({id:'fl_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),docId});
+function renderFlPeriodList(){
+  const docId=document.getElementById('flPeriodDocSel').value;
+  const el=document.getElementById('flPeriodList');
+  if(!docId){el.innerHTML='';return;}
+  const periods=(flPerioder[docId]||[]).slice().sort((a,b)=>a.from<b.from?-1:1);
+  const fmtD=ds=>{const dt=new Date(ds+'T12:00:00');return`${dt.getDate()} ${['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][dt.getMonth()]} ${dt.getFullYear()}`;};
+  if(!periods.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);padding:4px 0">Inga FL-perioder registrerade</div>';return;}
+  el.innerHTML=periods.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;background:var(--fl-light);border:1.5px solid var(--fl)66;margin-bottom:6px">
+    <span style="font-size:18px">📅</span>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:10px;font-weight:700;color:var(--fl);letter-spacing:.05em;margin-bottom:1px">FL-PERIOD</div>
+      <div style="font-size:12px;font-weight:600;color:var(--text1)">${fmtD(p.from)} – ${p.to?fmtD(p.to):'pågår'}</div>
+    </div>
+    <button onclick="removeFlPeriod('${docId}','${p.id}')" style="background:none;border:1px solid var(--text3);border-radius:4px;color:var(--text3);cursor:pointer;font-size:11px;padding:3px 8px" title="Ta bort period">Ta bort</button>
+  </div>`).join('');
+}
+function toggleFlPeriodAddForm(){
+  const f=document.getElementById('flPeriodAddForm');
+  const visible=f.style.display!=='none';
+  f.style.display=visible?'none':'block';
+  if(!visible){document.getElementById('flPeriodFrom').value='';document.getElementById('flPeriodTo').value='';setTimeout(()=>document.getElementById('flPeriodFrom').focus(),50);}
+}
+function addFlPeriod(){
+  const docId=document.getElementById('flPeriodDocSel').value;
+  if(!docId){showToast('Välj läkare först');return;}
+  const from=document.getElementById('flPeriodFrom').value;
+  if(!from){showToast('Ange startdatum');return;}
+  const to=document.getElementById('flPeriodTo').value||'';
+  if(!flPerioder[docId])flPerioder[docId]=[];
+  flPerioder[docId].push({id:'flp_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),from,to});
   const doc=docById(docId);
-  logChange(`Föräldraledig: ${doc?docShortName(doc):docId} (${_flDs})`);
-  document.getElementById('flDocSel').value='';
-  renderFlList();autoSave();render();
+  logChange(`FL-period tillagd: ${doc?docShortName(doc):docId} ${from}–${to||'pågår'}`);
+  document.getElementById('flPeriodAddForm').style.display='none';
+  renderFlPeriodList();autoSave();render();
+  showToast(`📅 FL-period tillagd — ${doc?docShortName(doc):''}`);
 }
-function removeFlEntry(id){
-  const e=(foraldraledig[_flDs]||[]).find(x=>x.id===id);
-  if(foraldraledig[_flDs])foraldraledig[_flDs]=foraldraledig[_flDs].filter(e=>e.id!==id);
-  if(e){const doc=docById(e.docId);logChange(`Tog bort föräldraledig: ${doc?docShortName(doc):e.docId} (${_flDs})`);}
-  renderFlList();autoSave();render();
+function removeFlPeriod(docId,id){
+  if(!flPerioder[docId])return;
+  flPerioder[docId]=flPerioder[docId].filter(p=>p.id!==id);
+  const doc=docById(docId);
+  logChange(`FL-period borttagen: ${doc?docShortName(doc):docId}`);
+  renderFlPeriodList();autoSave();render();
+  showToast(`FL-period borttagen — ${doc?docShortName(doc):''}`);
 }
 
 let _jvOverrideDs=null,_jvOverrideKey=null,_jvOverrideType=null,_jvOverrideJvType=null;
@@ -1719,19 +1726,20 @@ function _renderOpWishList(type,docId){
       rows.push(`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--border)"><span style="font-size:11px;flex:1">📚 ${svDay(dt)} ${dt.getDate()} ${svMonth(dt)}${note?' — <em>'+note+'</em>':''}</span><button onclick="approveUtbildningOnskemal('${docId}','${ds}')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--accent);background:var(--accent-light);color:var(--accent);cursor:pointer">✓</button><button onclick="rejectUtbildningOnskemal('${docId}','${ds}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0">×</button></div>`);
     });
   } else if(type==='fl'){
-    // Show approved FL period (flFrom/flTo on doctor)
-    const doc=docById(docId);
-    if(doc&&doc.flFrom){
-      const fmtDate=ds=>{const dt=new Date(ds+'T12:00:00');return`${dt.getDate()} ${svMonth(dt)} ${dt.getFullYear()}`;};
-      const toLabel=doc.flTo?fmtDate(doc.flTo):'pågår';
-      rows.push(`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;background:var(--fl-light);border:1.5px solid var(--fl)88;margin-bottom:8px">
-        <span style="font-size:20px">📅</span>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:10px;font-weight:700;color:var(--fl);letter-spacing:.05em;margin-bottom:1px">GODKÄND FL-PERIOD</div>
-          <div style="font-size:12px;font-weight:600;color:var(--text1)">${fmtDate(doc.flFrom)} – ${toLabel}</div>
-        </div>
-        <button onclick="clearFlPeriod('${docId}')" style="font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid var(--text3);background:none;color:var(--text3);cursor:pointer" title="Ta bort FL-period">Rensa</button>
-      </div>`);
+    // Show approved FL periods from flPerioder
+    const _flps=(flPerioder[docId]||[]).slice().sort((a,b)=>a.from<b.from?-1:1);
+    const fmtDate=ds=>{const dt=new Date(ds+'T12:00:00');return`${dt.getDate()} ${svMonth(dt)} ${dt.getFullYear()}`;};
+    if(_flps.length){
+      _flps.forEach(p=>{
+        rows.push(`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;background:var(--fl-light);border:1.5px solid var(--fl)88;margin-bottom:6px">
+          <span style="font-size:18px">📅</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:10px;font-weight:700;color:var(--fl);letter-spacing:.05em;margin-bottom:1px">FL-PERIOD</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text1)">${fmtDate(p.from)} – ${p.to?fmtDate(p.to):'pågår'}</div>
+          </div>
+          <button onclick="removeFlPeriodFromOnskemal('${docId}','${p.id}')" style="font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid var(--text3);background:none;color:var(--text3);cursor:pointer" title="Ta bort FL-period">Ta bort</button>
+        </div>`);
+      });
     }
     const flEntries=Object.entries(foraldraledigenOnskemal[docId]||{}).sort(([a],[b])=>svs(a,b));
     if(flEntries.length){
@@ -1851,8 +1859,9 @@ function approveAllFlAsPeriod(docId){
   dates.sort();
   const from=dates[0],to=dates[dates.length-1];
   const doc=docById(docId);if(!doc)return;
-  doc.flFrom=from;
-  doc.flTo=to;
+  if(!flPerioder[docId])flPerioder[docId]=[];
+  if(!flPerioder[docId].some(p=>p.from===from&&p.to===to))
+    flPerioder[docId].push({id:'flp_appr_'+Date.now(),from,to});
   foraldraledigenOnskemal[docId]={};
   logChange(`FL-period satt: ${doc.name} ${from}–${to}`);
   autoSave();render();_renderOpWishCal('fl');
@@ -1860,14 +1869,20 @@ function approveAllFlAsPeriod(docId){
 }
 function clearFlPeriod(docId){
   const doc=docById(docId);if(!doc)return;
-  doc.flFrom='';doc.flTo='';
-  logChange(`FL-period borttagen: ${doc.name}`);
+  flPerioder[docId]=[];
+  logChange(`FL-perioder borttagna: ${doc.name}`);
   autoSave();render();_renderOpWishCal('fl');
-  showToast(`FL-period borttagen — ${docShortName(doc)}`);
+  showToast(`FL-perioder borttagna — ${docShortName(doc)}`);
 }
 function rejectFlOnskemal(docId,ds){
   if(foraldraledigenOnskemal[docId])delete foraldraledigenOnskemal[docId][ds];
   autoSave();render();_renderOpWishCal('fl');
+}
+function removeFlPeriodFromOnskemal(docId,id){
+  if(flPerioder[docId])flPerioder[docId]=flPerioder[docId].filter(p=>p.id!==id);
+  const doc=docById(docId);logChange(`FL-period borttagen: ${doc?docShortName(doc):docId}`);
+  autoSave();render();_renderOpWishCal('fl');
+  showToast(`FL-period borttagen — ${doc?docShortName(doc):''}`);
 }
 
 // ── JOURFRITT ÖNSKEMÅL ──

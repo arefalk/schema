@@ -30,7 +30,7 @@
   <button class="btn-action" onclick="openPositionsModal()">⚙ Positioner</button>
   <button class="btn-action" onclick="openLedighetModal()">📅 Ledighet</button>
   <button class="btn-action" onclick="openSjukskrivningModal(isoDate(getMonday(currentDate)))" title="Sjukskrivning och VAB">🤒 Sjuk/VAB</button>
-  <button class="btn-action" onclick="openFlModal(isoDate(getMonday(currentDate)))" title="Föräldraledig">👶 Föräldraledig</button>
+  <button class="btn-action" onclick="openFlPeriodModal()" title="Föräldraledig">👶 Föräldraledig</button>
   <button class="btn-action" onclick="openAuskultationModal(isoDate(getMonday(currentDate)))" title="Auskultation och introduktion">🔬 Ausk/Intro</button>
   <button class="btn-action" onclick="openOvrigtModal(isoDate(getMonday(currentDate)))" title="Övrigt — möten och åtaganden">📌 Övrigt</button>
   <button class="btn-action" onclick="openOnskadPassModal()" title="Önskade pass per läkare">⭐ Önskemål</button>
@@ -128,10 +128,6 @@
       <div class="fg"><label class="fl">Anställningsslut <span style="font-weight:400;color:var(--text3)">(tom = tillsvidare)</span></label><input type="date" id="addEmpEnd" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
     </div>
     <div class="two-col">
-      <div class="fg"><label class="fl" style="color:var(--fl)">👶 Föräldraledig från</label><input type="date" id="addFlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
-      <div class="fg"><label class="fl" style="color:var(--fl)">Föräldraledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="addFlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
-    </div>
-    <div class="two-col">
       <div class="fg"><label class="fl" style="color:#6366f1">🏢 Tjänstledig från</label><input type="date" id="addTlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
       <div class="fg"><label class="fl" style="color:#6366f1">Tjänstledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="addTlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
     </div>
@@ -174,10 +170,6 @@
     <div class="two-col">
       <div class="fg"><label class="fl">Anställningsstart</label><input type="date" id="editEmpStart" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
       <div class="fg"><label class="fl">Anställningsslut <span style="font-weight:400;color:var(--text3)">(tom = tillsvidare)</span></label><input type="date" id="editEmpEnd" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
-    </div>
-    <div class="two-col">
-      <div class="fg"><label class="fl" style="color:var(--fl)">👶 Föräldraledig från</label><input type="date" id="editFlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
-      <div class="fg"><label class="fl" style="color:var(--fl)">Föräldraledig till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="editFlTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
     </div>
     <div class="two-col">
       <div class="fg"><label class="fl" style="color:#6366f1">🏢 Tjänstledig från</label><input type="date" id="editTlFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
@@ -940,21 +932,35 @@
   </div>
 </div>
 
-<!-- Föräldraledig Modal -->
-<div class="modal-overlay" id="flModal">
-  <div class="modal" style="max-width:360px">
-    <button class="modal-close" onclick="closeModal('flModal')">×</button>
+<!-- Föräldraledig Period Modal -->
+<div class="modal-overlay" id="flPeriodModal">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeModal('flPeriodModal')">×</button>
     <h3>Föräldraledig</h3>
-    <p id="flTitle" class="modal-sub" style="margin-top:-6px"></p>
-    <div id="flList" style="margin-bottom:10px"></div>
-    <div style="display:flex;gap:6px;margin-top:4px">
-      <select id="flDocSel" style="flex:1;font-size:12px">
-        <option value="">+ Lägg till läkare...</option>
+    <p class="modal-sub" style="margin-top:-6px">Hantera FL-perioder per läkare</p>
+    <div class="fg" style="margin-bottom:10px">
+      <label class="fl">Läkare</label>
+      <select id="flPeriodDocSel" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px" onchange="renderFlPeriodList()">
+        <option value="">— Välj läkare —</option>
       </select>
-      <button class="btn sm" onclick="addFlEntry()">+</button>
+    </div>
+    <div id="flPeriodList" style="margin-bottom:12px"></div>
+    <div id="flPeriodAddForm" style="display:none;background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.05em">NY FL-PERIOD</div>
+      <div class="two-col" style="gap:8px">
+        <div class="fg"><label class="fl">Från</label><input type="date" id="flPeriodFrom" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+        <div class="fg"><label class="fl">Till <span style="font-weight:400;color:var(--text3)">(tom = pågår)</span></label><input type="date" id="flPeriodTo" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn sm" onclick="addFlPeriod()" style="background:var(--fl);color:#fff;border-color:var(--fl)">Lägg till period</button>
+        <button class="btn sm" onclick="document.getElementById('flPeriodAddForm').style.display='none'">Avbryt</button>
+      </div>
+    </div>
+    <div style="margin-bottom:4px">
+      <button class="btn sm" id="flPeriodAddBtn" onclick="toggleFlPeriodAddForm()" style="border-color:var(--fl);color:var(--fl)">+ Ny period</button>
     </div>
     <div class="modal-actions" style="margin-top:12px">
-      <button class="btn" onclick="closeModal('flModal')">Stäng</button>
+      <button class="btn" onclick="closeModal('flPeriodModal')">Stäng</button>
     </div>
   </div>
 </div>
@@ -1048,10 +1054,10 @@
 <!-- Modules loaded in dependency order -->
 <script src="state.js?v=134"></script>
 <script src="helpers.js?v=143"></script>
-<script src="render.js?v=161"></script>
+<script src="render.js?v=162"></script>
 <script src="context.js?v=131"></script>
-<script src="modals.js?v=170"></script>
-<script src="features.js?v=152"></script>
+<script src="modals.js?v=171"></script>
+<script src="features.js?v=153"></script>
 <script src="storage.js?v=127"></script>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <script src="period.js?v=118"></script>
