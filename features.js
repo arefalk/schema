@@ -2064,13 +2064,13 @@ function _renderBemanningWeekView(){
   const el=document.getElementById('bemanningWeekContainer');
   if(!el)return;
   const wkMon=isoWeekMon(_bemanningWn,_bemanningWnYr);
-  const days=[0,1,2,3,4].map(i=>addDays(wkMon,i));
-  const dayLabels=['Mån','Tis','Ons','Tor','Fre'];
-  const d0=days[0],d4=days[4];
-  const sameMonth=d0.getMonth()===d4.getMonth();
+  const days=[-2,-1,0,1,2,3,4].map(i=>addDays(wkMon,i)); // Lör, Sön, Mån–Fre
+  const dayLabels=['Lör','Sön','Mån','Tis','Ons','Tor','Fre'];
+  const d0=days[0],d6=days[6];
+  const sameMonth=d0.getMonth()===d6.getMonth();
   const rangeStr=sameMonth
-    ?`${d0.getDate()}–${d4.getDate()} ${svMonth(d4)} ${_bemanningWnYr}`
-    :`${d0.getDate()} ${svMonth(d0)} – ${d4.getDate()} ${svMonth(d4)} ${_bemanningWnYr}`;
+    ?`${d0.getDate()}–${d6.getDate()} ${svMonth(d6)} ${d6.getFullYear()}`
+    :`${d0.getDate()} ${svMonth(d0)} – ${d6.getDate()} ${svMonth(d6)} ${d6.getFullYear()}`;
   document.getElementById('bemanningWeekLabel').textContent=`v.${_bemanningWn} · ${rangeStr}`;
   // Status per läkare/dag
   const _status=(docId,ds)=>{
@@ -2079,8 +2079,9 @@ function _renderBemanningWeekView(){
     if(docHasAnyLedighet(docId,ds))return{type:'led',label:'Led'};
     if(docHasUtbildning(docId,ds))return{type:'utb',label:'Utb'};
     if(deltidOnDay(docId,ds)==='hel')return{type:'deltid',label:'Deltid'};
-    const dt=new Date(ds+'T12:00:00'),wn=weekNum(dt),yr=weekYear(dt);
-    if(docHasJourfriOnskad(docId,wn,yr,'week'))return{type:'jourfri',label:'JF'};
+    const dt=new Date(ds+'T12:00:00'),wn=weekNum(dt),yr=weekYear(dt),dow=dt.getDay();
+    const isWe=dow===0||dow===6;
+    if(docHasJourfriOnskad(docId,wn,yr,isWe?'weekend':'week'))return{type:'jourfri',label:'JF'};
     return{type:'ok',label:'✓'};
   };
   const _st={
@@ -2105,27 +2106,29 @@ function _renderBemanningWeekView(){
   const unassigned=activeDocs.filter(d=>!assignedIds.has(d.id)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
   if(unassigned.length)groups.push({role:'Övriga',docs:unassigned});
 
-  let html=`<div style="display:grid;grid-template-columns:130px repeat(5,1fr);gap:2px;font-size:11px">`;
+  let html=`<div style="display:grid;grid-template-columns:130px repeat(7,1fr);gap:2px;font-size:11px">`;
   // Rubrikrad
   html+=`<div></div>`;
   days.forEach((dt,i)=>{
-    html+=`<div style="text-align:center;font-weight:700;color:var(--text3);padding:2px 0;font-size:10px">${dayLabels[i]}<br><span style="font-weight:400">${dt.getDate()}</span></div>`;
+    const isWe=i<2;
+    html+=`<div style="text-align:center;font-weight:700;color:${isWe?'var(--text3)':'var(--text2)'};padding:2px 0;font-size:10px;${i===2?'border-left:2px solid var(--border);':''}">${dayLabels[i]}<br><span style="font-weight:400">${dt.getDate()}</span></div>`;
   });
   groups.forEach(({role,docs})=>{
-    const inService=docs.filter(d=>{const s=_status(d.id,isoDate(days[0]));return s.type==='ok'||s.type==='jourfri';}).length;
-    const jourfriCount=docs.filter(d=>_status(d.id,isoDate(days[0])).type==='jourfri').length;
+    const inService=docs.filter(d=>{const s=_status(d.id,isoDate(days[2]));return s.type==='ok'||s.type==='jourfri';}).length;
+    const jourfriCount=docs.filter(d=>_status(d.id,isoDate(days[2])).type==='jourfri').length;
     html+=`<div style="grid-column:1/-1;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding:8px 0 3px;border-top:1px solid var(--border)">`;
     html+=`${role} <span style="font-weight:400;font-size:9px">${inService} i tjänst${jourfriCount?` (${jourfriCount} JF)`:''}`;
     html+=`</span></div>`;
     docs.forEach(d=>{
       const shortN=docShortName(d);
       html+=`<div style="display:flex;align-items:center;padding:2px 2px;color:var(--text2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px" title="${d.name}">${shortN}</div>`;
-      days.forEach(dt=>{
+      days.forEach((dt,i)=>{
         const ds=isoDate(dt);
         const s=_status(d.id,ds);
         const style=_st[s.type]||_st.ok;
         const dim=s.type==='jourfri'?';opacity:.6':'';
-        html+=`<div style="text-align:center;padding:2px 1px;border-radius:3px;background:${style.bg};color:${style.col};font-size:9px;font-weight:600${dim}">${s.label}</div>`;
+        const sep=i===2?'border-left:2px solid var(--border);':'';
+        html+=`<div style="text-align:center;padding:2px 1px;border-radius:3px;background:${style.bg};color:${style.col};font-size:9px;font-weight:600${dim};${sep}">${s.label}</div>`;
       });
     });
   });
