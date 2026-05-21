@@ -1,5 +1,11 @@
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
-function openModal(id){document.getElementById(id).classList.add('visible');}
+function openModal(id){
+  const el=document.getElementById(id);
+  const open=[...document.querySelectorAll('.modal-overlay.visible')];
+  const maxZ=open.reduce((m,n)=>Math.max(m,parseInt(n.style.zIndex||500)),500);
+  el.style.zIndex=maxZ+(open.length?1:0);
+  el.classList.add('visible');
+}
 function closeModal(id){document.getElementById(id).classList.remove('visible');}
 function openDoctorListModal(){openModal('doctorListModal');}
 
@@ -387,14 +393,20 @@ function renderWeek(){
       const shifts=jvShiftsOnDate(d,key);
       html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
       if(!shifts.length){html+=`<div style="min-height:28px"></div>`;}
-      else{shifts.forEach(({shift,doc:sd,isOverride,overrideKey,ds:sds,jvType:sjvType})=>{
+      else{shifts.forEach(({shift,doc:sd,isOverride,overrideKey,ds:sds,jvType:sjvType,jourledigKey})=>{
         if(!sd&&shift.type!=='jourledigt'&&overrideKey&&sds){
           html+=`<div class="bj-slot empty-cell" onclick="openJVOverrideModal('${sds}','${sjvType}','${overrideKey}')" title="${shift.label} — klicka för att tilldela"><span class="splus">+</span></div>`;
           return;
         }
         if(!sd)return;
-        const cls=shift.type==='night'?'jb-night':shift.type==='jourledigt'?'jb-jourledigt':'jb-day';const icon=shift.type==='night'?'🌙':shift.type==='jourledigt'?'✦':'☀';const clickable=overrideKey&&sds;const overrideDot=isOverride?`<span style="position:absolute;top:1px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--accent)" title="Manuellt ändrad"></span>`:'';
-        html+=`<div class="jv-block ${cls}" style="position:relative;${clickable?'cursor:pointer':''}" title="${shift.label}${sd?' — '+sd.name:''}" ${clickable?`onclick="openJVOverrideModal('${sds}','${sjvType}','${overrideKey}')"`:''}>${overrideDot}<span class="jv-icon">${icon}</span><span class="jv-name">${sd?docShortName(sd):'—'}</span><span class="jv-sub">${shift.type==='night'?'natt':shift.type==='jourledigt'?'ledigt':'dag'}</span></div>`;
+        const cls=shift.type==='night'?'jb-night':shift.type==='jourledigt'?'jb-jourledigt':'jb-day';
+        const icon=shift.type==='night'?'🌙':shift.type==='jourledigt'?'✦':'☀';
+        const clickable=overrideKey&&sds;
+        const jourledigClickable=jourledigKey&&!IS_DOCTOR_MODE;
+        const overrideDot=isOverride?`<span style="position:absolute;top:1px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--accent)" title="Manuellt ändrad"></span>`:'';
+        const clickAttr=clickable?`onclick="openJVOverrideModal('${sds}','${sjvType}','${overrideKey}')"`
+          :jourledigClickable?`onclick="openJourledigMoveCtx(event,'${jourledigKey}')" title="Klicka för att flytta jourledigt"`:'';
+        html+=`<div class="jv-block ${cls}" style="position:relative;${clickable||jourledigClickable?'cursor:pointer':''}" ${clickAttr}>${overrideDot}<span class="jv-icon">${icon}</span><span class="jv-name">${sd?docShortName(sd):'—'}</span><span class="jv-sub">${shift.type==='night'?'natt':shift.type==='jourledigt'?'ledigt':'dag'}</span></div>`;
       });}
       html+=`</td>`;
     });
@@ -431,7 +443,13 @@ function renderWeek(){
   }
 
   html+=`<tr class="section-hdr"><td colspan="${cols}">Bakjour</td></tr>`;
-  function bjBlock(s){const cls=s.type==='night'?'jb-night':s.type==='jourledigt'?'jb-jourledigt':'jb-day';const icon=s.type==='night'?'🌙':s.type==='jourledigt'?'✦':'☀';return`<div class="jv-block ${cls}"><span class="jv-icon">${icon}</span><span class="jv-name">${s.doc?docShortName(s.doc):'—'}</span><span class="jv-sub">${s.type==='jourledigt'?'ledigt':s.type}</span></div>`;}
+  function bjBlock(s){
+    const cls=s.type==='night'?'jb-night':s.type==='jourledigt'?'jb-jourledigt':'jb-day';
+    const icon=s.type==='night'?'🌙':s.type==='jourledigt'?'✦':'☀';
+    const moveable=s.jourledigKey&&!IS_DOCTOR_MODE;
+    const moveAttr=moveable?`onclick="openJourledigMoveCtx(event,'${s.jourledigKey}')" title="Klicka för att flytta jourledigt" style="cursor:pointer"`:'' ;
+    return`<div class="jv-block ${cls}" ${moveAttr}><span class="jv-icon">${icon}</span><span class="jv-name">${s.doc?docShortName(s.doc):'—'}</span><span class="jv-sub">${s.type==='jourledigt'?'ledigt':s.type}</span></div>`;
+  }
 
   {
     const bjColor='var(--bjfs)',bjBg='var(--bjfs-light)';

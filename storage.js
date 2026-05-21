@@ -6,7 +6,7 @@ function autoSave() {
     const data = {
       version: 2,
       savedAt: new Date().toISOString(),
-      roleTags, positions, doctors, schedule, scheduleHalfDay, scheduleNotes, slotLocations, jourveckor, jourveckorManual, bjScheduleManual, nightOverrides, bjSchedule,
+      roleTags, positions, doctors, schedule, scheduleHalfDay, scheduleNotes, slotLocations, jourveckor, jourveckorManual, jourledigOverride, bjScheduleManual, nightOverrides, bjSchedule,
       ledighetRequests, ledighetVeckor, specialSlots, bvcSchedule,
       handledningPairs, mandatoryPositions: [...mandatoryPositions], schedulePeriod,
       utbildningDagar, utbildningVeckor, randningDagar, jourfriOnskad, deltidDagar, deltidVeckor,
@@ -49,6 +49,7 @@ function loadFromLocalStorage() {
     if (data.scheduleNotes) scheduleNotes = data.scheduleNotes;
     if (data.slotLocations) slotLocations = data.slotLocations;
     if (data.jourveckor) jourveckor = data.jourveckor;
+    if(data.jourledigOverride) jourledigOverride=data.jourledigOverride;
     if(data.jourveckorManual!==undefined) jourveckorManual=data.jourveckorManual;
     else{
       // Migration: data saved before jourveckorManual existed — mark all existing JV entries as manual

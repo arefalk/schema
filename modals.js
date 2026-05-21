@@ -1777,3 +1777,61 @@ function loadData(event){
   };
   reader.readAsText(file);
 }
+
+// ── FLYTTA JOURLEDIGT ──
+function _jourledigDefaultDs(key){
+  const idx=key.indexOf('_');
+  const type=key.slice(0,idx),anchorDs=key.slice(idx+1);
+  // BJFS: jourledigt 7 days after anchor Friday; BJLO+NLO: 2 days after anchor Saturday
+  return isoDate(addDays(new Date(anchorDs+'T12:00:00'),type==='BJFS'?7:2));
+}
+
+function openJourledigMoveCtx(event,key){
+  event.stopPropagation();
+  const existing=document.getElementById('jourledigMoveCtx');
+  if(existing){existing._key===key?existing.remove():existing.remove();}
+  if(document.getElementById('jourledigMoveCtx'))return;
+
+  const defaultDs=_jourledigDefaultDs(key);
+  const currentDs=jourledigOverride[key]||defaultDs;
+  const wkMon=getMonday(new Date(defaultDs+'T12:00:00'));
+  const dayLabels=['Mån','Tis','Ons','Tor','Fre'];
+
+  const pop=document.createElement('div');
+  pop.id='jourledigMoveCtx';
+  pop._key=key;
+  pop.style.cssText='position:fixed;z-index:9999;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 4px 20px #0003;padding:10px 10px 6px;display:flex;flex-direction:column;gap:4px;min-width:160px';
+
+  const hasOverride=!!jourledigOverride[key];
+  pop.innerHTML=`<div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">Flytta jourledigt</div>`+
+    dayLabels.map((label,i)=>{
+      const ds=isoDate(addDays(wkMon,i));
+      const isCurrent=ds===currentDs;
+      const isDefault=ds===defaultDs;
+      return`<button onclick="setJourledigOverride('${key}','${ds}')" style="text-align:left;padding:5px 9px;border-radius:6px;border:1px solid ${isCurrent?'var(--accent)':'transparent'};cursor:pointer;font-size:12px;font-weight:${isCurrent?'700':'400'};background:${isCurrent?'var(--accent-light,#e0f0ff)':'var(--bg)'};color:${isCurrent?'var(--accent)':'var(--text1)'}">${label}${isDefault?' <span style="font-size:10px;color:var(--text3)">(std)</span>':''}</button>`;
+    }).join('')+
+    (hasOverride?`<button onclick="clearJourledigOverride('${key}')" style="margin-top:2px;padding:5px 9px;border-radius:6px;border:none;cursor:pointer;font-size:11px;background:none;color:var(--danger);text-align:left">↺ Återställ standard</button>`:'');
+
+  document.body.appendChild(pop);
+  const r=event.target.closest('.jv-block').getBoundingClientRect();
+  const top=Math.min(r.bottom+4,window.innerHeight-220);
+  const left=Math.min(r.left,window.innerWidth-180);
+  pop.style.top=top+window.scrollY+'px';
+  pop.style.left=left+'px';
+  const close=()=>{pop.remove();document.removeEventListener('click',close);};
+  setTimeout(()=>document.addEventListener('click',close),0);
+}
+
+function setJourledigOverride(key,ds){
+  const defaultDs=_jourledigDefaultDs(key);
+  if(ds===defaultDs)delete jourledigOverride[key];
+  else jourledigOverride[key]=ds;
+  document.getElementById('jourledigMoveCtx')?.remove();
+  autoSave();render();
+}
+
+function clearJourledigOverride(key){
+  delete jourledigOverride[key];
+  document.getElementById('jourledigMoveCtx')?.remove();
+  autoSave();render();
+}

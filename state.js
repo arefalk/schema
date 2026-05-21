@@ -82,6 +82,7 @@ let doctors=[
 let posMinFillOverrides={};
 let jourveckor={};
 let jourveckorManual={}; // {wkey:{JV1:bool,JV2:bool,NLO:bool}} — true = manually set by user
+let jourledigOverride={}; // {'BJFS_anchorDs'|'BJLO_anchorDs'|'NLO_anchorDs': newDs} — moved jourledigt day
 let bjScheduleManual={}; // {ds:{BJFS:bool,BJLO:bool}} — true = manually set by user
 let nightOverrides={}; // { ds: { 'JV1'|'JV2'|'NLO': docId|null } }
 let schedule={};

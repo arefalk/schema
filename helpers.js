@@ -76,20 +76,84 @@ function docHasForaldraledig(docId,ds){
   return false;
 }
 
+// ── Jourledigt helpers (override-aware) ──
+// Returns list of {doc, key} for BJFS jourledigt showing on date ds
+function _bjfsJourledigOnDate(ds){
+  const r=[];
+  const dt=new Date(ds+'T12:00:00');
+  // Default: anchor = Friday 7 days ago; show on this date if Friday and no override
+  if(dt.getDay()===5){
+    const anchorDs=isoDate(addDays(dt,-7));
+    if(!jourledigOverride['BJFS_'+anchorDs]){
+      const docId=getBJ(anchorDs,'BJFS');
+      if(docId){const doc=docById(docId);if(doc)r.push({doc,key:'BJFS_'+anchorDs});}
+    }
+  }
+  // Overrides pointing to this date
+  for(const[key,ovDs]of Object.entries(jourledigOverride)){
+    if(ovDs!==ds||!key.startsWith('BJFS_'))continue;
+    const anchorDs=key.slice(5);
+    const docId=getBJ(anchorDs,'BJFS');if(!docId)continue;
+    const doc=docById(docId);if(!doc)continue;
+    r.push({doc,key});
+  }
+  return r;
+}
+// Returns list of {doc, key} for BJLO jourledigt showing on date ds
+function _bjloJourledigOnDate(ds){
+  const r=[];
+  const dt=new Date(ds+'T12:00:00');
+  // Default: anchor = Saturday 2 days ago; show on this date if Monday and no override
+  if(dt.getDay()===1){
+    const anchorDs=isoDate(addDays(dt,-2));
+    if(!jourledigOverride['BJLO_'+anchorDs]){
+      const docId=getBJ(anchorDs,'BJLO');
+      if(docId){const doc=docById(docId);if(doc)r.push({doc,key:'BJLO_'+anchorDs});}
+    }
+  }
+  for(const[key,ovDs]of Object.entries(jourledigOverride)){
+    if(ovDs!==ds||!key.startsWith('BJLO_'))continue;
+    const anchorDs=key.slice(5);
+    const docId=getBJ(anchorDs,'BJLO');if(!docId)continue;
+    const doc=docById(docId);if(!doc)continue;
+    r.push({doc,key});
+  }
+  return r;
+}
+// Returns list of {doc, key} for NLO jourledigt showing on date ds
+function _nloJourledigOnDate(ds){
+  const r=[];
+  const dt=new Date(ds+'T12:00:00');
+  // Default: anchor = Saturday 2 days ago (NLÖ Sat); show on this date if Monday and no override
+  if(dt.getDay()===1){
+    const anchorDs=isoDate(addDays(dt,-2));
+    if(!jourledigOverride['NLO_'+anchorDs]){
+      const anchorMon=addDays(dt,-7);
+      const ovId=getJVOverride(anchorDs,'NLO_night');
+      const effectiveId=ovId||getJV(weekNum(anchorMon),weekYear(anchorMon)).NLO;
+      if(effectiveId){const doc=docById(effectiveId);if(doc)r.push({doc,key:'NLO_'+anchorDs});}
+    }
+  }
+  for(const[key,ovDs]of Object.entries(jourledigOverride)){
+    if(ovDs!==ds||!key.startsWith('NLO_'))continue;
+    const anchorDs=key.slice(4);
+    const ovId=getJVOverride(anchorDs,'NLO_night');
+    // anchorDs is a Saturday; Mon of same week is 5 days before
+    const anchorMon=addDays(new Date(anchorDs+'T12:00:00'),-5);
+    const effectiveId=ovId||getJV(weekNum(anchorMon),weekYear(anchorMon)).NLO;
+    if(!effectiveId)continue;
+    const doc=docById(effectiveId);if(!doc)continue;
+    r.push({doc,key});
+  }
+  return r;
+}
+
 function docIsJourledigt(docId,ds){
   const dt=new Date(ds+'T12:00:00'),dow=dt.getDay();
   if(dow<1||dow>5)return false;
-  // BJFS (fre natt + sön dag+natt) → jourledig efterföljande fredag
-  if(dow===5){if(getBJ(isoDate(addDays(dt,-7)),'BJFS')===docId)return true;}
-  // BJLO (lör dag+natt) → jourledig måndag
-  if(dow===1){if(getBJ(isoDate(addDays(dt,-2)),'BJLO')===docId)return true;}
-  // NLÖ (lör natt) → jourledig måndag; ankar = NLO i föregående vecka (respektera override)
-  if(dow===1){
-    const prevMon=addDays(dt,-7);
-    const prevSatDs=isoDate(addDays(prevMon,5));
-    const effectiveNLO=getJVOverride(prevSatDs,'NLO_night')||getJV(weekNum(prevMon),weekYear(prevMon)).NLO;
-    if(effectiveNLO===docId)return true;
-  }
+  if(_bjfsJourledigOnDate(ds).some(e=>e.doc.id===docId))return true;
+  if(_bjloJourledigOnDate(ds).some(e=>e.doc.id===docId))return true;
+  if(_nloJourledigOnDate(ds).some(e=>e.doc.id===docId))return true;
   return false;
 }
 
@@ -471,11 +535,9 @@ function jvShiftsOnDate(date,jvType){
       result.push({shift:JV_DEFS['NLO'][0],doc,isOverride:!!ovId,overrideKey:key,ds,jvType:'NLO'});
     }
     if(date.getDay()===1){
-      const prevMon=addDays(mon,-7);
-      const prevSatDs=isoDate(addDays(prevMon,5));
-      const ovId=getJVOverride(prevSatDs,'NLO_night');
-      const effectiveId=ovId||getJV(weekNum(prevMon),weekYear(prevMon))['NLO'];
-      if(effectiveId){const prevDoc=docById(effectiveId);if(prevDoc)result.push({shift:{dow:1,type:'jourledigt',label:'Mån jourledigt (NLÖ)'},doc:prevDoc});}
+      _nloJourledigOnDate(ds).forEach(({doc,key})=>{
+        result.push({shift:{dow:1,type:'jourledigt',label:'Mån jourledigt (NLÖ)'},doc,jourledigKey:key});
+      });
     }
     return result;
   }
@@ -518,8 +580,10 @@ function bjfsShiftsOnDate(date){
   const ds=isoDate(date);
   if(ds===isoDate(fri)){const docId=getBJ(isoDate(fri),'BJFS');if(docId){const doc=docById(docId);if(doc)shifts.push({type:'night',label:'Fre natt',doc});}}
   if(ds===isoDate(sun)){const docId=getBJ(isoDate(fri),'BJFS');if(docId){const doc=docById(docId);if(doc){shifts.push({type:'day',label:'Sön dag',doc});shifts.push({type:'night',label:'Sön natt',doc});}}}
-  // Jourledigt the Friday AFTER the BJFS weekend (7 days after anchor Friday)
-  if(date.getDay()===5){const prevFri=addDays(date,-7);const docId=getBJ(isoDate(prevFri),'BJFS');if(docId){const doc=docById(docId);if(doc)shifts.push({type:'jourledigt',label:'Jourledigt (BJFS)',doc});}}
+  // Jourledigt — override-aware
+  _bjfsJourledigOnDate(ds).forEach(({doc,key})=>{
+    shifts.push({type:'jourledigt',label:'Jourledigt (BJFS)',doc,jourledigKey:key});
+  });
   return shifts;
 }
 function bjloShiftsOnDate(date){
@@ -528,8 +592,10 @@ function bjloShiftsOnDate(date){
   const ds=isoDate(date);
   const shifts=[];
   if(ds===isoDate(sat)){const docId=getBJ(isoDate(sat),'BJLO');if(docId){const doc=docById(docId);if(doc){shifts.push({type:'day',label:'Lör dag',doc});shifts.push({type:'night',label:'Lör natt',doc});}}}
-  // Jourledigt måndag EFTER lördagen (2 dagar efter lördag)
-  if(date.getDay()===1){const prevSat=addDays(date,-2);const docId=getBJ(isoDate(prevSat),'BJLO');if(docId){const doc=docById(docId);if(doc)shifts.push({type:'jourledigt',label:'Jourledigt (BJLÖ)',doc});}}
+  // Jourledigt — override-aware
+  _bjloJourledigOnDate(ds).forEach(({doc,key})=>{
+    shifts.push({type:'jourledigt',label:'Jourledigt (BJLÖ)',doc,jourledigKey:key});
+  });
   return shifts;
 }
 
