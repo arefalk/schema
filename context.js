@@ -804,3 +804,53 @@ function quickRemoveLedighet(e,docId,ds){
   else if(ledighetVeckor[docId]&&ledighetVeckor[docId][wk]){delete ledighetVeckor[docId][wk];removed=true;}
   if(removed){const doc=docById(docId);if(doc)logChange(`Tog bort ledighet: ${docShortName(doc)} (${ds})`);autoSave();render();}
 }
+function quickRemoveAdm(e,ds,slotKey){
+  e.stopPropagation();
+  if(specialSlots[ds]&&specialSlots[ds][slotKey]){
+    const v=specialSlots[ds][slotKey];const doc=docById(v.docId);
+    delete specialSlots[ds][slotKey];
+    logChange(`Tog bort administration: ${doc?docShortName(doc):''} (${ds})`);
+    autoSave();render();
+  }
+}
+function quickRemoveHandledning(e,ds,slotKey){
+  e.stopPropagation();
+  if(specialSlots[ds]&&specialSlots[ds][slotKey]){
+    const v=specialSlots[ds][slotKey];const doc=docById(v.docId);
+    delete specialSlots[ds][slotKey];
+    logChange(`Tog bort handledning: ${doc?docShortName(doc):''} (${ds})`);
+    autoSave();render();
+  }
+}
+function quickRemoveSjuk(e,ds,entryId){
+  e.stopPropagation();
+  if(!sjukskrivning[ds])return;
+  const entry=sjukskrivning[ds].find(x=>x.id===entryId);
+  sjukskrivning[ds]=sjukskrivning[ds].filter(x=>x.id!==entryId);
+  if(entry){const doc=docById(entry.docId);logChange(`Tog bort ${entry.type||'sjuk'}: ${doc?docShortName(doc):''} (${ds})`);}
+  autoSave();render();
+}
+function quickRemoveRand(e,docId,ds){
+  e.stopPropagation();
+  if(randningDagar[docId]&&randningDagar[docId][ds]){
+    delete randningDagar[docId][ds];
+    const doc=docById(docId);logChange(`Tog bort randning: ${doc?docShortName(doc):''} (${ds})`);
+    autoSave();render();
+  }
+}
+function quickRemoveForaldraledig(e,ds,entryId){
+  e.stopPropagation();
+  if(!foraldraledig[ds])return;
+  const entry=foraldraledig[ds].find(x=>x.id===entryId);
+  foraldraledig[ds]=foraldraledig[ds].filter(x=>x.id!==entryId);
+  if(entry){const doc=docById(entry.docId);logChange(`Tog bort föräldraledig: ${doc?docShortName(doc):''} (${ds})`);}
+  autoSave();render();
+}
+function quickRemoveAusk(e,ds,entryId){
+  e.stopPropagation();
+  if(!auskultationEntries[ds])return;
+  const entry=auskultationEntries[ds].find(x=>x.id===entryId);
+  auskultationEntries[ds]=auskultationEntries[ds].filter(x=>x.id!==entryId);
+  if(entry){const doc=docById(entry.docId);logChange(`Tog bort auskultation: ${doc?docShortName(doc):''} (${ds})`);}
+  autoSave();render();
+}

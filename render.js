@@ -601,7 +601,8 @@ function renderWeek(){
       html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
       entries.forEach(([k,v])=>{const doc=docById(v.docId);if(!doc)return;
         const admLabel=v.note||'ADM';
-        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;cursor:pointer" onclick="openEditSpecialModal('${ds}','${k}')"><span style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${v.note||''}">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${v.halfDay?` (${v.halfDay})`:''}</span></div>`;
+        const removeAdmBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveAdm(event,'${ds}','${k}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort administration">✕</button>`:'';
+        html+=`<div class="adm-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;cursor:pointer" onclick="openEditSpecialModal('${ds}','${k}')"><span style="max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${v.note||''}">${admLabel}</span><span style="font-size:9px;color:var(--text2)">${docShortName(doc)}${v.halfDay?` (${v.halfDay})`:''}</span>${removeAdmBtn}</div>`;
       });
       recAdm.forEach(r=>{const doc=docById(r.docId);if(!doc)return;
         const admLabel=r.note||'ADM';
@@ -665,7 +666,8 @@ function renderWeek(){
       if(entries.length){
         entries.forEach(([k,v])=>{const st=docById(v.docId),sup=docById(v.supervisorId);if(!st)return;
           const supStr=sup?` / ${docShortName(sup)}`:'';
-          html+=`<div class="handl-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;cursor:pointer" onclick="openSpecialCtx(event,'${ds}','${k}')"><span>🎓</span><span style="font-size:9px">${docShortName(st)}${supStr}${v.halfDay?' ('+v.halfDay+')':''}</span></div>`;
+          const removeHandlBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveHandledning(event,'${ds}','${k}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort handledning">✕</button>`:'';
+          html+=`<div class="handl-cell" style="display:flex;align-items:center;gap:3px;margin-bottom:2px;cursor:pointer" onclick="openSpecialCtx(event,'${ds}','${k}')"><span>🎓</span><span style="font-size:9px">${docShortName(st)}${supStr}${v.halfDay?' ('+v.halfDay+')':''}</span>${removeHandlBtn}</div>`;
         });
       }
       html+=`<div class="bj-slot empty-cell" style="min-height:22px;font-size:10px;color:var(--text3)" onclick="openAddSpecialModal('${ds}','handledning')"><span style="font-size:12px;color:var(--border)">+</span></div>`;
@@ -688,11 +690,13 @@ function renderWeek(){
       entries.forEach(e=>{const doc=docById(e.docId);if(!doc)return;
         const place=e.place||e.desc||'';
         const note=e.note||'';
+        const removeAuskBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveAusk(event,'${ds}','${e.id}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:${askColor};font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort auskultation">✕</button>`:'';
         html+=`<div style="display:flex;flex-direction:column;margin-bottom:3px;padding:3px 5px;border-radius:4px;background:${askBg};border:1px solid ${askColor}44">
           <div style="display:flex;align-items:center;gap:3px">
             <div class="savatar" style="width:14px;height:14px;font-size:7px;background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div>
             <span style="font-size:9px;font-weight:700;color:${askColor}">${docShortName(doc)}</span>
             ${place?`<span style="font-size:8px;color:${askColor};opacity:.8">· ${place}</span>`:''}
+            ${removeAuskBtn}
           </div>
           ${note?`<div style="font-size:8px;color:${askColor};opacity:.75;font-style:italic;padding-left:17px">${note}</div>`:''}
         </div>`;
@@ -714,8 +718,9 @@ function renderWeek(){
       const randDocs=doctors.filter(doc=>docHasRandning(doc.id,ds)).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
       html+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}" style="cursor:pointer" onclick="openInlineDayCtx(event,'rand','${ds}')">`;
       randDocs.forEach(doc=>{
+        const removeRandBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveRand(event,'${doc.id}','${ds}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:#b45309;font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort randning">✕</button>`:'';
         html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:#fef9c3;border:1px solid #b4530944">
-          <span style="font-size:9px;font-weight:700;color:#b45309">✓ ${docShortName(doc)}</span>
+          <span style="font-size:9px;font-weight:700;color:#b45309">✓ ${docShortName(doc)}</span>${removeRandBtn}
         </div>`;
       });
       html+=`<div style="min-height:10px"></div>`;
@@ -822,9 +827,10 @@ function renderWeek(){
         const c=t==='vab'?'var(--vab)':'var(--sjuk)';
         const bg=t==='vab'?'var(--vab-light)':'var(--sjuk-light)';
         const lbl=t==='vab'?'VAB':'Sjuk';
+        const removeSjukBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveSjuk(event,'${ds}','${e.id}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:${c};font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort ${lbl}">✕</button>`:'';
         html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:${bg};border:1px solid ${c}44">
           <span style="font-size:9px;font-weight:700;color:${c}">${docShortName(doc)}</span>
-          <span style="font-size:8px;color:${c};opacity:.8">(${lbl})</span>
+          <span style="font-size:8px;color:${c};opacity:.8">(${lbl})</span>${removeSjukBtn}
         </div>`;
       });
       html+=`<div style="min-height:10px"></div>`;
@@ -872,9 +878,10 @@ function renderWeek(){
       // Day-by-day approved FL
       entries.forEach(e=>{
         const doc=docById(e.docId);if(!doc)return;
+        const removeFlBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveForaldraledig(event,'${ds}','${e.id}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--fl);font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort föräldraledig">✕</button>`:'';
         html+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:var(--fl-light);border:1px solid var(--fl)44">
           <span style="font-size:9px;font-weight:700;color:var(--fl)">✓ ${docShortName(doc)}</span>
-          <span style="font-size:8px;color:var(--fl);opacity:.8">(FL)</span>
+          <span style="font-size:8px;color:var(--fl);opacity:.8">(FL)</span>${removeFlBtn}
         </div>`;
       });
       html+=`<div style="min-height:10px"></div>`;
