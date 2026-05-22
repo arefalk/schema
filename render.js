@@ -206,6 +206,26 @@ function renderWeek(){
   const bvcPos=positions.filter(isBVC);
   const specMottPos=positions.filter(isSpecMott);
   const genMottPos=positions.filter(p=>!isDJPos(p)&&!isBVC(p)&&isGenMott(p));
+  // Helper: render an Intro/Ausk row for a named section (Avdelning, Neonatal, Dagjour, Mottagning)
+  const _auskIntroRow=place=>{
+    const askColor='#7c3aed',askBg='#ede9fe';
+    const hasAny=days.some(d=>(auskultationEntries[isoDate(d)]||[]).some(e=>e.place===place));
+    if(!hasAny)return'';
+    let r=`<tr class="pos-row"><td class="label-cell"><div class="pos-name-el" style="color:${askColor};font-size:11px">Intro/Ausk</div><div class="pos-reqs"><span style="font-size:9px;color:var(--text2)">${place}</span></div></td>`;
+    days.forEach(d=>{
+      const ds=isoDate(d),we=d.getDay()===0||d.getDay()===6;
+      const entries=(auskultationEntries[ds]||[]).filter(e=>e.place===place);
+      r+=`<td class="day-cell${isToday(d)?' today-cell':''}${we?' we-cell':''}">`;
+      entries.forEach(e=>{
+        const doc=docById(e.docId);if(!doc)return;
+        const removeBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveAusk(event,'${ds}','${e.id}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:${askColor};font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort">✕</button>`:'';
+        r+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:${askBg};border:1px solid ${askColor}44"><span style="font-size:9px;font-weight:700;color:${askColor}">🔬 ${docShortName(doc)}</span>${removeBtn}</div>`;
+      });
+      r+=`<div style="min-height:8px"></div></td>`;
+    });
+    r+=`</tr>`;
+    return r;
+  };
 
   function renderPosRow(pos){
     const posDays=pos.days&&pos.days.length?pos.days:[1,2,3,4,5];
@@ -307,12 +327,15 @@ function renderWeek(){
   if(avdPos.length){
     html+=`<tr class="section-hdr"><td colspan="${cols}">Avdelningsplaceringar</td></tr>`;
     avdPos.forEach(renderPosRow);
+    html+=_auskIntroRow('Neonatal');
+    html+=_auskIntroRow('Avdelning');
   }
 
   const djPos=positions.filter(isDJPos);
   if(djPos.length){
     html+=`<tr class="section-hdr"><td colspan="${cols}">Dagjour</td></tr>`;
     djPos.forEach(renderPosRow);
+    html+=_auskIntroRow('Dagjour');
   }
 
   if(specMottPos.length){
@@ -324,6 +347,7 @@ function renderWeek(){
     html+=`<tr class="section-hdr"><td colspan="${cols}">Mottagning</td></tr>`;
     genMottPos.forEach(renderPosRow);
     bvcPos.forEach(renderPosRow);
+    html+=_auskIntroRow('Mottagning');
   }
 
   // ── DAGVÅRD: varje slot = egen rad ──

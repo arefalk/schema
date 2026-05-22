@@ -828,8 +828,8 @@
         <select id="auskDocSel" style="flex:1;font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text1)"></select>
         <button class="btn sm" onclick="addAuskultationEntry()">+</button>
       </div>
-      <select id="auskPlaceSel" style="width:100%;margin-top:6px;font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text1)">
-        <option value="">— Välj placering —</option>
+      <select id="auskPlaceSel" style="width:100%;margin-top:6px;font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text1)" title="Välj sektion — visas som Intro/Ausk-rad i schemat">
+        <option value="">— Visa i sektion (valfri) —</option>
         <option value="Avdelning">Avdelning</option>
         <option value="Neonatal">Neonatal</option>
         <option value="Mottagning">Mottagning</option>
@@ -1054,7 +1054,7 @@
 <!-- Modules loaded in dependency order -->
 <script src="state.js?v=135"></script>
 <script src="helpers.js?v=144"></script>
-<script src="render.js?v=165"></script>
+<script src="render.js?v=166"></script>
 <script src="context.js?v=134"></script>
 <script src="modals.js?v=171"></script>
 <script src="features.js?v=154"></script>
