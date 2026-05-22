@@ -641,12 +641,21 @@ function _auskEntryHtml(e,showDay){
   const note=e.note||'';
   return`<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:var(--bg2);border-radius:6px;margin-bottom:4px">
     <div class="savatar" style="width:20px;height:20px;font-size:9px;background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div>
-    <div style="flex:1">
+    <div style="flex:1;min-width:0">
       <div style="font-size:12px">${doc.name.split(' ')[0]} ${doc.name.split(' ').slice(-1)[0]}${place?` — <span style="font-size:11px;color:#7c3aed">${place}</span>`:''}</div>
-      ${note?`<div style="font-size:10px;color:var(--text2);font-style:italic">${note}</div>`:''}
+      <input type="text" value="${note.replace(/"/g,'&quot;')}" placeholder="Kommentar…" style="width:100%;font-size:10px;padding:2px 5px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text1);margin-top:2px;box-sizing:border-box"
+        onchange="updateAuskNote('${e.id}',this.value)" onblur="updateAuskNote('${e.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
     </div>
     <button class="btn sm danger" onclick="removeAuskultationEntry('${e.id}')">×</button>
   </div>`;
+}
+function updateAuskNote(id,note){
+  let found=false;
+  Object.values(auskultationEntries).forEach(arr=>{
+    const e=arr&&arr.find(x=>x.id===id);
+    if(e){e.note=note.trim();found=true;}
+  });
+  if(found){autoSave();render();}
 }
 function renderAuskultationList(){
   const ds=document.getElementById('auskDs').value;

@@ -219,7 +219,9 @@ function renderWeek(){
       entries.forEach(e=>{
         const doc=docById(e.docId);if(!doc)return;
         const removeBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveAusk(event,'${ds}','${e.id}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:${fg};font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort">✕</button>`:'';
-        r+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:${bg};border:1px solid ${fg}44"><span style="font-size:9px;font-weight:700;color:${fg}">🔬 ${docShortName(doc)}</span>${removeBtn}</div>`;
+        const note=e.note||'';
+        const editClick=!IS_DOCTOR_MODE?`onclick="openAuskultationModal('${ds}')" style="cursor:pointer"`:'' ;
+        r+=`<div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;padding:2px 5px;border-radius:4px;background:${bg};border:1px solid ${fg}44" ${editClick} title="${note||'Klicka för att redigera'}"><span style="font-size:9px;font-weight:700;color:${fg}">🔬 ${docShortName(doc)}${note?` — <em style="font-weight:400">${note}</em>`:''}</span>${removeBtn}</div>`;
       });
       r+=`<div style="min-height:8px"></div></td>`;
     });
@@ -721,8 +723,9 @@ function renderWeek(){
         const place=e.place||e.desc||'';
         const note=e.note||'';
         const removeAuskBtn=!IS_DOCTOR_MODE?`<button onclick="quickRemoveAusk(event,'${ds}','${e.id}')" style="margin-left:auto;border:none;background:none;cursor:pointer;color:${askColor};font-size:11px;padding:0 2px;line-height:1;flex-shrink:0" title="Ta bort auskultation">✕</button>`:'';
+        const editClick=!IS_DOCTOR_MODE?`onclick="event.stopPropagation();openAuskultationModal('${ds}')" style="cursor:pointer"`:'' ;
         html+=`<div style="display:flex;flex-direction:column;margin-bottom:3px;padding:3px 5px;border-radius:4px;background:${askBg};border:1px solid ${askColor}44">
-          <div style="display:flex;align-items:center;gap:3px">
+          <div style="display:flex;align-items:center;gap:3px" ${editClick}>
             <div class="savatar" style="width:14px;height:14px;font-size:7px;background:${doc.color[0]};color:${doc.color[1]}">${docInitials(doc.name)}</div>
             <span style="font-size:9px;font-weight:700;color:${askColor}">${docShortName(doc)}</span>
             ${place?`<span style="font-size:8px;color:${askColor};opacity:.8">· ${place}</span>`:''}
