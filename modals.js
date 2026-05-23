@@ -908,10 +908,6 @@ function applyRoleDefaults(gridPrefix){
     const cb=document.getElementById(`${gridPrefix}AllowedGrid_${posId}`);
     if(cb)cb.checked=true;
   });
-  allDefaults.forEach(posId=>{
-    const cb=document.getElementById(`${gridPrefix}PrefGrid_${posId}`);
-    if(cb)cb.checked=true;
-  });
   showToast(`✅ Standardpositioner fyllda i`);
 }
 function addRoleTag(){const v=document.getElementById('newRoleInput').value.trim();if(v&&!roleTags.includes(v)){roleTags.push(v);document.getElementById('newRoleInput').value='';renderRoleTagsList();}}
